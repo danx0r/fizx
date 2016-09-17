@@ -26,5 +26,12 @@ function test() {
   setTimeout(function(){
     clear()
     circle(600, 300, 80);
+    circle(66, 300, .5);
+    circle(72, 300, 1);
+    circle(84, 300, 1.5);
+    circle(96, 300, 2);
+    line(100,100,200,101)
+    g_context.fillRect(100,10,3,3);
   }, 500);;
 }
+
