@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<body style="background-color: gray">
+  <canvas id="canv" width="1000" height="600" style="background-color: #ccc"></canvas>
+  <script>
+    var c = document.getElementById("canv");
+    var ctx = c.getContext("2d");
+    console.log(ctx);
+    ctx.moveTo(0,0);
+    ctx.lineTo(1000, 600);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(500,300,100,0,Math.PI*2);
+    ctx.stroke();
+  </script>
+</body>
+</html>
