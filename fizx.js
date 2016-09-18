@@ -23,25 +23,35 @@ function clear() {
 }
 
 function draw_particle(x, y) {
-  circle(x, y, RADIUS);
+  circle(x, g_canvas.height-1-y, RADIUS);
+}
+
+function atom(x, y, vx, vy, fx, fy) {
+  if (vx==null) vx = vy = 0;
+  if (fx==null) fx = fy = 0;
+  this.p = {x: x, y: y};
+  this.v = {x: vx, y: vy};
+  this.f = {x: fx, y: fy};
+  console.log("atom:", this.p, this.v, this.f)
+  
+  this.update = function(dt) {
+    this.p.x += this.v.x * dt;
+    this.p.y += this.v.y * dt;
+    this.v.x += this.f.x * dt;
+    this.v.y += this.f.y * dt;
+  };
+  
+  this.draw = function() {
+    // console.log("draw at", this.p.x, this.p.y)
+    draw_particle(this.p.x, this.p.y);
+  };
 }
 
 function test() {
-  line(10,10,990,590);
-  circle(500, 300, 100);
-  draw_particle(201,200);
-  setTimeout(function(){
-    clear()
-    circle(600, 300, 80);
-    draw_particle(204,200);
-    line(100,100,200,101)
-    g_context.fillRect(100,10,3,3);
-    var i = 100;
-    setInterval(function(){
-      clear();
-      draw_particle(i, i*.23);
-      i+=2.5;
-    }, 10);
-  }, 500);
+  var p1 = new atom(100, 300, 100, 200, 0, -100);
+  setInterval(function(){
+    clear();
+    p1.draw();
+    p1.update(0.01);
+  }, 10);
 }
-
