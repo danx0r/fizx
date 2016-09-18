@@ -1,4 +1,5 @@
 RADIUS = 1
+  TICK = 0.01
 
 function init() {
   g_canvas = document.getElementById("canvas");
@@ -38,13 +39,20 @@ function atom(x, y, vx, vy, fx, fy) {
   console.log("atom:", this.p, this.v, this.f)
   
   this.update = function(dt) {
-    this.p.x += this.v.x * dt;
-    this.p.y += this.v.y * dt;
-    this.v.x += this.f.x * dt;
-    this.v.y += this.f.y * dt;
-    if(this.p.y < 100) {
-      this.v.y = -this.v.y * .9;
+    var it = 0;
+    var t = 0;
+    while(t < dt) {
+      this.p.x += this.v.x * TICK;
+      this.p.y += this.v.y * TICK;
+      this.v.x += this.f.x * TICK;
+      this.v.y += this.f.y * TICK;
+      if(this.p.y < 100) {
+        this.v.y = -this.v.y * .9;
+      }
+      t += TICK;
+      it++;
     }
+    return it;
   };
   
   this.draw = function() {
@@ -59,6 +67,7 @@ function test() {
     clear();
     line(0, 100, 1000, 100);
     p1.draw();
-    p1.update(0.01);
-  }, 10);
+    var ret=p1.update(0.02);
+    console.log("ticks:", ret);
+  }, 20);
 }
