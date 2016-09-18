@@ -15,6 +15,7 @@ function circle(x, y, r) {
 }
 
 function line(x, y, x2, y2) {
+  g_context.beginPath();
   g_context.moveTo(x, HEIGHT-1-y);
   g_context.lineTo(x2, HEIGHT-1-y2);
   g_context.stroke();
