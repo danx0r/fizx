@@ -89,17 +89,17 @@ function contacts_update() {
       console.log("CONTACT!")
       var vx = a.v.x;
       var vy = a.v.y;
-      a.v.x = b.v.x;
-      a.v.y = b.v.y;
-      b.v.x = vx;
-      b.v.y = vy;
+      a.v.x = b.v.y;
+      a.v.y = b.v.x;
+      b.v.y = vx;
+      b.v.x = vy;
     }
   }
 }
 
 function test() {
   var p1 = new atom(400, 300, 100, 0);
-  var p2 = new atom(600, 305);
+  var p2 = new atom(600, 300);
   CONTACTS = [[p1, p2]]
   setInterval(function(){
     clear();
