@@ -39,3 +39,5 @@ No need 4 explicit force
 Static objects are composed of atoms that have specific Target locations
 
 Or maybe they are anchored certain points
+
+need a concept of multi-atom object
