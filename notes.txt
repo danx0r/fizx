@@ -1,0 +1,19 @@
+Objects are made up of atoms. A static object's atoms are all attracted to a single x,y,z global position (do we even care that they are separte objects?)  Whenever the atom strays from its ideal position, a force is imposed opposing the difference. (square law? linear force? damping?)
+
+Dynamic objects are made up of atoms that have defined relationships with each other. A sphere (ball) may have a single center atom, and a geodesic type shell, with each atom "bonded" to the atoms nearest in the shell (bonds = vertices of geodesic) as well as a bond to the center atom, length of which is the radius of the sphere. Atom masses and strength of bonds may require some fiddling...
+
+Contact: when atoms from different objects are closer to each other than some threshold distance, a repulsive force exists between them. It can be thought of as a temporary "bond" that, unlike permanent bonds, only repels, never attracts.
+
+Contact2: atom vs atom: each atom has a vector representing its projected movement in the coming 'tick' (from here to here+velocity/timestep). We calculate closest distance between vectors; if less than threshold (radius of atoms added), we assume a hard bounce and update each atom's position and momentun accordingly. (how to do sort hack? Reversible?)
+
+Contact3: when atoms are closer than threshold, exchange momenta along vector from atom A to atom B. Simple, reversible. Need short timestep.
+
+Relativity to avoid problematic velocities?
+
+Premature optimization: sort every atom of static objects along an axis. Check every atom of each dynamic object against the static list -- quick, due to sort. (but atoms move... threshold based on max dispacement?)
+
+Dynamic vs dynamic? Sort along a local axis, check each object combo?
+
+Possibility: interact with ideal atom location rather than actual 
+
+Sound: "contact" mic == movement of atom along an axis
