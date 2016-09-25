@@ -30,6 +30,8 @@ function draw_particle(x, y) {
   circle(x, y, RADIUS);
 }
 
+ATOMS = []
+
 function atom(x, y, vx, vy, fx, fy) {
   if (vx==null) vx = vy = 0;
   if (fx==null) fx = fy = 0;
@@ -46,9 +48,6 @@ function atom(x, y, vx, vy, fx, fy) {
       this.p.y += this.v.y * TICK;
       this.v.x += this.f.x * TICK;
       this.v.y += this.f.y * TICK;
-      if(this.p.y < 100) {
-        this.v.y = -this.v.y * .9;
-      }
       t += TICK;
       it++;
     }
@@ -59,15 +58,29 @@ function atom(x, y, vx, vy, fx, fy) {
     // console.log("draw at", this.p.x, this.p.y)
     draw_particle(this.p.x, this.p.y);
   };
+
+  ATOMS.push(this)
+}
+
+function atoms_update(dt) {
+  for (var i=0; i<ATOMS.length; i++) {
+    var step = ATOMS[i].update(dt);
+  }
+}
+
+function atoms_draw() {
+  for (var i=0; i<ATOMS.length; i++) {
+    ATOMS[i].draw();
+  }
 }
 
 function test() {
-  var p1 = new atom(10, 500, 100, 0, 0, -1000);
+  var p1 = new atom(400, 300, 100, 0);
+  var p2 = new atom(600, 300);
   setInterval(function(){
     clear();
-    line(0, 100, 1000, 100);
-    p1.draw();
-    var ret=p1.update(0.02);
+    atoms_draw();
+    var ret=atoms_update(0.02);
     console.log("ticks:", ret);
   }, 20);
 }
