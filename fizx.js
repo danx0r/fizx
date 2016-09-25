@@ -31,6 +31,8 @@ function draw_particle(x, y) {
 }
 
 ATOMS = []
+BONDS = []
+CONTACTS = []
 
 function atom(x, y, vx, vy, fx, fy) {
   if (vx==null) vx = vy = 0;
@@ -66,6 +68,7 @@ function atoms_update(dt) {
   for (var i=0; i<ATOMS.length; i++) {
     var step = ATOMS[i].update(dt);
   }
+  return step;
 }
 
 function atoms_draw() {
@@ -74,13 +77,35 @@ function atoms_draw() {
   }
 }
 
+function contacts_update() {
+  for (var i=0; i<CONTACTS.length; i++) {
+    var a = CONTACTS[i][0];
+    var b = CONTACTS[i][1];
+    var dx = a.p.x-b.p.x;
+    var dy = a.p.y-b.p.y
+    var dist = Math.sqrt(dx*dx + dy*dy);
+    console.log("DIST:", dist)
+    if (dist < 10) {
+      console.log("CONTACT!")
+      var vx = a.v.x;
+      var vy = a.v.y;
+      a.v.x = b.v.x;
+      a.v.y = b.v.y;
+      b.v.x = vx;
+      b.v.y = vy;
+    }
+  }
+}
+
 function test() {
   var p1 = new atom(400, 300, 100, 0);
-  var p2 = new atom(600, 300);
+  var p2 = new atom(600, 305);
+  CONTACTS = [[p1, p2]]
   setInterval(function(){
     clear();
     atoms_draw();
     var ret=atoms_update(0.02);
+    contacts_update();
     console.log("ticks:", ret);
   }, 20);
 }
