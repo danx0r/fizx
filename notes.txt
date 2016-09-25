@@ -1,4 +1,5 @@
 Objects are made up of atoms. A static object's atoms are all attracted to a single x,y,z global position (do we even care that they are separte objects?)  Whenever the atom strays from its ideal position, a force is imposed opposing the difference. (square law? linear force? damping?)
+  correction: if we want sound, static objects need to be like dynamic objects with anchors to global coords
 
 Dynamic objects are made up of atoms that have defined relationships with each other. A sphere (ball) may have a single center atom, and a geodesic type shell, with each atom "bonded" to the atoms nearest in the shell (bonds = vertices of geodesic) as well as a bond to the center atom, length of which is the radius of the sphere. Atom masses and strength of bonds may require some fiddling...
 
@@ -17,3 +18,24 @@ Dynamic vs dynamic? Sort along a local axis, check each object combo?
 Possibility: interact with ideal atom location rather than actual 
 
 Sound: "contact" mic == movement of atom along an axis
+
+===
+Bonds: List of relationships between atoms
+
+Static list for objects, temporary list for contacts
+
+If needed, object can keep a list of its relations, or there can be some sort of dictionary or sorted structure to index them
+
+Bind: Function takes two atoms and adds a bond to list
+
+Contacts are temp list similar to bonds but ephemeral and different rules
+
+Position (thru bonds and contacts) updates velocity
+
+Velocity (for each atom) updates position ( deal w grav here)
+
+No need 4 explicit force
+
+Static objects are composed of atoms that have specific Target locations
+
+Or maybe they are anchored certain points
