@@ -1,0 +1,32 @@
+elastic collision
+
+1D:
+
+av, bv
+
+in reference frame where av = -bv, negate velocities
+
+so:
+
+rv = (av+bv)/2
+
+avr = av-rv
+bvr = bv-rv
+
+avr = -avr
+bvr = -bvr
+
+av = avr+rv
+bv = bvr+rv
+
+in other words, swap av & bv!
+
+
+2D:
+navx = bvx
+navy = bvy
+bvx = avx
+bvy = avy
+avx = navx
+avy = navy
+
