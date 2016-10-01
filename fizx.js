@@ -1,6 +1,7 @@
 RADIUS = 5
 TICK_PHYS = 0.001
 TICK_SHOW = 0.02
+BOND_P = 1
 
 ATOMS = []
 BONDS = []
@@ -102,18 +103,24 @@ function bonds_update() {
   for (var i=0; i<BONDS.length; i++) {
     var a = BONDS[i][0];
     var b = BONDS[i][1];
-    var dx = a.p.x-b.p.x;
-    var dy = a.p.y-b.p.y
-    var dist = Math.sqrt(dx*dx + dy*dy);
-    var diff = dist-RADIUS*2
-    console.log("BOND dist:", dist, "diff:", diff)
-    
+    var dx = b.p.x-a.p.x;
+    var dy = b.p.y-a.p.y
+    // var dist = Math.sqrt(dx*dx + dy*dy);
+    // var diff = dist-RADIUS*2
+    if(dx<0){
+      dx += RADIUS*2                // should be trig here, x component based on angle
+    } else {
+      dx -= RADIUS*2
+    }
+    console.log("BOND diff:", dx, dy)
+    a.v.x += dx * BOND_P
+    b.v.x -= dx * BOND_P
   }
 }
 
 function test() {
-  var p1 = new atom(100, 300, 100, 0);
-  var p2 = new atom(500, 500, -100, -100);
+  var p1 = new atom(530, 300);
+  var p2 = new atom(515, 300);
   BONDS = [[p1, p2]]
   setInterval(function(){
     clear();
@@ -122,5 +129,5 @@ function test() {
     contacts_update();
     bonds_update();
     console.log("ticks:", ret);
-  }, TICK_SHOW * 10000);
+  }, TICK_SHOW * 5000);
 }
