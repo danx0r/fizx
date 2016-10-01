@@ -114,7 +114,7 @@ function bonds_update() {
 function test() {
   var p1 = new atom(100, 300, 100, 0);
   var p2 = new atom(500, 500, -100, -100);
-  CONTACTS = [[p1, p2]]
+  BONDS = [[p1, p2]]
   setInterval(function(){
     clear();
     atoms_draw();
@@ -122,5 +122,5 @@ function test() {
     contacts_update();
     bonds_update();
     console.log("ticks:", ret);
-  }, TICK_SHOW * 1000);
+  }, TICK_SHOW * 10000);
 }
