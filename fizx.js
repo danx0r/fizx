@@ -1,5 +1,5 @@
-RADIUS = 30
-RADIUS_SHOW = 3
+RADIUS = 100
+RADIUS_SHOW = 4
 TICK_PHYS = 0.001
 TICK_SHOW = 0.01
 DAMP = 0.975
@@ -172,7 +172,7 @@ function test() {
   // new atom(527, 510);
   // new atom(527, 410);
   // new atom(527, 110);
-  for (var i=0; i<23; i++) {
+  for (var i=0; i<25; i++) {
     new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
   }
   bond_all(ATOMS);
