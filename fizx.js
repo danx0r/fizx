@@ -1,11 +1,14 @@
-RADIUS = 15
+RADIUS = 30
 RADIUS_SHOW = 3
 TICK_PHYS = 0.001
-TICK_SHOW = 0.01
+TICK_SHOW = 0.05
 DAMP = 0.99
-REALTIME = .2
+REALTIME = 1//.2
 TICK_MAX = 100*10000
 // TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
+BOND_COLOR = "#cc88bb"
+ATOM_COLOR = "#000000"
+
 BOND_P = 1
 
 ATOMS = []
@@ -20,16 +23,26 @@ function init() {
   HEIGHT = g_canvas.height;
 }
 
-function circle(x, y, r) {
+function circle(x, y, r, color) {
   g_context.beginPath();
   g_context.arc(x, HEIGHT-1-y, r, 0, Math.PI*2);
+  if(color) {
+    g_context.strokeStyle = color;
+  } else {
+    g_context.strokeStyle = "#000000";
+  }
   g_context.stroke();
 }
 
-function line(x, y, x2, y2) {
+function line(x, y, x2, y2, color) {
   g_context.beginPath();
   g_context.moveTo(x, HEIGHT-1-y);
   g_context.lineTo(x2, HEIGHT-1-y2);
+  if(color) {
+    g_context.strokeStyle = color;
+  } else {
+    g_context.strokeStyle = "#000000";
+  }
   g_context.stroke();
 }
 
@@ -56,7 +69,7 @@ function atom(x, y, vx, vy, fx, fy) {
   
   this.draw = function() {
     // console.log("draw at", this.p.x, this.p.y)
-    circle(this.p.x, this.p.y, RADIUS_SHOW);
+    circle(this.p.x, this.p.y, RADIUS_SHOW, ATOM_COLOR);
   };
 
   ATOMS.push(this)
@@ -117,7 +130,7 @@ function bonds_draw() {
   for (var i=0; i<BONDS.length; i++) {
     var a=BONDS[i][0];
     var b=BONDS[i][1];
-    line(a.p.x, a.p.y, b.p.x, b.p.y);
+    line(a.p.x, a.p.y, b.p.x, b.p.y, BOND_COLOR);
     // console.log("line", a.p.x, a.p.y, b.p.x, b.p.y)
   }
 }
@@ -139,20 +152,32 @@ function bond_all(atoms) {
 }
 
 function test() {
+  new atom(200, 100);       // 7 circle
+  new atom(300, 100);       // 7 circle
   new atom(300, 300);       // 7 circle
-  // new atom(400, 300);    // hex + center
+  new atom(400, 300);    // hex + center
   new atom(515, 305);
-  new atom(530, 300);
+  new atom(530, 305);
   new atom(530, 320);
   new atom(515, 320);
   new atom(500, 320);
   new atom(515, 310);
+  new atom(315, 312);
+  new atom(522, 310);
+  new atom(517, 320);
+  new atom(506, 320);
+  new atom(517, 310);
+  new atom(317, 312);
+  new atom(527, 610);
+  new atom(527, 510);
+  new atom(527, 410);
+  new atom(527, 110);
   bond_all(ATOMS);
   var ii=0;
   var int = setInterval(function(){
     clear();
-    atoms_draw();
     bonds_draw();
+    atoms_draw();
     update_all(TICK_SHOW/TICK_PHYS);
     ii++;
     if (ii >= TICK_MAX) {
@@ -160,3 +185,4 @@ function test() {
     }
   }, TICK_SHOW/REALTIME * 1000);
 }
+  
