@@ -3,7 +3,7 @@ RADIUS_SHOW = 3
 TICK_PHYS = 0.001
 TICK_SHOW = 0.05
 DAMP = 0.99
-REALTIME = 1//.2
+REALTIME = 1
 TICK_MAX = 100*10000
 // TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
 BOND_COLOR = "#cc88bb"
@@ -152,26 +152,29 @@ function bond_all(atoms) {
 }
 
 function test() {
-  new atom(200, 100);       // 7 circle
-  new atom(300, 100);       // 7 circle
-  new atom(300, 300);       // 7 circle
-  new atom(400, 300);    // hex + center
-  new atom(515, 305);
-  new atom(530, 305);
-  new atom(530, 320);
-  new atom(515, 320);
-  new atom(500, 320);
-  new atom(515, 310);
-  new atom(315, 312);
-  new atom(522, 310);
-  new atom(517, 320);
-  new atom(506, 320);
-  new atom(517, 310);
-  new atom(317, 312);
-  new atom(527, 610);
-  new atom(527, 510);
-  new atom(527, 410);
-  new atom(527, 110);
+  // new atom(200, 100);       // 7 circle
+  // new atom(300, 100);       // 7 circle
+  // new atom(300, 300);       // 7 circle
+  // new atom(400, 300);    // hex + center
+  // new atom(515, 305);
+  // new atom(530, 305);
+  // new atom(530, 320);
+  // new atom(515, 320);
+  // new atom(500, 320);
+  // new atom(515, 310);
+  // new atom(315, 312);
+  // new atom(522, 310);
+  // new atom(517, 320);
+  // new atom(506, 320);
+  // new atom(517, 310);
+  // new atom(317, 312);
+  // new atom(527, 610);
+  // new atom(527, 510);
+  // new atom(527, 410);
+  // new atom(527, 110);
+  for (var i=0; i<13; i++) {
+    new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
+  }
   bond_all(ATOMS);
   var ii=0;
   var int = setInterval(function(){
