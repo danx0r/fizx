@@ -1,6 +1,10 @@
 RADIUS = 5
 TICK_PHYS = 0.001
 TICK_SHOW = 0.01
+DAMP = 1
+REALTIME = .2
+TICK_MAX = 100*10000
+// TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
 BOND_P = 1
 
 ATOMS = []
@@ -49,6 +53,8 @@ function atom(x, y, vx, vy, fx, fy) {
     this.p.y += this.v.y * TICK_PHYS;
     this.v.x += this.f.x * TICK_PHYS;
     this.v.y += this.f.y * TICK_PHYS;
+    this.v.x *= DAMP;
+    this.v.y *= DAMP;
   };
   
   this.draw = function() {
@@ -97,18 +103,16 @@ function bonds_update(verbose) {
     var b = BONDS[i][1];
     var dx = b.p.x-a.p.x;
     var dy = b.p.y-a.p.y
-    if (dx+dy) {
-      var rx = dx/(dx+dy)
-      var ry = dy/(dx+dy)
-      if(dx<0){
-        dx += RADIUS*2                // should be trig here, x component based on angle
-      } else {
-        dx -= RADIUS*2
-      }
-      a.v.x += dx * BOND_P
-      b.v.x -= dx * BOND_P
-      if(verbose) console.log("BOND dx:", dx, "dy:", dy, "avx:", a.v.x, "avy:", a.v.y)
-    }
+    var dist = Math.sqrt(dx*dx+dy*dy);
+    var rx = dx*RADIUS*2/dist
+    var ry = dy*RADIUS*2/dist
+    dx -= rx
+    dy -= ry
+    a.v.x += dx * BOND_P
+    b.v.x -= dx * BOND_P
+    a.v.y += dy * BOND_P
+    b.v.y -= dy * BOND_P
+    if(verbose) console.log("BOND dxy:", dx, dy, "rxy:", rx, ry, Math.sqrt(rx*rx+ry*ry), "a.v:", a.v.x, a.v.y, "b.v:", b.v.x, b.v.y)
   }
 }
 
@@ -121,17 +125,18 @@ function update_all(n) {
 }
 
 function test() {
-  var p1 = new atom(530, 300);
-  var p2 = new atom(515, 300);
-  BONDS = [[p1, p2]]
+  var p1 = new atom(500, 300);
+  var p2 = new atom(510, 300);
+  var p3 = new atom(500, 310);
+  BONDS = [[p1, p2],[p1, p3],[p2, p3]]
   var ii=0;
   var int = setInterval(function(){
     clear();
     atoms_draw();
     update_all(TICK_SHOW/TICK_PHYS);
     ii++;
-    if (ii >= 10) {
+    if (ii >= TICK_MAX) {
       clearInterval(int)
     }
-  }, TICK_SHOW * 5000);
+  }, TICK_SHOW/REALTIME * 1000);
 }
