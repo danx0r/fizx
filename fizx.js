@@ -152,27 +152,7 @@ function bond_all(atoms) {
 }
 
 function test() {
-  // new atom(200, 100);       // 7 circle
-  // new atom(300, 100);       // 7 circle
-  // new atom(300, 300);       // 7 circle
-  // new atom(400, 300);    // hex + center
-  // new atom(515, 305);
-  // new atom(530, 305);
-  // new atom(530, 320);
-  // new atom(515, 320);
-  // new atom(500, 320);
-  // new atom(515, 310);
-  // new atom(315, 312);
-  // new atom(522, 310);
-  // new atom(517, 320);
-  // new atom(506, 320);
-  // new atom(517, 310);
-  // new atom(317, 312);
-  // new atom(527, 610);
-  // new atom(527, 510);
-  // new atom(527, 410);
-  // new atom(527, 110);
-  for (var i=0; i<25; i++) {
+  for (var i=0; i<23; i++) {
     new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
   }
   bond_all(ATOMS);
