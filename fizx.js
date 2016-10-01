@@ -1,9 +1,10 @@
-RADIUS = 5
+RADIUS = 15
+RADIUS_SHOW = 3
 TICK_PHYS = 0.001
 TICK_SHOW = 0.01
 DAMP = 0.99
 REALTIME = .2
-TICK_MAX = 100//*10000
+TICK_MAX = 100*10000
 // TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
 BOND_P = 1
 
@@ -36,10 +37,6 @@ function clear() {
   g_context.clearRect(0, 0, WIDTH, HEIGHT);
 }
 
-function draw_particle(x, y) {
-  circle(x, y, RADIUS);
-}
-
 function atom(x, y, vx, vy, fx, fy) {
   if (vx==null) vx = vy = 0;
   if (fx==null) fx = fy = 0;
@@ -59,7 +56,7 @@ function atom(x, y, vx, vy, fx, fy) {
   
   this.draw = function() {
     // console.log("draw at", this.p.x, this.p.y)
-    draw_particle(this.p.x, this.p.y);
+    circle(this.p.x, this.p.y, RADIUS_SHOW);
   };
 
   ATOMS.push(this)
@@ -112,7 +109,16 @@ function bonds_update(verbose) {
     b.v.x -= dx * BOND_P
     a.v.y += dy * BOND_P
     b.v.y -= dy * BOND_P
-    if(verbose) console.log("BOND dxy:", dx, dy, "rxy:", rx, ry, Math.sqrt(rx*rx+ry*ry), "a.v:", a.v.x, a.v.y, "b.v:", b.v.x, b.v.y)
+    if(verbose) console.log("BONDS dxy:", dx, dy, "rxy:", rx, ry, Math.sqrt(rx*rx+ry*ry), "a.v:", a.v.x, a.v.y, "b.v:", b.v.x, b.v.y)
+  }
+}
+
+function bonds_draw() {
+  for (var i=0; i<BONDS.length; i++) {
+    var a=BONDS[i][0];
+    var b=BONDS[i][1];
+    line(a.p.x, a.p.y, b.p.x, b.p.y);
+    // console.log("line", a.p.x, a.p.y, b.p.x, b.p.y)
   }
 }
 
@@ -124,15 +130,29 @@ function update_all(n) {
   }
 }
 
+function bond_all(atoms) {
+  for (var i=0; i<atoms.length; i++) {
+    for (var j=i+1; j<atoms.length; j++) {
+      BONDS.push([atoms[i], atoms[j]]);
+    }
+  }
+}
+
 function test() {
-  var p1 = new atom(500, 300);
-  var p2 = new atom(510, 300);
-  var p3 = new atom(500, 310);
-  BONDS = [[p1, p2],[p1, p3],[p2, p3]]
+  new atom(300, 300);       // 7 circle
+  // new atom(400, 300);    // hex + center
+  new atom(515, 305);
+  new atom(530, 300);
+  new atom(530, 320);
+  new atom(515, 320);
+  new atom(500, 320);
+  new atom(515, 310);
+  bond_all(ATOMS);
   var ii=0;
   var int = setInterval(function(){
     clear();
     atoms_draw();
+    bonds_draw();
     update_all(TICK_SHOW/TICK_PHYS);
     ii++;
     if (ii >= TICK_MAX) {
