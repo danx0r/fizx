@@ -172,7 +172,7 @@ function test() {
   // new atom(527, 510);
   // new atom(527, 410);
   // new atom(527, 110);
-  for (var i=0; i<13; i++) {
+  for (var i=0; i<23; i++) {
     new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
   }
   bond_all(ATOMS);
