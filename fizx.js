@@ -1,6 +1,6 @@
 RADIUS = 5
 TICK_PHYS = 0.001
-TICK_SHOW = 0.02
+TICK_SHOW = 0.01
 BOND_P = 1
 
 ATOMS = []
@@ -44,18 +44,11 @@ function atom(x, y, vx, vy, fx, fy) {
   this.f = {x: fx, y: fy};
   console.log("atom:", this.p, this.v, this.f)
   
-  this.update = function(dt) {
-    var it = 0;
-    var t = 0;
-    while(t < dt) {
-      this.p.x += this.v.x * TICK_PHYS;
-      this.p.y += this.v.y * TICK_PHYS;
-      this.v.x += this.f.x * TICK_PHYS;
-      this.v.y += this.f.y * TICK_PHYS;
-      t += TICK_PHYS;
-      it++;
-    }
-    return it;
+  this.update = function() {
+    this.p.x += this.v.x * TICK_PHYS;
+    this.p.y += this.v.y * TICK_PHYS;
+    this.v.x += this.f.x * TICK_PHYS;
+    this.v.y += this.f.y * TICK_PHYS;
   };
   
   this.draw = function() {
@@ -66,11 +59,10 @@ function atom(x, y, vx, vy, fx, fy) {
   ATOMS.push(this)
 }
 
-function atoms_update(dt) {
+function atoms_update() {
   for (var i=0; i<ATOMS.length; i++) {
-    var step = ATOMS[i].update(dt);
+    ATOMS[i].update();
   }
-  return step;
 }
 
 function atoms_draw() {
@@ -79,7 +71,7 @@ function atoms_draw() {
   }
 }
 
-function contacts_update() {
+function contacts_update(verbose) {
   for (var i=0; i<CONTACTS.length; i++) {
     var a = CONTACTS[i][0];
     var b = CONTACTS[i][1];
@@ -88,7 +80,7 @@ function contacts_update() {
     var dist = Math.sqrt(dx*dx + dy*dy);
     console.log("DIST:", dist)
     if (dist < RADIUS*2) {
-      console.log("CONTACT!")
+      if(verbose) console.log("CONTACT!")
       var vx = a.v.x;
       var vy = a.v.y;
       a.v.x = b.v.x;
@@ -99,22 +91,32 @@ function contacts_update() {
   }
 }
 
-function bonds_update() {
+function bonds_update(verbose) {
   for (var i=0; i<BONDS.length; i++) {
     var a = BONDS[i][0];
     var b = BONDS[i][1];
     var dx = b.p.x-a.p.x;
     var dy = b.p.y-a.p.y
-    // var dist = Math.sqrt(dx*dx + dy*dy);
-    // var diff = dist-RADIUS*2
-    if(dx<0){
-      dx += RADIUS*2                // should be trig here, x component based on angle
-    } else {
-      dx -= RADIUS*2
+    if (dx+dy) {
+      var rx = dx/(dx+dy)
+      var ry = dy/(dx+dy)
+      if(dx<0){
+        dx += RADIUS*2                // should be trig here, x component based on angle
+      } else {
+        dx -= RADIUS*2
+      }
+      a.v.x += dx * BOND_P
+      b.v.x -= dx * BOND_P
+      if(verbose) console.log("BOND dx:", dx, "dy:", dy, "avx:", a.v.x, "avy:", a.v.y)
     }
-    console.log("BOND diff:", dx, dy)
-    a.v.x += dx * BOND_P
-    b.v.x -= dx * BOND_P
+  }
+}
+
+function update_all(n) {
+  for(var i=0; i<n; i++) {
+    atoms_update(i==n-1);
+    contacts_update(i==n-1);
+    bonds_update(i==n-1);
   }
 }
 
@@ -122,12 +124,14 @@ function test() {
   var p1 = new atom(530, 300);
   var p2 = new atom(515, 300);
   BONDS = [[p1, p2]]
-  setInterval(function(){
+  var ii=0;
+  var int = setInterval(function(){
     clear();
     atoms_draw();
-    var ret=atoms_update(TICK_SHOW);
-    contacts_update();
-    bonds_update();
-    console.log("ticks:", ret);
+    update_all(TICK_SHOW/TICK_PHYS);
+    ii++;
+    if (ii >= 10) {
+      clearInterval(int)
+    }
   }, TICK_SHOW * 5000);
 }
