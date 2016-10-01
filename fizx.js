@@ -1,5 +1,10 @@
-RADIUS = 1
-  TICK = 0.01
+RADIUS = 5
+TICK_PHYS = 0.001
+TICK_SHOW = 0.02
+
+ATOMS = []
+BONDS = []
+CONTACTS = []
 
 function init() {
   g_canvas = document.getElementById("canvas");
@@ -30,10 +35,6 @@ function draw_particle(x, y) {
   circle(x, y, RADIUS);
 }
 
-ATOMS = []
-BONDS = []
-CONTACTS = []
-
 function atom(x, y, vx, vy, fx, fy) {
   if (vx==null) vx = vy = 0;
   if (fx==null) fx = fy = 0;
@@ -46,11 +47,11 @@ function atom(x, y, vx, vy, fx, fy) {
     var it = 0;
     var t = 0;
     while(t < dt) {
-      this.p.x += this.v.x * TICK;
-      this.p.y += this.v.y * TICK;
-      this.v.x += this.f.x * TICK;
-      this.v.y += this.f.y * TICK;
-      t += TICK;
+      this.p.x += this.v.x * TICK_PHYS;
+      this.p.y += this.v.y * TICK_PHYS;
+      this.v.x += this.f.x * TICK_PHYS;
+      this.v.y += this.f.y * TICK_PHYS;
+      t += TICK_PHYS;
       it++;
     }
     return it;
@@ -85,7 +86,7 @@ function contacts_update() {
     var dy = a.p.y-b.p.y
     var dist = Math.sqrt(dx*dx + dy*dy);
     console.log("DIST:", dist)
-    if (dist < 10) {
+    if (dist < RADIUS*2) {
       console.log("CONTACT!")
       var vx = a.v.x;
       var vy = a.v.y;
@@ -97,6 +98,19 @@ function contacts_update() {
   }
 }
 
+function bonds_update() {
+  for (var i=0; i<BONDS.length; i++) {
+    var a = BONDS[i][0];
+    var b = BONDS[i][1];
+    var dx = a.p.x-b.p.x;
+    var dy = a.p.y-b.p.y
+    var dist = Math.sqrt(dx*dx + dy*dy);
+    var diff = dist-RADIUS*2
+    console.log("BOND dist:", dist, "diff:", diff)
+    
+  }
+}
+
 function test() {
   var p1 = new atom(100, 300, 100, 0);
   var p2 = new atom(500, 500, -100, -100);
@@ -104,8 +118,9 @@ function test() {
   setInterval(function(){
     clear();
     atoms_draw();
-    var ret=atoms_update(0.02);
+    var ret=atoms_update(TICK_SHOW);
     contacts_update();
+    bonds_update();
     console.log("ticks:", ret);
-  }, 20);
+  }, TICK_SHOW * 1000);
 }
