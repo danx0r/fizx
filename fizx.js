@@ -50,19 +50,15 @@ function clear() {
   g_context.clearRect(0, 0, WIDTH, HEIGHT);
 }
 
-function atom(x, y, vx, vy, fx, fy) {
+function atom(x, y, vx, vy) {
   if (vx==null) vx = vy = 0;
-  if (fx==null) fx = fy = 0;
   this.p = {x: x, y: y};
   this.v = {x: vx, y: vy};
-  this.f = {x: fx, y: fy};
-  console.log("atom:", this.p, this.v, this.f)
+  console.log("atom:", this.p, this.v)
   
   this.update = function() {
-    this.v.x += this.f.x * TICK_PHYS;
     this.p.x += this.v.x * TICK_PHYS;
     this.p.y += this.v.y * TICK_PHYS;
-    this.v.y += this.f.y * TICK_PHYS;
     this.v.x *= DAMP;
     this.v.y *= DAMP;
   };
