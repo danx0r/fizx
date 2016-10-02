@@ -180,8 +180,8 @@ function randy() {
 }
 
 function test() {
-  rand32(1234);
-  for (var i=0; i<24; i++) {
+  rand32(1235);
+  for (var i=0; i<16; i++) {
     // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
     new atom(randy() * WIDTH, randy() * HEIGHT);
   }
@@ -201,14 +201,14 @@ function test() {
     atoms_draw();
     update_all(TICK_SHOW/TICK_PHYS);
     ii++;
-    if (ii==100) {
+    if (ii==200) {
       console.log("HIT ME")
       // DAMP = 0.999;
       // ATOMS[0].v.x = -2000;
       BONDS = [];
-      bond_near(ATOMS, RADIUS*1.2)
+      bond_near(ATOMS, RADIUS*1.5)
     }
-    if (ii==200) {
+    if (ii==300) {
       console.log("HIT ME AGIN")
       DAMP = 0.995;
       ATOMS[0].v.x = -500;
