@@ -181,7 +181,7 @@ function randy() {
 
 function test() {
   rand32(1234);
-  for (var i=0; i<10; i++) {
+  for (var i=0; i<24; i++) {
     // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
     new atom(randy() * WIDTH, randy() * HEIGHT);
   }
@@ -206,11 +206,11 @@ function test() {
       // DAMP = 0.999;
       // ATOMS[0].v.x = -2000;
       BONDS = [];
-      bond_near(ATOMS, RADIUS*1.5)
+      bond_near(ATOMS, RADIUS*1.2)
     }
     if (ii==200) {
       console.log("HIT ME AGIN")
-      DAMP = 0.998;
+      DAMP = 0.995;
       ATOMS[0].v.x = -500;
       ATOMS[1].v.x = 600;
     }
