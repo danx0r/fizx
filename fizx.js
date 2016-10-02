@@ -1,4 +1,4 @@
-RADIUS = 100
+RADIUS = 50
 RADIUS_SHOW = 4
 TICK_PHYS = 0.001
 TICK_SHOW = 0.01
@@ -151,11 +151,34 @@ function bond_all(atoms) {
   }
 }
 
-function test() {
-  for (var i=0; i<23; i++) {
-    new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
+function bond_near(atoms, thresh) {
+  for (var i=0; i<atoms.length; i++) {
+    for (var j=i+1; j<atoms.length; j++) {
+      var a = atoms[i];
+      var b = atoms[j];
+      var dx = a.p.x-b.p.x;
+      var dy = a.p.y-b.p.y
+      var dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist <= thresh) {
+        BONDS.push([a, b]);
+      }
+    }
   }
-  bond_all(ATOMS);
+}
+
+function test() {
+  // for (var i=0; i<10; i++) {
+    // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
+  // }
+  new atom(400, 300);
+  new atom(500, 300);
+  new atom(600, 300);
+  new atom(500, 200);
+  new atom(400, 200);
+  bond_near(ATOMS, RADIUS*2);
+  clear();
+  bonds_draw();
+  atoms_draw();
   var ii=0;
   var int = setInterval(function(){
     clear();
@@ -163,6 +186,10 @@ function test() {
     atoms_draw();
     update_all(TICK_SHOW/TICK_PHYS);
     ii++;
+    if (ii==100) {
+      DAMP = 0.999;
+      ATOMS[0].v.x = -2000;
+    }
     if (ii >= TICK_MAX) {
       clearInterval(int)
     }
