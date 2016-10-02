@@ -153,8 +153,8 @@ function bond_all(atoms) {
 
 function bond_near(atoms, thresh) {
   for (var i=0; i<atoms.length; i++) {
+    var a = atoms[i];
     for (var j=i+1; j<atoms.length; j++) {
-      var a = atoms[i];
       var b = atoms[j];
       var dx = a.p.x-b.p.x;
       var dy = a.p.y-b.p.y
@@ -164,6 +164,41 @@ function bond_near(atoms, thresh) {
       }
     }
   }
+}
+
+function bond_nearest(atoms, n) {
+  for (var i=0; i<atoms.length; i++) {
+    var pts = [];
+    var a = atoms[i];
+    for (var j=0; j<atoms.length; j++) {
+      var b = atoms[j];
+      if (a === b) {
+        continue;
+      }
+      var dx = a.p.x-b.p.x;
+      var dy = a.p.y-b.p.y
+      var dist = Math.sqrt(dx*dx + dy*dy);
+      pts.push([dist, b])
+    }
+    pts.sort(function (p, q) {
+      return p[0] - q[0];
+    });
+    console.log("PTS:", pts)
+    for (var k=0; k<n; k++) {
+      var b = pts[k][1];
+      var already = false;
+      for (var m=0; m<BONDS.length; m++) {
+        if ( (BONDS[m][0] === a && BONDS[m][1] === b ) || (BONDS[m][0] === b && BONDS[m][1] === a) ) {
+          already = true;
+          break;
+        }
+      }
+      if (!already) {
+        BONDS.push([a, b]);
+      }
+    }
+  }
+  console.log("NEAREST BONDS:", BONDS)
 }
 
 rand32_A = 1664525;
@@ -201,14 +236,14 @@ function test() {
     atoms_draw();
     update_all(TICK_SHOW/TICK_PHYS);
     ii++;
-    if (ii==200) {
+    if (ii==150) {
       console.log("HIT ME")
       // DAMP = 0.999;
       // ATOMS[0].v.x = -2000;
       BONDS = [];
-      bond_near(ATOMS, RADIUS*1.5)
+      bond_nearest(ATOMS, 5)
     }
-    if (ii==300) {
+    if (ii==250) {
       console.log("HIT ME AGIN")
       DAMP = 0.995;
       ATOMS[0].v.x = -500;
@@ -219,4 +254,3 @@ function test() {
     }
   }, TICK_SHOW/REALTIME * 1000);
 }
-  
