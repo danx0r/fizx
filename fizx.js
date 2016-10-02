@@ -59,9 +59,9 @@ function atom(x, y, vx, vy, fx, fy) {
   console.log("atom:", this.p, this.v, this.f)
   
   this.update = function() {
+    this.v.x += this.f.x * TICK_PHYS;
     this.p.x += this.v.x * TICK_PHYS;
     this.p.y += this.v.y * TICK_PHYS;
-    this.v.x += this.f.x * TICK_PHYS;
     this.v.y += this.f.y * TICK_PHYS;
     this.v.x *= DAMP;
     this.v.y *= DAMP;
@@ -166,16 +166,31 @@ function bond_near(atoms, thresh) {
   }
 }
 
+rand32_A = 1664525;
+rand32_C = 1013904223;
+rand32_seed = 12345678;
+function rand32(seed) {
+  if (seed != null) rand32_seed = seed;
+  rand32_seed = (rand32_seed * rand32_A + rand32_C) % 0xffffffff;
+  return rand32_seed
+}
+
+function randy() {
+  return rand32() / 0x100000000;
+}
+
 function test() {
-  // for (var i=0; i<10; i++) {
+  rand32(1234);
+  for (var i=0; i<10; i++) {
     // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
-  // }
-  new atom(400, 300);
-  new atom(500, 300);
-  new atom(600, 300);
-  new atom(500, 200);
-  new atom(400, 200);
-  bond_near(ATOMS, RADIUS*2);
+    new atom(randy() * WIDTH, randy() * HEIGHT);
+  }
+  // new atom(400, 255);
+  // new atom(500, 300);
+  // new atom(600, 300);
+  // new atom(500, 200);
+  // new atom(400, 200);
+  bond_all(ATOMS);
   clear();
   bonds_draw();
   atoms_draw();
@@ -187,8 +202,17 @@ function test() {
     update_all(TICK_SHOW/TICK_PHYS);
     ii++;
     if (ii==100) {
-      DAMP = 0.999;
-      ATOMS[0].v.x = -2000;
+      console.log("HIT ME")
+      // DAMP = 0.999;
+      // ATOMS[0].v.x = -2000;
+      BONDS = [];
+      bond_near(ATOMS, RADIUS*1.5)
+    }
+    if (ii==200) {
+      console.log("HIT ME AGIN")
+      DAMP = 0.998;
+      ATOMS[0].v.x = -500;
+      ATOMS[1].v.x = 600;
     }
     if (ii >= TICK_MAX) {
       clearInterval(int)
