@@ -71,6 +71,11 @@ function atom(x, y, vx, vy) {
   ATOMS.push(this)
 }
 
+function bond(atom1, atom2) {
+  this.a = atom1;
+  this.b = atom2;
+}
+
 function atoms_update() {
   for (var i=0; i<ATOMS.length; i++) {
     ATOMS[i].update();
@@ -105,8 +110,8 @@ function contacts_update(verbose) {
 
 function bonds_update(verbose) {
   for (var i=0; i<BONDS.length; i++) {
-    var a = BONDS[i][0];
-    var b = BONDS[i][1];
+    var a = BONDS[i].a;
+    var b = BONDS[i].b;
     var dx = b.p.x-a.p.x;
     var dy = b.p.y-a.p.y
     var dist = Math.sqrt(dx*dx+dy*dy);
@@ -118,14 +123,14 @@ function bonds_update(verbose) {
     b.v.x -= dx * BOND_P
     a.v.y += dy * BOND_P
     b.v.y -= dy * BOND_P
-    if(verbose) console.log("BONDS dxy:", dx, dy, "rxy:", rx, ry, Math.sqrt(rx*rx+ry*ry), "a.v:", a.v.x, a.v.y, "b.v:", b.v.x, b.v.y)
+    if(verbose) console.log("BONDS_UPDATE dxy:", dx, dy, "rxy:", rx, ry, Math.sqrt(rx*rx+ry*ry), "a.v:", a.v.x, a.v.y, "b.v:", b.v.x, b.v.y)
   }
 }
 
 function bonds_draw() {
   for (var i=0; i<BONDS.length; i++) {
-    var a=BONDS[i][0];
-    var b=BONDS[i][1];
+    var a=BONDS[i].a;
+    var b=BONDS[i].b;
     line(a.p.x, a.p.y, b.p.x, b.p.y, BOND_COLOR);
     // console.log("line", a.p.x, a.p.y, b.p.x, b.p.y)
   }
@@ -142,7 +147,7 @@ function update_all(n) {
 function bond_all(atoms) {
   for (var i=0; i<atoms.length; i++) {
     for (var j=i+1; j<atoms.length; j++) {
-      BONDS.push([atoms[i], atoms[j]]);
+      BONDS.push(new bond(atoms[i], atoms[j]));
     }
   }
 }
@@ -156,7 +161,7 @@ function bond_near(atoms, thresh) {
       var dy = a.p.y-b.p.y
       var dist = Math.sqrt(dx*dx + dy*dy);
       if (dist <= thresh) {
-        BONDS.push([a, b]);
+        BONDS.push(new bond(a, b));
       }
     }
   }
@@ -184,13 +189,13 @@ function bond_nearest(atoms, n) {
       var b = pts[k][1];
       var already = false;
       for (var m=0; m<BONDS.length; m++) {
-        if ( (BONDS[m][0] === a && BONDS[m][1] === b ) || (BONDS[m][0] === b && BONDS[m][1] === a) ) {
+        if ( (BONDS[m].a === a && BONDS[m].b === b ) || (BONDS[m].a === b && BONDS[m].b === a) ) {
           already = true;
           break;
         }
       }
       if (!already) {
-        BONDS.push([a, b]);
+        BONDS.push(new bond(a, b));
       }
     }
   }
@@ -233,6 +238,7 @@ function test() {
     update_all(TICK_SHOW/TICK_PHYS);
     ii++;
     if (ii==150) {
+      clearInterval(int)
       console.log("HIT ME")
       // DAMP = 0.999;
       // ATOMS[0].v.x = -2000;
