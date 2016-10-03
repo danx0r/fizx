@@ -71,6 +71,12 @@ function atom(x, y, vx, vy) {
   ATOMS.push(this)
 }
 
+function bond(a, b) {
+  this.a = a;
+  this.b = b;
+  BONDS.push(this);
+}
+
 function atoms_update() {
   for (var i=0; i<ATOMS.length; i++) {
     ATOMS[i].update();
@@ -105,8 +111,8 @@ function contacts_update(verbose) {
 
 function bonds_update(verbose) {
   for (var i=0; i<BONDS.length; i++) {
-    var a = BONDS[i][0];
-    var b = BONDS[i][1];
+    var a = BONDS[i].a;
+    var b = BONDS[i].b;
     var dx = b.p.x-a.p.x;
     var dy = b.p.y-a.p.y
     var dist = Math.sqrt(dx*dx+dy*dy);
@@ -124,8 +130,8 @@ function bonds_update(verbose) {
 
 function bonds_draw() {
   for (var i=0; i<BONDS.length; i++) {
-    var a=BONDS[i][0];
-    var b=BONDS[i][1];
+    var a = BONDS[i].a;
+    var b = BONDS[i].b;
     line(a.p.x, a.p.y, b.p.x, b.p.y, BOND_COLOR);
     // console.log("line", a.p.x, a.p.y, b.p.x, b.p.y)
   }
@@ -142,7 +148,7 @@ function update_all(n) {
 function bond_all(atoms) {
   for (var i=0; i<atoms.length; i++) {
     for (var j=i+1; j<atoms.length; j++) {
-      BONDS.push([atoms[i], atoms[j]]);
+      BONDS.push(new bond(atoms[i], atoms[j]));
     }
   }
 }
@@ -156,7 +162,7 @@ function bond_near(atoms, thresh) {
       var dy = a.p.y-b.p.y
       var dist = Math.sqrt(dx*dx + dy*dy);
       if (dist <= thresh) {
-        BONDS.push([a, b]);
+        BONDS.push(new bond(a, b));
       }
     }
   }
@@ -190,7 +196,7 @@ function bond_nearest(atoms, n) {
         }
       }
       if (!already) {
-        BONDS.push([a, b]);
+        BONDS.push(new bond(a, b));
       }
     }
   }
@@ -242,7 +248,7 @@ function test() {
     if (ii==250) {
       console.log("HIT ME AGIN")
       DAMP = 0.995;
-      ATOMS[0].v.x = -500;
+      ATOMS[0].v.x = -1500;
       ATOMS[1].v.x = 600;
     }
     if (ii >= TICK_MAX) {
