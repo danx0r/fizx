@@ -124,7 +124,7 @@ function bonds_update(verbose) {
     b.v.x -= dx * BOND_P
     a.v.y += dy * BOND_P
     b.v.y -= dy * BOND_P
-    if(verbose) console.log("BONDS dxy:", dx, dy, "rxy:", rx, ry, Math.sqrt(rx*rx+ry*ry), "a.v:", a.v.x, a.v.y, "b.v:", b.v.x, b.v.y)
+    // if(verbose) console.log("BONDS dxy:", dx, dy, "rxy:", rx, ry, Math.sqrt(rx*rx+ry*ry), "a.v:", a.v.x, a.v.y, "b.v:", b.v.x, b.v.y)
   }
 }
 
@@ -190,7 +190,8 @@ function bond_nearest(atoms, n) {
       var b = pts[k][1];
       var already = false;
       for (var m=0; m<BONDS.length; m++) {
-        if ( (BONDS[m][0] === a && BONDS[m][1] === b ) || (BONDS[m][0] === b && BONDS[m][1] === a) ) {
+        console.log("A", BONDS[m].a, BONDS[m].b,a,b )
+        if ( (BONDS[m].a === a && BONDS[m].b === b ) || (BONDS[m].a === b && BONDS[m].b === a) ) {
           already = true;
           break;
         }
