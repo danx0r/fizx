@@ -233,11 +233,15 @@ function test() {
     update_all(TICK_SHOW/TICK_PHYS);
     ii++;
     if (ii==150) {
+      clearInterval(int)
       console.log("HIT ME")
       // DAMP = 0.999;
       // ATOMS[0].v.x = -2000;
       BONDS = [];
       bond_nearest(ATOMS, 5)
+    clear();
+    bonds_draw();
+    atoms_draw();
     }
     if (ii==250) {
       console.log("HIT ME AGIN")
