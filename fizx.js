@@ -189,10 +189,10 @@ function bond_nearest(atoms, n) {
       var b = pts[k][1];
       var already = false;
       for (var m=0; m<BONDS.length; m++) {
-        // if ( (BONDS[m].a === a && BONDS[m].b === b ) || (BONDS[m].a === b && BONDS[m].b === a) ) {
-          // already = true;
-          // break;
-        // }
+        if ( (BONDS[m].a === a && BONDS[m].b === b ) || (BONDS[m].a === b && BONDS[m].b === a) ) {
+          already = true;
+          break;
+        }
       }
       if (!already) {
         BONDS.push(new bond(a, b));
