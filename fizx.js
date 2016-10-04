@@ -1,4 +1,4 @@
-RADIUS = 50
+RADIUS = 75
 RADIUS_SHOW = 4
 TICK_PHYS = 0.001
 TICK_SHOW = 0.01
@@ -224,7 +224,7 @@ function randy() {
 }
 
 function test() {
-  rand32(1235);
+  rand32(123);
   for (var i=0; i<16; i++) {
     // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
     ATOMS.push(new atom(randy() * WIDTH, randy() * HEIGHT));
@@ -245,18 +245,13 @@ function test() {
       // DAMP = 0.999;
       // ATOMS[0].v.x = -2000;
       BONDS = [];
-      bond_nearest(ATOMS, 5)
+      bond_nearest(ATOMS, 6, true)
     }
     if (ii==250) {
       console.log("HIT ME AGIN");
-      BONDS = [];
-      bond_nearest(ATOMS, 5, true);
-    }
-    if (ii==400) {
-      console.log("HIT ME 3TIME")
       DAMP = 0.995;
       ATOMS[0].v.x = -1500;
-      ATOMS[1].v.x = 600;
+      ATOMS[1].v.x = 3600;
     }
     if (ii >= TICK_MAX) {
       clearInterval(int)
