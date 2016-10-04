@@ -152,7 +152,7 @@ function bond_all(atoms) {
   }
 }
 
-function bond_near(atoms, thresh) {
+function bond_near(atoms, thresh, freeze) {
   for (var i=0; i<atoms.length; i++) {
     var a = atoms[i];
     for (var j=i+1; j<atoms.length; j++) {
@@ -161,13 +161,17 @@ function bond_near(atoms, thresh) {
       var dy = a.p.y-b.p.y
       var dist = Math.sqrt(dx*dx + dy*dy);
       if (dist <= thresh) {
-        BONDS.push(new bond(a, b, dist));
+        if (freeze) {
+          BONDS.push(new bond(a, b, dist));
+        } else {
+          BONDS.push(new bond(a, b));
+        }
       }
     }
   }
 }
 
-function bond_nearest(atoms, n) {
+function bond_nearest(atoms, n, freeze) {
   for (var i=0; i<atoms.length; i++) {
     var pts = [];
     var a = atoms[i];
@@ -195,7 +199,11 @@ function bond_nearest(atoms, n) {
         }
       }
       if (!already) {
-        BONDS.push(new bond(a, b, pts[k][0]));
+        if (freeze) {
+          BONDS.push(new bond(a, b, pts[k][0]));
+        } else {
+          BONDS.push(new bond(a, b));
+        }
       }
     }
   }
@@ -237,10 +245,15 @@ function test() {
       // DAMP = 0.999;
       // ATOMS[0].v.x = -2000;
       BONDS = [];
-      bond_near(ATOMS, 75)
+      bond_nearest(ATOMS, 5)
     }
     if (ii==250) {
-      console.log("HIT ME AGIN")
+      console.log("HIT ME AGIN");
+      BONDS = [];
+      bond_nearest(ATOMS, 5, true);
+    }
+    if (ii==400) {
+      console.log("HIT ME 3TIME")
       DAMP = 0.995;
       ATOMS[0].v.x = -1500;
       ATOMS[1].v.x = 600;
