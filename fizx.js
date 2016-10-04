@@ -195,7 +195,7 @@ function bond_nearest(atoms, n) {
         }
       }
       if (!already) {
-        BONDS.push(new bond(a, b));
+        BONDS.push(new bond(a, b, pts[k][0]));
       }
     }
   }
