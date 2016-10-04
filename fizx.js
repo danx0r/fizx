@@ -67,13 +67,13 @@ function atom(x, y, vx, vy) {
     // console.log("draw at", this.p.x, this.p.y)
     circle(this.p.x, this.p.y, RADIUS_SHOW, ATOM_COLOR);
   };
-
-  ATOMS.push(this)
 }
 
-function bond(atom1, atom2) {
+function bond(atom1, atom2, dist) {
+  if (dist==undefined) dist = RADIUS*2;
   this.a = atom1;
   this.b = atom2;
+  this.d = dist;
 }
 
 function atoms_update() {
@@ -113,16 +113,16 @@ function bonds_update(verbose) {
     var a = BONDS[i].a;
     var b = BONDS[i].b;
     var dx = b.p.x-a.p.x;
-    var dy = b.p.y-a.p.y
+    var dy = b.p.y-a.p.y;
     var dist = Math.sqrt(dx*dx+dy*dy);
-    var rx = dx*RADIUS*2/dist
-    var ry = dy*RADIUS*2/dist
-    dx -= rx
-    dy -= ry
-    a.v.x += dx * BOND_P
-    b.v.x -= dx * BOND_P
-    a.v.y += dy * BOND_P
-    b.v.y -= dy * BOND_P
+    var rx = dx * BONDS[i].d / dist;
+    var ry = dy * BONDS[i].d / dist;
+    dx -= rx;
+    dy -= ry;
+    a.v.x += dx * BOND_P;
+    b.v.x -= dx * BOND_P;
+    a.v.y += dy * BOND_P;
+    b.v.y -= dy * BOND_P;
     // if(verbose) console.log("BONDS dxy:", dx, dy, "rxy:", rx, ry, Math.sqrt(rx*rx+ry*ry), "a.v:", a.v.x, a.v.y, "b.v:", b.v.x, b.v.y)
   }
 }
@@ -219,13 +219,8 @@ function test() {
   rand32(1235);
   for (var i=0; i<16; i++) {
     // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
-    new atom(randy() * WIDTH, randy() * HEIGHT);
+    ATOMS.push(new atom(randy() * WIDTH, randy() * HEIGHT));
   }
-  // new atom(400, 255);
-  // new atom(500, 300);
-  // new atom(600, 300);
-  // new atom(500, 200);
-  // new atom(400, 200);
   bond_all(ATOMS);
   clear();
   bonds_draw();
@@ -243,17 +238,6 @@ function test() {
       // ATOMS[0].v.x = -2000;
       BONDS = [];
       bond_nearest(ATOMS, 5)
-    }
-    if (ii==151) {
-      clearInterval(int)
-      console.log("HIT ME")
-      // DAMP = 0.999;
-      // ATOMS[0].v.x = -2000;
-      // BONDS = [];
-      // bond_nearest(ATOMS, 5)
-    clear();
-    bonds_draw();
-    atoms_draw();
     }
     if (ii==250) {
       console.log("HIT ME AGIN")
