@@ -71,10 +71,9 @@ function atom(x, y, vx, vy) {
   ATOMS.push(this)
 }
 
-function bond(a, b) {
-  this.a = a;
-  this.b = b;
-  BONDS.push(this);
+function bond(atom1, atom2) {
+  this.a = atom1;
+  this.b = atom2;
 }
 
 function atoms_update() {
@@ -190,7 +189,6 @@ function bond_nearest(atoms, n) {
       var b = pts[k][1];
       var already = false;
       for (var m=0; m<BONDS.length; m++) {
-        console.log("A", BONDS[m].a, BONDS[m].b,a,b )
         if ( (BONDS[m].a === a && BONDS[m].b === b ) || (BONDS[m].a === b && BONDS[m].b === a) ) {
           already = true;
           break;
@@ -245,6 +243,17 @@ function test() {
       // ATOMS[0].v.x = -2000;
       BONDS = [];
       bond_nearest(ATOMS, 5)
+    }
+    if (ii==151) {
+      clearInterval(int)
+      console.log("HIT ME")
+      // DAMP = 0.999;
+      // ATOMS[0].v.x = -2000;
+      // BONDS = [];
+      // bond_nearest(ATOMS, 5)
+    clear();
+    bonds_draw();
+    atoms_draw();
     }
     if (ii==250) {
       console.log("HIT ME AGIN")
