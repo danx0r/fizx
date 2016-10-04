@@ -161,7 +161,7 @@ function bond_near(atoms, thresh) {
       var dy = a.p.y-b.p.y
       var dist = Math.sqrt(dx*dx + dy*dy);
       if (dist <= thresh) {
-        BONDS.push(new bond(a, b));
+        BONDS.push(new bond(a, b, dist));
       }
     }
   }
@@ -237,7 +237,7 @@ function test() {
       // DAMP = 0.999;
       // ATOMS[0].v.x = -2000;
       BONDS = [];
-      bond_nearest(ATOMS, 5)
+      bond_near(ATOMS, 75)
     }
     if (ii==250) {
       console.log("HIT ME AGIN")
