@@ -15,7 +15,7 @@ ATOMS = []
 BONDS = []
 CONTACTS = []
 
-function init() {
+init = function() {
   g_canvas = document.getElementById("canvas");
   g_context = g_canvas.getContext("2d");
   console.log("canvas context:", g_context);
@@ -23,7 +23,7 @@ function init() {
   HEIGHT = g_canvas.height;
 }
 
-function circle(x, y, r, color) {
+circle = function(x, y, r, color) {
   g_context.beginPath();
   g_context.arc(x, HEIGHT-1-y, r, 0, Math.PI*2);
   if(color) {
@@ -34,7 +34,7 @@ function circle(x, y, r, color) {
   g_context.stroke();
 }
 
-function line(x, y, x2, y2, color) {
+line = function(x, y, x2, y2, color) {
   g_context.beginPath();
   g_context.moveTo(x, HEIGHT-1-y);
   g_context.lineTo(x2, HEIGHT-1-y2);
@@ -46,11 +46,11 @@ function line(x, y, x2, y2, color) {
   g_context.stroke();
 }
 
-function clear() {
+clear = function() {
   g_context.clearRect(0, 0, WIDTH, HEIGHT);
 }
 
-function atom(x, y, vx, vy) {
+atom = function (x, y, vx, vy) {
   if (vx==null) vx = vy = 0;
   this.p = {x: x, y: y};
   this.v = {x: vx, y: vy};
@@ -69,26 +69,26 @@ function atom(x, y, vx, vy) {
   };
 }
 
-function bond(atom1, atom2, dist) {
+bond = function(atom1, atom2, dist) {
   if (dist==undefined) dist = RADIUS*2;
   this.a = atom1;
   this.b = atom2;
   this.d = dist;
 }
 
-function atoms_update() {
+atoms_update = function() {
   for (var i=0; i<ATOMS.length; i++) {
     ATOMS[i].update();
   }
 }
 
-function atoms_draw() {
+atoms_draw = function() {
   for (var i=0; i<ATOMS.length; i++) {
     ATOMS[i].draw();
   }
 }
 
-function contacts_update(verbose) {
+contacts_update = function(verbose) {
   for (var i=0; i<CONTACTS.length; i++) {
     var a = CONTACTS[i][0];
     var b = CONTACTS[i][1];
@@ -108,7 +108,7 @@ function contacts_update(verbose) {
   }
 }
 
-function bonds_update(verbose) {
+bonds_update = function(verbose) {
   for (var i=0; i<BONDS.length; i++) {
     var a = BONDS[i].a;
     var b = BONDS[i].b;
@@ -127,7 +127,7 @@ function bonds_update(verbose) {
   }
 }
 
-function bonds_draw() {
+bonds_draw = function() {
   for (var i=0; i<BONDS.length; i++) {
     var a = BONDS[i].a;
     var b = BONDS[i].b;
@@ -136,7 +136,7 @@ function bonds_draw() {
   }
 }
 
-function update_all(n) {
+update_all = function(n) {
   for(var i=0; i<n; i++) {
     atoms_update(i==n-1);
     contacts_update(i==n-1);
@@ -144,7 +144,7 @@ function update_all(n) {
   }
 }
 
-function bond_all(atoms) {
+bond_all = function(atoms) {
   for (var i=0; i<atoms.length; i++) {
     for (var j=i+1; j<atoms.length; j++) {
       BONDS.push(new bond(atoms[i], atoms[j]));
@@ -152,7 +152,7 @@ function bond_all(atoms) {
   }
 }
 
-function bond_near(atoms, thresh, freeze) {
+bond_near = function(atoms, thresh, freeze) {
   for (var i=0; i<atoms.length; i++) {
     var a = atoms[i];
     for (var j=i+1; j<atoms.length; j++) {
@@ -171,7 +171,7 @@ function bond_near(atoms, thresh, freeze) {
   }
 }
 
-function bond_nearest(atoms, n, freeze) {
+bond_nearest = function(atoms, n, freeze) {
   for (var i=0; i<atoms.length; i++) {
     var pts = [];
     var a = atoms[i];
@@ -213,17 +213,17 @@ function bond_nearest(atoms, n, freeze) {
 rand32_A = 1664525;
 rand32_C = 1013904223;
 rand32_seed = 12345678;
-function rand32(seed) {
+rand32 = function(seed) {
   if (seed != null) rand32_seed = seed;
   rand32_seed = (rand32_seed * rand32_A + rand32_C) % 0xffffffff;
   return rand32_seed
 }
 
-function randy() {
+randy = function() {
   return rand32() / 0x100000000;
 }
 
-function test() {
+test = function() {
   rand32(123);
   for (var i=0; i<16; i++) {
     // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
@@ -234,7 +234,7 @@ function test() {
   bonds_draw();
   atoms_draw();
   var ii=0;
-  var int = setInterval(function(){
+  var int = setInterval( function(){
     clear();
     bonds_draw();
     atoms_draw();

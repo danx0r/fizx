@@ -23,6 +23,8 @@ in other words, swap av & bv!
 
 
 2D:
+same in each direction:
+
 navx = bvx
 navy = bvy
 bvx = avx
