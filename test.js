@@ -17,3 +17,19 @@ console.log("bond_all pass:",
             ATOMS[0].v.x == -0.00202959051124373 &&
             ATOMS[0].v.y == -0.00006415534173805077
             );
+
+delaunay = require('./delaunay.js');
+var vertices = [[0,0],[1,0],[0,2],[2,2]];
+var triangles = Delaunay.triangulate(vertices);
+console.log("delaunay test:", triangles);
+
+// spell it out for me, Agent Smith
+
+var expanded = [];
+for (var i=0; i<triangles.length; i+=3) {
+  var ix = triangles[i];
+  var A = vertices[ix];
+  var B = vertices[ix+1];
+  var C = vertices[ix+2];
+  console.log("  triangle:", A, B, C); 
+}
