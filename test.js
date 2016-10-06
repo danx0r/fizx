@@ -2,15 +2,16 @@ fizx = require('./fizx.js');
 
 WIDTH = 1000;
 HEIGHT = 600;
+RADIUS = 75;
 
 ATOMS.push(new atom(200, 200));
 ATOMS.push(new atom(200, 300));
 ATOMS.push(new atom(300, 300));
 
-// bond_all(ATOMS);
-// update_all(1000);
+bond_all(ATOMS);
+update_all(1000);
 
-// console.log(ATOMS);
+console.log(ATOMS);
 console.log("bond_all pass:",
             ATOMS[0].p.x == 210.91893638112674 &&
             ATOMS[0].p.y == 183.01497191216248 &&
