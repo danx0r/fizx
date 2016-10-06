@@ -245,7 +245,7 @@ test = function() {
       // DAMP = 0.999;
       // ATOMS[0].v.x = -2000;
       BONDS = [];
-      bond_nearest(ATOMS, 4, true)
+      bond_nearest(ATOMS, 3, true)
     }
     if (ii==250) {
       console.log("HIT ME AGIN");
