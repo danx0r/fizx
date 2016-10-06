@@ -210,6 +210,38 @@ bond_nearest = function(atoms, n, freeze) {
   console.log("NEAREST BONDS:", BONDS)
 }
 
+bond_triangulate = function(atoms, freeze) {
+  var verts = [];
+  for (var i=0; i<atoms.length; i++) {
+    verts.push([atoms[i].p.x, atoms[i].p.y, atoms[i]])
+  }
+  var tris = Delaunay.triangulate(verts);
+  bonded = {};
+  for (var i=0; i<tris.length; i+=3) {
+    var ix = tris[i];
+    var A = verts[ix];
+    var B = verts[ix+1];
+    var C = verts[ix+2];
+    var edges = [[A, B], [B, C], [C, A]]
+    for (var j=0; j<3; j++) {
+      var a = edges[j][0];
+      var b = edges[j][1];
+      var atom = 
+      var key = ""+a+"-"+b;
+      if (bonded[key]==null) {
+        bonded[key] = 1;
+        if (freeze) {
+          var dx = b.p.x-a.p.x;
+          var dy = b.p.y-a.p.y;
+          BONDS.push(new bond(a, b, Math.sqrt(dx*dx+dy*dy)));
+        } else {
+          BONDS.push(new bond(a, b));
+        }
+      }
+    }
+  }
+}
+
 rand32_A = 1664525;
 rand32_C = 1013904223;
 rand32_seed = 12345678;
@@ -245,7 +277,7 @@ test = function() {
       // DAMP = 0.999;
       // ATOMS[0].v.x = -2000;
       BONDS = [];
-      bond_nearest(ATOMS, 5, true)
+      bond_triangulate(ATOMS, true)
     }
     if (ii==250) {
       console.log("HIT ME AGIN");
