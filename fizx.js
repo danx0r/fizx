@@ -2,7 +2,6 @@ RADIUS = 150
 RADIUS_SHOW = 4
 TICK_PHYS = 0.001
 TICK_SHOW = 0.04
-// DAMP = 0.975
 REALTIME = 2//.2
 TICK_MAX = 100*10000
 // TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
@@ -10,7 +9,8 @@ BOND_COLOR = "#cc88bb"
 ATOM_COLOR = "#000000"
 
 BOND_P = 1
-BOND_D = .2007
+BOND_D = 0
+DAMP = 0.975
 
 ATOMS = []
 BONDS = []
@@ -60,8 +60,8 @@ atom = function (x, y, vx, vy) {
   this.update = function() {
     this.p.x += this.v.x * TICK_PHYS;
     this.p.y += this.v.y * TICK_PHYS;
-    // this.v.x *= DAMP;
-    // this.v.y *= DAMP;
+    this.v.x *= DAMP;
+    this.v.y *= DAMP;
   };
   
   this.draw = function() {
@@ -280,19 +280,20 @@ test = function() {
     atoms_draw();
     update_all(TICK_SHOW/TICK_PHYS);
     ii++;
-    // if (ii==300) {
-    //   console.log("HIT ME")
-    //   // DAMP = 0.999;
-    //   // ATOMS[0].v.x = -2000;
-    //   BONDS = [];
-    //   bond_triangulate(ATOMS, true)
-    //   // bond_nearest(ATOMS, 5, true)
-    // }
-    // if (ii==500) {
-    //   console.log("HIT ME AGIN bonds:", BONDS.length);
-    //   ATOMS[5].v.x = -500;
-    //   ATOMS[6].v.x = -600;
-    // }
+    if (ii==150) {
+      console.log("HIT ME")
+      DAMP = 1//0.998
+      BOND_D = 0.0003;
+      // ATOMS[0].v.x = -2000;
+      BONDS = [];
+      bond_triangulate(ATOMS, true)
+      // bond_nearest(ATOMS, 5, true)
+    }
+    if (ii==200) {
+      console.log("HIT ME AGIN bonds:", BONDS.length);
+      ATOMS[5].v.x = -500;
+      ATOMS[6].v.x = -600;
+    }
     if (ii >= TICK_MAX) {
       clearInterval(int)
     }
