@@ -3,7 +3,7 @@ RADIUS_SHOW = 4
 TICK_PHYS = 0.001
 TICK_SHOW = 0.04
 DAMP = 0.975
-REALTIME = 5//.2
+REALTIME = 2//.2
 TICK_MAX = 100*10000
 // TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
 BOND_COLOR = "#cc88bb"
@@ -215,31 +215,36 @@ bond_triangulate = function(atoms, freeze) {
   for (var i=0; i<atoms.length; i++) {
     verts.push([atoms[i].p.x, atoms[i].p.y, atoms[i]])
   }
-  var tris = Delaunay.triangulate(verts);
-  bonded = {};
-  for (var i=0; i<tris.length; i+=3) {
-    var ix = tris[i];
-    var A = verts[ix];
-    var B = verts[ix+1];
-    var C = verts[ix+2];
-    var edges = [[A, B], [B, C], [C, A]]
+  var triangles = Delaunay.triangulate(verts);
+  var bonded = {};
+  for (var i=0; i<triangles.length; i+=3) {
+    var A = triangles[i];
+    var B = triangles[i+1];
+    var C = triangles[i+2];
+    var edges = [[A, B], [B, C], [C, A]];
     for (var j=0; j<3; j++) {
       var a = edges[j][0];
       var b = edges[j][1];
-      var atom = 
-      var key = ""+a+"-"+b;
-      if (bonded[key]==null) {
+      if (a > b) {
+      	var aa = a;
+      	a = b;
+      	b = aa;
+      }
+	  console.log("  ab", a, b)
+      var key = [a, b]
+      if (bonded[key]===undefined) {
         bonded[key] = 1;
         if (freeze) {
-          var dx = b.p.x-a.p.x;
-          var dy = b.p.y-a.p.y;
-          BONDS.push(new bond(a, b, Math.sqrt(dx*dx+dy*dy)));
+          var dx = atoms[b].p.x-atoms[a].p.x;
+          var dy = atoms[b].p.y-atoms[a].p.y;
+          BONDS.push(new bond(atoms[a], atoms[b], Math.sqrt(dx*dx+dy*dy)));
         } else {
-          BONDS.push(new bond(a, b));
+          BONDS.push(new bond(atoms[a], atoms[b]));
         }
       }
     }
   }
+  console.log(bonded)
 }
 
 rand32_A = 1664525;
@@ -278,12 +283,13 @@ test = function() {
       // ATOMS[0].v.x = -2000;
       BONDS = [];
       bond_triangulate(ATOMS, true)
+      // bond_nearest(ATOMS, 5, true)
     }
     if (ii==250) {
-      console.log("HIT ME AGIN");
-      DAMP = 0.9998;
-      ATOMS[5].v.x = -1500;
-      ATOMS[6].v.x = -600;
+      console.log("HIT ME AGIN bonds:", BONDS.length);
+      DAMP = 0.998;
+      ATOMS[5].v.x = -4500;
+      ATOMS[6].v.x = -6600;
     }
     if (ii >= TICK_MAX) {
       clearInterval(int)

@@ -7,8 +7,8 @@ ATOMS.push(new atom(200, 200));
 ATOMS.push(new atom(200, 300));
 ATOMS.push(new atom(300, 300));
 
-bond_all(ATOMS);
-update_all(1000);
+// bond_all(ATOMS);
+// update_all(1000);
 
 // console.log(ATOMS);
 console.log("bond_all pass:",
@@ -27,9 +27,19 @@ console.log("delaunay test:", triangles);
 
 var expanded = [];
 for (var i=0; i<triangles.length; i+=3) {
-  var ix = triangles[i];
-  var A = vertices[ix];
-  var B = vertices[ix+1];
-  var C = vertices[ix+2];
+  var A = vertices[triangles[i]];
+  var B = vertices[triangles[i+1]];
+  var C = vertices[triangles[i+2]];
   console.log("  triangle:", A, B, C); 
+}
+
+ATOMS.push(new atom(200, 250));
+
+BONDS = [];
+bond_triangulate(ATOMS);
+console.log("BONDS:");
+for (var i=0; i<BONDS.length; i++) {
+	var a = BONDS[i].a;
+	var b = BONDS[i].b;
+	console.log("   ", a.p.x, a.p.y, "<-->", b.p.x, b.p.y);
 }
