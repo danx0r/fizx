@@ -1,9 +1,9 @@
-RADIUS = 75
+RADIUS = 150
 RADIUS_SHOW = 4
 TICK_PHYS = 0.001
-TICK_SHOW = 0.01
+TICK_SHOW = 0.04
 DAMP = 0.975
-REALTIME = .2
+REALTIME = 5//.2
 TICK_MAX = 100*10000
 // TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
 BOND_COLOR = "#cc88bb"
@@ -225,7 +225,7 @@ randy = function() {
 
 test = function() {
   rand32(123);
-  for (var i=0; i<16; i++) {
+  for (var i=0; i<23; i++) {
     // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
     ATOMS.push(new atom(randy() * WIDTH, randy() * HEIGHT));
   }
@@ -249,9 +249,9 @@ test = function() {
     }
     if (ii==250) {
       console.log("HIT ME AGIN");
-      DAMP = 0.995;
-      ATOMS[0].v.x = -1500;
-      ATOMS[1].v.x = 3600;
+      DAMP = 0.9998;
+      ATOMS[5].v.x = -1500;
+      ATOMS[6].v.x = -600;
     }
     if (ii >= TICK_MAX) {
       clearInterval(int)
