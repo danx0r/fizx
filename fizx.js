@@ -299,3 +299,34 @@ test = function() {
     }
   }, TICK_SHOW/REALTIME * 1000);
 }
+
+test2 = function() {
+  ATOMS.push(new atom(600, 200));
+  ATOMS.push(new atom(600, 300));
+  // ATOMS.push(new atom(700, 300));
+  bond_all(ATOMS);
+  clear();
+  bonds_draw();
+  atoms_draw();
+  var ii=0;
+  var int = setInterval( function(){
+    clear();
+    bonds_draw();
+    atoms_draw();
+    update_all(TICK_SHOW/TICK_PHYS);
+    ii++;
+    if (ii==150) {
+      console.log("HIT ME")
+      DAMP = 1
+      BOND_D = 0.0003;
+    }
+    if (ii==200) {
+      console.log("HIT ME AGIN bonds:", BONDS.length);
+      ATOMS[0].v.x = -500;
+      ATOMS[1].v.x = 500;
+    }
+    if (ii >= TICK_MAX) {
+      clearInterval(int)
+    }
+  }, TICK_SHOW/REALTIME * 1000);
+}
