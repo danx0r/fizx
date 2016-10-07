@@ -46,3 +46,10 @@ need a concept of multi-atom object
 velocity swap:
 
 need to swap v only along axis between particles - otherwise we leak rotational velocity
+
+rvxy is relative velocity x,y
+dvxy is 'distance' = mag of relative vel
+uvxy is unit vector (angle) of rvxy = vx/dvxy, vy/dvxy
+uxy = rx,ry = unit vector (angle) of dx,dy
+we want to reduce relative velocity (swap v) along angle uxy
+

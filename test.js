@@ -1,5 +1,5 @@
 fizx = require('./fizx.js');
-
+/*
 WIDTH = 1000;
 HEIGHT = 600;
 RADIUS = 75;
@@ -43,4 +43,22 @@ for (var i=0; i<BONDS.length; i++) {
 	var a = BONDS[i].a;
 	var b = BONDS[i].b;
 	console.log("   ", a.p.x, a.p.y, "<-->", b.p.x, b.p.y);
+}
+*/
+console.log("update debug")
+DAMP = 1
+BOND_P = 1
+BOND_D = 0
+RADIUS = 50
+TICK_PHYS = 1
+ATOMS = []
+BONDS = [];
+ATOMS.push(new atom(200, 200, 0, 1));
+ATOMS.push(new atom(200, 300, 0, -1));
+bond_all(ATOMS);
+console.log("BONDS:", BONDS)
+console.log("--A:", ATOMS[0].p, ATOMS[0].v, "B:", ATOMS[1].p, ATOMS[1].v)
+for(var i=0; i<5; i++) {
+  update_all(1)
+  console.log("  A:", ATOMS[0].p, ATOMS[0].v, "B:", ATOMS[1].p, ATOMS[1].v)
 }

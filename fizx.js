@@ -120,13 +120,15 @@ bonds_update = function(verbose) {
     var dist = Math.sqrt(dx*dx+dy*dy);
     var rx = dx * BONDS[i].d / dist;
     var ry = dy * BONDS[i].d / dist;
-    dx -= rx;
-    dy -= ry;
-    a.v.x += dx * BOND_P + dvx * BOND_D;
-    b.v.x -= dx * BOND_P + dvx * BOND_D;
-    a.v.y += dy * BOND_P + dvy * BOND_D;
-    b.v.y -= dy * BOND_P + dvy * BOND_D;
-    // if(verbose) console.log("BONDS dxy:", dx, dy, "rxy:", rx, ry, Math.sqrt(rx*rx+ry*ry), "a.v:", a.v.x, a.v.y, "b.v:", b.v.x, b.v.y)
+    var rdx = dx - rx;
+    var rdy = dy - ry;
+    console.log("BEFORE dxy:", dx, dy, "rxy:", rx, ry, Math.sqrt(rx*rx+ry*ry), "a.v:", a.v.x, a.v.y, "b.v:", b.v.x, b.v.y)
+    a.v.x += rdx * BOND_P + dvx * BOND_D;
+    b.v.x -= rdx * BOND_P + dvx * BOND_D;
+    a.v.y += rdy * BOND_P + dvy * BOND_D;
+    b.v.y -= rdy * BOND_P + dvy * BOND_D;
+    // if(verbose) 
+    console.log("UPDATE dxy:", dx, dy, "rxy:", rx, ry, Math.sqrt(rx*rx+ry*ry), "a.v:", a.v.x, a.v.y, "b.v:", b.v.x, b.v.y)
   }
 }
 
