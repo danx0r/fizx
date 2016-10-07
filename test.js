@@ -48,17 +48,17 @@ for (var i=0; i<BONDS.length; i++) {
 console.log("update debug")
 DAMP = 1
 BOND_P = 1
-BOND_D = 0
+BOND_D = .1
 RADIUS = 50
 TICK_PHYS = 1
 ATOMS = []
 BONDS = [];
-ATOMS.push(new atom(200, 200, 0, 1));
-ATOMS.push(new atom(200, 300, 0, -1));
+ATOMS.push(new atom(200, 200, -1, 1));
+ATOMS.push(new atom(271, 271, 1, -1));
 bond_all(ATOMS);
-console.log("BONDS:", BONDS)
-console.log("--A:", ATOMS[0].p, ATOMS[0].v, "B:", ATOMS[1].p, ATOMS[1].v)
-for(var i=0; i<5; i++) {
+// console.log("BONDS:", BONDS)
+console.log("--A:", ATOMS[0].p.x, ATOMS[0].p.y, "vel:", ATOMS[0].v.x, ATOMS[0].v.y, "B:", ATOMS[1].p.x, ATOMS[1].p.y, "vel:", ATOMS[1].v.x, ATOMS[1].v.y)
+for(var i=0; i<1; i++) {
   update_all(1)
-  console.log("  A:", ATOMS[0].p, ATOMS[0].v, "B:", ATOMS[1].p, ATOMS[1].v)
+  console.log("  A:", ATOMS[0].p.x, ATOMS[0].p.y, "vel:", ATOMS[0].v.x, ATOMS[0].v.y, "B:", ATOMS[1].p.x, ATOMS[1].p.y, "vel:", ATOMS[1].v.x, ATOMS[1].v.y)
 }
