@@ -49,14 +49,16 @@ console.log("update debug")
 DBG = 1
 DAMP = 1
 BOND_P = 1
-BOND_D = .1
-RADIUS = 50
+BOND_D = .2
+RADIUS = 150
 TICK_PHYS = 1
 ATOMS = []
 BONDS = [];
-ATOMS.push(new atom(188.5045597249305, 99.36340591910486));
-ATOMS.push(new atom(110.85884619417598, 389.1411538058254));
-ATOMS.push(new atom(400.6365940808962, 311.49544027506806));
+// ATOMS.push(new atom(188.5045597249305, 99.36340591910486));
+// ATOMS.push(new atom(110.85884619417598, 389.1411538058254));
+// ATOMS.push(new atom(400.6365940808962, 311.49544027506806));
+ATOMS.push(new atom(200, 100, 0, 10));
+ATOMS.push(new atom(200, 400, 0, -10));
 bond_all(ATOMS);
 // console.log("BONDS:", BONDS)
 console.log("--A:", ATOMS[0].p.x, ATOMS[0].p.y, "vel:", ATOMS[0].v.x, ATOMS[0].v.y, "B:", ATOMS[1].p.x, ATOMS[1].p.y, "vel:", ATOMS[1].v.x, ATOMS[1].v.y)
