@@ -207,7 +207,7 @@ bond_triangulate = function(atoms, freeze) {
       	a = b;
       	b = aa;
       }
-	  console.log("  ab", a, b)
+	  // console.log("  ab", a, b)
       var key = [a, b]
       if (bonded[key]===undefined) {
         bonded[key] = 1;
@@ -221,7 +221,7 @@ bond_triangulate = function(atoms, freeze) {
       }
     }
   }
-  console.log(bonded)
+  // console.log(bonded)
 }
 
 rand32_A = 1664525;
