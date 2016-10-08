@@ -119,25 +119,25 @@ bonds_update = function(verbose) {
     var udx = dx / dist;                    // unit vector pointing from a to b
     var udy = dy / dist;
     var dif = dist - BONDS[i].d;            // difference we want to restore to zero
-    var fix = dif * BOND_P ;                     // 
-    // var yfix = udy * dif * BOND_P;
+    var pterm = dif * BOND_P ;                // Proportional term for our springy bond 
 
     var dvx = b.v.x-a.v.x;
     var dvy = b.v.y-a.v.y;
-    var vdif = Math.sqrt(dvx*dvx+dvy*dvy);
-    var vdot = 0;
+    var vdif = Math.sqrt(dvx*dvx+dvy*dvy);  // relative velocity
+    var vdot = 0;                           // if relative velocity==0, no Derivative term for our PiD
     if (vdif) {
-      var uvx = dvx / vdif;
+      var uvx = dvx / vdif;                 // velocity unit vector (direction of rel vel)
       var uvy = dvy / vdif;
-      vdot = uvx*udx + uvy*udy;
-    }
-    var swapv = vdif * vdot * BOND_D;
-    var swapvx = udx*fix + swapv * udx;
-    var swapvy = udy*fix + swapv * udy;
-    a.v.x += swapvx;
-    b.v.x -= swapvx;
-    a.v.y += swapvy;
-    b.v.y -= swapvy;
+      vdot = uvx*udx + uvy*udy;             // dot product of positional direction vs rel vel - we only
+    }                                       // want to adjust velocity along axis aligned with 2 particles,
+                                            // so we don't affect angular mo
+    var dterm = vdif * vdot * BOND_D;        // Derivative term
+    var xswap = (pterm + dterm) * udx;          // along axis a--b
+    var yswap = (pterm + dterm) * udy;
+    a.v.x += xswap;                          // swap momenta
+    b.v.x -= xswap;
+    a.v.y += yswap;
+    b.v.y -= yswap;
   }
 }
 
