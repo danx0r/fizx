@@ -337,10 +337,14 @@ function asx(url, cb) {
 }
 
 test3 = function() {
+  DAMP = 1
+  BOND_P = 1
+  BOND_D = .2
+  // REALTIME = .1
   display_init();
   asx("./ball.json", function() {
     var ball = new thing("ball1", 500, 300, JSON.parse(this.responseText));
-    bond_triangulate(ball.atoms);
+    bond_triangulate(ball.atoms, true);
     console.log(BONDS.length, "bonds")
     console.log("ball:", ball)
     display_clear();
@@ -353,6 +357,11 @@ test3 = function() {
       atoms_draw();
       update_all(TICK_SHOW/TICK_PHYS);
       ii++;
+      if (ii==100) {
+        console.log("HIT ME AGIN bonds:", BONDS.length);
+        ATOMS[0].v.x = -700;
+        ATOMS[1].v.x = 550;
+      }
       if (ii >= TICK_MAX) {
         clearInterval(int)
       }
