@@ -118,9 +118,9 @@ bonds_update = function(verbose) {
     var dist = Math.sqrt(dx*dx+dy*dy);
     var udx = dx / dist;
     var udy = dy / dist;
-    var dif = 1.0 - BONDS[i].d / dist;
-    var rx = dx * dif; 
-    var ry = dy * dif;
+    var dif = dist - BONDS[i].d;
+    var rx = udx * dif; 
+    var ry = udy * dif;
 
     var dvx = b.v.x-a.v.x;
     var dvy = b.v.y-a.v.y;
