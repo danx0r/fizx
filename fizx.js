@@ -108,7 +108,7 @@ contacts_update = function(verbose) {
     }
   }
 }
-DBG=0;
+
 bonds_update = function(verbose) {
   for (var i=0; i<BONDS.length; i++) {
     var a = BONDS[i].a;
@@ -116,41 +116,28 @@ bonds_update = function(verbose) {
     var dx = b.p.x-a.p.x;
     var dy = b.p.y-a.p.y;
     var dist = Math.sqrt(dx*dx+dy*dy);
-    if(DBG) console.log("     dx,y:", dx, dy, "dist:", dist)
-    var dvx = b.v.x-a.v.x;
-    var dvy = b.v.y-a.v.y;
-    if(DBG) console.log("     dvx,y:", dvx, dvy)
-    var rx = dx - dx * BONDS[i].d / dist; // restore force proportional to ratio of desired distance to actual 
-    var ry = dy - dy * BONDS[i].d / dist;
-
-    // console.log("BEFORE dxy:", dx, dy, "rxy:", rx, ry, Math.sqrt(rx*rx+ry*ry), "a.v:", a.v.x, a.v.y, "b.v:", b.v.x, b.v.y)
-    a.v.x += rx * BOND_P;
-    b.v.x -= rx * BOND_P;
-    a.v.y += ry * BOND_P;
-    b.v.y -= ry * BOND_P;
-
     var udx = dx / dist;
     var udy = dy / dist;
+    var dif = 1.0 - BONDS[i].d / dist;
+    var rx = dx * dif; 
+    var ry = dy * dif;
+
+    var dvx = b.v.x-a.v.x;
+    var dvy = b.v.y-a.v.y;
     var vdif = Math.sqrt(dvx*dvx+dvy*dvy);
-    if(DBG) console.log("     udx,y:", udx, udy, "vdif:", vdif)
     var vdot = 0;
     if (vdif) {
       var uvx = dvx / vdif;
       var uvy = dvy / vdif;
       vdot = uvx*udx + uvy*udy;
     }
-    if(DBG) console.log("     uvx,y:", uvx, uvy, "vdot:", vdot)
     var swapv = vdif * vdot * BOND_D;
-    var swapvx = swapv * udx;
-    var swapvy = swapv * udy;
-    if(DBG) console.log("     swapv:", swapv, "swapvx,y:", swapvx, swapvy)
+    var swapvx = rx * BOND_P + swapv * udx;
+    var swapvy = ry * BOND_P + swapv * udy;
     a.v.x += swapvx;
     b.v.x -= swapvx;
     a.v.y += swapvy;
     b.v.y -= swapvy;
-    
-    // if(verbose) 
-    // console.log("UPDATE dxy:", dx, dy, "rxy:", rx, ry, Math.sqrt(rx*rx+ry*ry), "a.v:", a.v.x, a.v.y, "b.v:", b.v.x, b.v.y)
   }
 }
 
