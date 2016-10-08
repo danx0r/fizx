@@ -1,4 +1,4 @@
-RADIUS = 150;
+RADIUS = 100;
 RADIUS_SHOW = 4;
 TICK_PHYS = 0.001;
 TICK_SHOW = 0.02;
@@ -275,7 +275,7 @@ randy = function() {
 }
 
 test = function() {
-  rand32(123567);
+  rand32(123563);
   for (var i=0; i<36; i++) {
     // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
     ATOMS.push(new atom(randy() * WIDTH, randy() * HEIGHT));
@@ -308,7 +308,7 @@ test = function() {
     if (ii==200) {
       console.log("HIT ME AGIN bonds:", BONDS.length);
       ATOMS[0].v.x = -21500;
-      ATOMS[11].v.x = 20500;
+      ATOMS[11].v.x = 9500;
     }
     if (ii >= TICK_MAX) {
       clearInterval(int)
