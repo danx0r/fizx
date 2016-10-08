@@ -46,6 +46,7 @@ for (var i=0; i<BONDS.length; i++) {
 }
 */
 console.log("update debug")
+DBG = 1
 DAMP = 1
 BOND_P = 1
 BOND_D = .1

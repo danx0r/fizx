@@ -108,7 +108,7 @@ contacts_update = function(verbose) {
     }
   }
 }
-debg=0;
+DBG=0;
 bonds_update = function(verbose) {
   for (var i=0; i<BONDS.length; i++) {
     var a = BONDS[i].a;
@@ -116,10 +116,10 @@ bonds_update = function(verbose) {
     var dx = b.p.x-a.p.x;
     var dy = b.p.y-a.p.y;
     var dist = Math.sqrt(dx*dx+dy*dy);
-    if(debg) console.log("     dx,y:", dx, dy, "dist:", dist)
+    if(DBG) console.log("     dx,y:", dx, dy, "dist:", dist)
     var dvx = b.v.x-a.v.x;
     var dvy = b.v.y-a.v.y;
-    if(debg) console.log("     dvx,y:", dvx, dvy)
+    if(DBG) console.log("     dvx,y:", dvx, dvy)
     var rx = dx * BONDS[i].d / dist;
     var ry = dy * BONDS[i].d / dist;
     var rdx = dx - rx;
@@ -134,23 +134,22 @@ bonds_update = function(verbose) {
     var udx = dx / dist;
     var udy = dy / dist;
     var vdif = Math.sqrt(dvx*dvx+dvy*dvy);
-    if(debg) console.log("     udx,y:", udx, udy, "vdif:", vdif)
+    if(DBG) console.log("     udx,y:", udx, udy, "vdif:", vdif)
     var vdot = 0;
     if (vdif) {
       var uvx = dvx / vdif;
       var uvy = dvy / vdif;
       vdot = uvx*udx + uvy*udy;
     }
-    if(debg) console.log("     uvx,y:", uvx, uvy, "vdot:", vdot)
+    if(DBG) console.log("     uvx,y:", uvx, uvy, "vdot:", vdot)
     var swapvx = dvx * udx * vdot * BOND_D;
     var swapvy = dvy * udy * vdot * BOND_D;
-    if(debg) console.log("     swapvx,y:", swapvx, swapvy)
+    if(DBG) console.log("     swapvx,y:", swapvx, swapvy)
     a.v.x += swapvx;
     b.v.x -= swapvx;
     a.v.y += swapvy;
     b.v.y -= swapvy;
     
-
     // if(verbose) 
     // console.log("UPDATE dxy:", dx, dy, "rxy:", rx, ry, Math.sqrt(rx*rx+ry*ry), "a.v:", a.v.x, a.v.y, "b.v:", b.v.x, b.v.y)
   }
@@ -334,7 +333,7 @@ test = function() {
 test2 = function() {
   DAMP = 1
   BOND_P = 1
-  BOND_D = -.5
+  BOND_D = -.2
   RADIUS = 150
   TICK_PHYS = 1
   TICK_SHOW = 1

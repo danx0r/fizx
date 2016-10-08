@@ -47,9 +47,9 @@ velocity swap:
 
 need to swap v only along axis between particles - otherwise we leak rotational velocity
 
-rvxy is relative velocity x,y
-dvxy is 'distance' = mag of relative vel
-uvxy is unit vector (angle) of rvxy = vx/dvxy, vy/dvxy
-uxy = rx,ry = unit vector (angle) of dx,dy
+rvx,y is relative velocity x,y
+rvxy is 'distance' = mag of relative vel
+uvx,y is unit vector (angle) of rvxy = vx/dvxy, vy/dvxy
+ux,y = unit vector (angle) of dx,dy
 we want to reduce relative velocity (swap v) along angle uxy
 
