@@ -321,8 +321,8 @@ test = function() {
      }
     if (ii==200) {
       console.log("HIT ME AGIN bonds:", BONDS.length);
-      ATOMS[0].v.x = -11500;
-      ATOMS[1].v.x = 10500;
+      ATOMS[0].v.x = -41500;
+      ATOMS[11].v.x = 40500;
     }
     if (ii >= TICK_MAX) {
       clearInterval(int)
