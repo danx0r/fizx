@@ -5,8 +5,6 @@ TICK_SHOW = 0.02;
 REALTIME = 1;
 TICK_MAX = 1000000;
 // TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
-BOND_COLOR = "#cc88bb"
-ATOM_COLOR = "#000000"
 
 BOND_P = 5
 BOND_D = 0
@@ -15,41 +13,6 @@ DAMP = 0.975
 ATOMS = []
 BONDS = []
 CONTACTS = []
-
-init = function() {
-  g_canvas = document.getElementById("canvas");
-  g_context = g_canvas.getContext("2d");
-  console.log("canvas context:", g_context);
-  WIDTH = g_canvas.width;
-  HEIGHT = g_canvas.height;
-}
-
-circle = function(x, y, r, color) {
-  g_context.beginPath();
-  g_context.arc(x, HEIGHT-1-y, r, 0, Math.PI*2);
-  if(color) {
-    g_context.strokeStyle = color;
-  } else {
-    g_context.strokeStyle = "#000000";
-  }
-  g_context.stroke();
-}
-
-line = function(x, y, x2, y2, color) {
-  g_context.beginPath();
-  g_context.moveTo(x, HEIGHT-1-y);
-  g_context.lineTo(x2, HEIGHT-1-y2);
-  if(color) {
-    g_context.strokeStyle = color;
-  } else {
-    g_context.strokeStyle = "#000000";
-  }
-  g_context.stroke();
-}
-
-clear = function() {
-  g_context.clearRect(0, 0, WIDTH, HEIGHT);
-}
 
 atom = function (x, y, vx, vy) {
   if (vx==null) vx = vy = 0;
@@ -66,7 +29,7 @@ atom = function (x, y, vx, vy) {
   
   this.draw = function() {
     // console.log("draw at", this.p.x, this.p.y)
-    circle(this.p.x, this.p.y, RADIUS_SHOW, ATOM_COLOR);
+    display_circle(this.p.x, this.p.y, RADIUS_SHOW, ATOM_COLOR);
   };
 }
 
@@ -145,7 +108,7 @@ bonds_draw = function() {
   for (var i=0; i<BONDS.length; i++) {
     var a = BONDS[i].a;
     var b = BONDS[i].b;
-    line(a.p.x, a.p.y, b.p.x, b.p.y, BOND_COLOR);
+    display_line(a.p.x, a.p.y, b.p.x, b.p.y, BOND_COLOR);
     // console.log("line", a.p.x, a.p.y, b.p.x, b.p.y)
   }
 }
@@ -275,6 +238,7 @@ randy = function() {
 }
 
 test = function() {
+  display_init();
   rand32(123563);
   for (var i=0; i<36; i++) {
     // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
@@ -284,12 +248,12 @@ test = function() {
   // ATOMS.push(new atom(200, 300));
   // ATOMS.push(new atom(300, 300));
   bond_all(ATOMS);
-  clear();
+  display_clear();
   bonds_draw();
   atoms_draw();
   var ii=0;
   var int = setInterval( function(){
-    clear();
+    display_clear();
     bonds_draw();
     atoms_draw();
     update_all(TICK_SHOW/TICK_PHYS);
@@ -332,12 +296,12 @@ test2 = function() {
   // ATOMS.push(new atom(200, 100, 0, 10));
   // ATOMS.push(new atom(200, 400, 0, -10));
   bond_all(ATOMS);
-  clear();
+  display_clear();
   bonds_draw();
   atoms_draw();
   var ii=0;
   var int = setInterval( function(){
-    clear();
+    display_clear();
     bonds_draw();
     atoms_draw();
     update_all(TICK_SHOW/TICK_PHYS);
