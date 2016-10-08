@@ -1,9 +1,9 @@
-RADIUS = 150
-RADIUS_SHOW = 4
-TICK_PHYS = 0.001
-TICK_SHOW = 0.04
-REALTIME = 2//.2
-TICK_MAX = 100*10000
+RADIUS = 150;
+RADIUS_SHOW = 4;
+TICK_PHYS = 0.001;
+TICK_SHOW = 0.04;
+REALTIME = 2//.2;
+TICK_MAX = 1000000;
 // TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
 BOND_COLOR = "#cc88bb"
 ATOM_COLOR = "#000000"
@@ -108,7 +108,7 @@ contacts_update = function(verbose) {
     }
   }
 }
-
+debg=0;
 bonds_update = function(verbose) {
   for (var i=0; i<BONDS.length; i++) {
     var a = BONDS[i].a;
@@ -116,10 +116,10 @@ bonds_update = function(verbose) {
     var dx = b.p.x-a.p.x;
     var dy = b.p.y-a.p.y;
     var dist = Math.sqrt(dx*dx+dy*dy);
-    console.log("     dx,y:", dx, dy, "dist:", dist)
+    if(debg) console.log("     dx,y:", dx, dy, "dist:", dist)
     var dvx = b.v.x-a.v.x;
     var dvy = b.v.y-a.v.y;
-    console.log("     dvx,y:", dvx, dvy)
+    if(debg) console.log("     dvx,y:", dvx, dvy)
     var rx = dx * BONDS[i].d / dist;
     var ry = dy * BONDS[i].d / dist;
     var rdx = dx - rx;
@@ -133,10 +133,18 @@ bonds_update = function(verbose) {
 
     var udx = dx / dist;
     var udy = dy / dist;
-    console.log("     udx,y:", udx, udy)
-    var swapvx = dvx * udx * BOND_D;
-    var swapvy = dvy * udy * BOND_D;
-    console.log("     swapvx,y:", swapvx, swapvy)
+    var vdif = Math.sqrt(dvx*dvx+dvy*dvy);
+    if(debg) console.log("     udx,y:", udx, udy, "vdif:", vdif)
+    var vdot = 0;
+    if (vdif) {
+      var uvx = dvx / vdif;
+      var uvy = dvy / vdif;
+      vdot = uvx*udx + uvy*udy;
+    }
+    if(debg) console.log("     uvx,y:", uvx, uvy, "vdot:", vdot)
+    var swapvx = dvx * udx * vdot * BOND_D;
+    var swapvy = dvy * udy * vdot * BOND_D;
+    if(debg) console.log("     swapvx,y:", swapvx, swapvy)
     a.v.x += swapvx;
     b.v.x -= swapvx;
     a.v.y += swapvy;
@@ -283,10 +291,13 @@ randy = function() {
 
 test = function() {
   rand32(123);
-  for (var i=0; i<23; i++) {
-    // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
-    ATOMS.push(new atom(randy() * WIDTH, randy() * HEIGHT));
-  }
+  // for (var i=0; i<23; i++) {
+    // // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
+    // ATOMS.push(new atom(randy() * WIDTH, randy() * HEIGHT));
+  // }
+  ATOMS.push(new atom(200, 200));
+  ATOMS.push(new atom(200, 300));
+  ATOMS.push(new atom(300, 300));
   bond_all(ATOMS);
   clear();
   bonds_draw();
@@ -301,16 +312,18 @@ test = function() {
     if (ii==150) {
       console.log("HIT ME")
       DAMP = 1//0.998
-      BOND_D = .003;
+      BOND_D = .01;
       // ATOMS[0].v.x = -2000;
       BONDS = [];
       bond_triangulate(ATOMS, true)
       // bond_nearest(ATOMS, 5, true)
-    }
+      console.log("stable tri:", ATOMS[0].p, ATOMS[1].p, ATOMS[2].p )
+ clearInterval(int)
+     }
     if (ii==200) {
       console.log("HIT ME AGIN bonds:", BONDS.length);
-      ATOMS[5].v.x = -500;
-      ATOMS[6].v.x = 500;
+      ATOMS[0].v.x = -500;
+      ATOMS[1].v.x = 500;
     }
     if (ii >= TICK_MAX) {
       clearInterval(int)
@@ -321,16 +334,16 @@ test = function() {
 test2 = function() {
   DAMP = 1
   BOND_P = 1
-  BOND_D = .1
-  RADIUS = 50
+  BOND_D = 0//.1
+  RADIUS = 150
   TICK_PHYS = 1
   TICK_SHOW = 1
-  REALTIME = 100
+  REALTIME = 10
   ATOMS = []
   BONDS = [];
-  ATOMS.push(new atom(200, 200, 1, 0));
-  ATOMS.push(new atom(200, 300, -1, 0));
-  // ATOMS.push(new atom(700, 300));
+  ATOMS.push(new atom(188.5045597249305, 99.36340591910486, -10, 0));
+  ATOMS.push(new atom(110.85884619417598, 389.1411538058254, 10, 0));
+  ATOMS.push(new atom(400.6365940808962, 311.49544027506806));
   bond_all(ATOMS);
   clear();
   bonds_draw();

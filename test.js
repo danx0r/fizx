@@ -53,12 +53,13 @@ RADIUS = 50
 TICK_PHYS = 1
 ATOMS = []
 BONDS = [];
-ATOMS.push(new atom(200, 200, -1, 1));
-ATOMS.push(new atom(271, 271, 1, -1));
+ATOMS.push(new atom(188.5045597249305, 99.36340591910486));
+ATOMS.push(new atom(110.85884619417598, 389.1411538058254));
+ATOMS.push(new atom(400.6365940808962, 311.49544027506806));
 bond_all(ATOMS);
 // console.log("BONDS:", BONDS)
 console.log("--A:", ATOMS[0].p.x, ATOMS[0].p.y, "vel:", ATOMS[0].v.x, ATOMS[0].v.y, "B:", ATOMS[1].p.x, ATOMS[1].p.y, "vel:", ATOMS[1].v.x, ATOMS[1].v.y)
-for(var i=0; i<1; i++) {
+for(var i=0; i<4; i++) {
   update_all(1)
   console.log("  A:", ATOMS[0].p.x, ATOMS[0].p.y, "vel:", ATOMS[0].v.x, ATOMS[0].v.y, "B:", ATOMS[1].p.x, ATOMS[1].p.y, "vel:", ATOMS[1].v.x, ATOMS[1].v.y)
 }
