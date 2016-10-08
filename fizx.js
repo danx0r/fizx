@@ -8,7 +8,7 @@ TICK_MAX = 1000000;
 BOND_COLOR = "#cc88bb"
 ATOM_COLOR = "#000000"
 
-BOND_P = 1
+BOND_P = 3
 BOND_D = 0
 DAMP = 0.975
 
@@ -290,7 +290,7 @@ randy = function() {
 
 test = function() {
   rand32(123);
-  for (var i=0; i<23; i++) {
+  for (var i=0; i<66; i++) {
     // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
     ATOMS.push(new atom(randy() * WIDTH, randy() * HEIGHT));
   }
@@ -311,6 +311,7 @@ test = function() {
     if (ii==150) {
       console.log("HIT ME")
       DAMP = 1//0.998
+      BOND_P = 50;
       BOND_D = .01;
       // ATOMS[0].v.x = -2000;
       BONDS = [];
@@ -320,8 +321,8 @@ test = function() {
      }
     if (ii==200) {
       console.log("HIT ME AGIN bonds:", BONDS.length);
-      ATOMS[0].v.x = -1500;
-      ATOMS[1].v.x = 500;
+      ATOMS[0].v.x = -11500;
+      ATOMS[1].v.x = 10500;
     }
     if (ii >= TICK_MAX) {
       clearInterval(int)
