@@ -40,6 +40,22 @@ bond = function(atom1, atom2, dist) {
   this.d = dist;
 }
 
+thing = function(name, x, y, obj) {
+  this.name = name;
+  this.atoms = [];
+  this.add = function(atom) {
+    this.atoms.push(atom);
+  }
+  if (obj != undefined) {
+    for (var i=0; i<obj.length; i++) {
+      var o = obj[i];
+      var a = new atom(o.p.x+x, o.p.y+y, o.v.x, o.v.y);
+      this.atoms.push(a);
+      ATOMS.push(a);
+    }
+  }
+}
+
 atoms_update = function() {
   for (var i=0; i<ATOMS.length; i++) {
     ATOMS[i].update();
@@ -311,3 +327,36 @@ test2 = function() {
     }
   }, TICK_SHOW/REALTIME * 1000);
 }
+
+function asx(url, cb) {
+  var xr = new XMLHttpRequest();
+  xr.addEventListener("load", cb);
+  xr.open("GET", url);
+  xr.send();
+  // console.log("asx:", xr.readyState)
+}
+
+test3 = function() {
+  display_init();
+  asx("./ball.json", function() {
+    var ball = new thing("ball1", 500, 300, JSON.parse(this.responseText));
+    bond_triangulate(ball.atoms);
+    console.log(BONDS.length, "bonds")
+    console.log("ball:", ball)
+    display_clear();
+    bonds_draw();
+    atoms_draw();
+    var ii=0;
+    var int = setInterval( function(){
+      display_clear();
+      bonds_draw();
+      atoms_draw();
+      update_all(TICK_SHOW/TICK_PHYS);
+      ii++;
+      if (ii >= TICK_MAX) {
+        clearInterval(int)
+      }
+    }, TICK_SHOW/REALTIME * 1000);
+  });
+}
+

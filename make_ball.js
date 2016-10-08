@@ -1,3 +1,4 @@
+var fs=require('fs');
 require('./fizx.js');
 require('./delaunay.js');
 
@@ -35,5 +36,7 @@ for(var i=0; i<ATOMS.length; i++) {
   ATOMS[i].p.y -= avgy;
 }
 
-console.log(JSON.stringify(ATOMS));
+console.log(ATOMS.length, "atoms");
 console.log(BONDS.length, "bonds");
+
+fs.writeFileSync("ball.json", JSON.stringify(ATOMS));
