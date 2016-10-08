@@ -62,7 +62,17 @@ ATOMS.push(new atom(200, 400, 0, -10));
 bond_all(ATOMS);
 // console.log("BONDS:", BONDS)
 console.log("--A:", ATOMS[0].p.x, ATOMS[0].p.y, "vel:", ATOMS[0].v.x, ATOMS[0].v.y, "B:", ATOMS[1].p.x, ATOMS[1].p.y, "vel:", ATOMS[1].v.x, ATOMS[1].v.y)
-for(var i=0; i<4; i++) {
+for(var i=0; i<1; i++) {
+  update_all(1)
+  console.log("  A:", ATOMS[0].p.x, ATOMS[0].p.y, "vel:", ATOMS[0].v.x, ATOMS[0].v.y, "B:", ATOMS[1].p.x, ATOMS[1].p.y, "vel:", ATOMS[1].v.x, ATOMS[1].v.y)
+}
+ATOMS = []
+BONDS = [];
+ATOMS.push(new atom(200, 100, 0, -10));
+ATOMS.push(new atom(200, 400, 0, 10));
+bond_all(ATOMS);
+console.log("--A:", ATOMS[0].p.x, ATOMS[0].p.y, "vel:", ATOMS[0].v.x, ATOMS[0].v.y, "B:", ATOMS[1].p.x, ATOMS[1].p.y, "vel:", ATOMS[1].v.x, ATOMS[1].v.y)
+for(var i=0; i<1; i++) {
   update_all(1)
   console.log("  A:", ATOMS[0].p.x, ATOMS[0].p.y, "vel:", ATOMS[0].v.x, ATOMS[0].v.y, "B:", ATOMS[1].p.x, ATOMS[1].p.y, "vel:", ATOMS[1].v.x, ATOMS[1].v.y)
 }

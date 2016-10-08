@@ -142,8 +142,8 @@ bonds_update = function(verbose) {
       vdot = uvx*udx + uvy*udy;
     }
     if(DBG) console.log("     uvx,y:", uvx, uvy, "vdot:", vdot)
-    var swapvx = dvx * udx * vdot * BOND_D;
-    var swapvy = dvy * udy * vdot * BOND_D;
+    var swapvx = vdif * udx * vdot * BOND_D;
+    var swapvy = vdif * udy * vdot * BOND_D;
     if(DBG) console.log("     swapvx,y:", swapvx, swapvy)
     a.v.x += swapvx;
     b.v.x -= swapvx;
@@ -290,13 +290,13 @@ randy = function() {
 
 test = function() {
   rand32(123);
-  // for (var i=0; i<23; i++) {
-    // // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
-    // ATOMS.push(new atom(randy() * WIDTH, randy() * HEIGHT));
-  // }
-  ATOMS.push(new atom(200, 200));
-  ATOMS.push(new atom(200, 300));
-  ATOMS.push(new atom(300, 300));
+  for (var i=0; i<23; i++) {
+    // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
+    ATOMS.push(new atom(randy() * WIDTH, randy() * HEIGHT));
+  }
+  // ATOMS.push(new atom(200, 200));
+  // ATOMS.push(new atom(200, 300));
+  // ATOMS.push(new atom(300, 300));
   bond_all(ATOMS);
   clear();
   bonds_draw();
@@ -317,11 +317,10 @@ test = function() {
       bond_triangulate(ATOMS, true)
       // bond_nearest(ATOMS, 5, true)
       console.log("stable tri:", ATOMS[0].p, ATOMS[1].p, ATOMS[2].p )
- clearInterval(int)
      }
     if (ii==200) {
       console.log("HIT ME AGIN bonds:", BONDS.length);
-      ATOMS[0].v.x = -500;
+      ATOMS[0].v.x = -1500;
       ATOMS[1].v.x = 500;
     }
     if (ii >= TICK_MAX) {
@@ -333,18 +332,18 @@ test = function() {
 test2 = function() {
   DAMP = 1
   BOND_P = 1
-  BOND_D = -.2
+  BOND_D = .2
   RADIUS = 150
   TICK_PHYS = 1
   TICK_SHOW = 1
   REALTIME = 20
   ATOMS = []
   BONDS = [];
-  // ATOMS.push(new atom(188.5045597249305, 99.36340591910486, -10, 0));
-  // ATOMS.push(new atom(110.85884619417598, 389.1411538058254, 10, 0));
-  // ATOMS.push(new atom(400.6365940808962, 311.49544027506806));
-  ATOMS.push(new atom(200, 100, 0, 10));
-  ATOMS.push(new atom(200, 400, 0, -10));
+  ATOMS.push(new atom(188.5045597249305, 99.36340591910486, -10, 0));
+  ATOMS.push(new atom(110.85884619417598, 389.1411538058254, 10, 0));
+  ATOMS.push(new atom(400.6365940808962, 311.49544027506806));
+  // ATOMS.push(new atom(200, 100, 0, 10));
+  // ATOMS.push(new atom(200, 400, 0, -10));
   bond_all(ATOMS);
   clear();
   bonds_draw();
