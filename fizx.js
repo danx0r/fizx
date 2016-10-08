@@ -120,16 +120,14 @@ bonds_update = function(verbose) {
     var dvx = b.v.x-a.v.x;
     var dvy = b.v.y-a.v.y;
     if(DBG) console.log("     dvx,y:", dvx, dvy)
-    var rx = dx * BONDS[i].d / dist;
-    var ry = dy * BONDS[i].d / dist;
-    var rdx = dx - rx;
-    var rdy = dy - ry;
+    var rx = dx - dx * BONDS[i].d / dist; // restore force proportional to ratio of desired distance to actual 
+    var ry = dy - dy * BONDS[i].d / dist;
 
     // console.log("BEFORE dxy:", dx, dy, "rxy:", rx, ry, Math.sqrt(rx*rx+ry*ry), "a.v:", a.v.x, a.v.y, "b.v:", b.v.x, b.v.y)
-    a.v.x += rdx * BOND_P;
-    b.v.x -= rdx * BOND_P;
-    a.v.y += rdy * BOND_P;
-    b.v.y -= rdy * BOND_P;
+    a.v.x += rx * BOND_P;
+    b.v.x -= rx * BOND_P;
+    a.v.y += ry * BOND_P;
+    b.v.y -= ry * BOND_P;
 
     var udx = dx / dist;
     var udy = dy / dist;
