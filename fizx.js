@@ -142,9 +142,10 @@ bonds_update = function(verbose) {
       vdot = uvx*udx + uvy*udy;
     }
     if(DBG) console.log("     uvx,y:", uvx, uvy, "vdot:", vdot)
-    var swapvx = vdif * udx * vdot * BOND_D;
-    var swapvy = vdif * udy * vdot * BOND_D;
-    if(DBG) console.log("     swapvx,y:", swapvx, swapvy)
+    var swapv = vdif * vdot * BOND_D;
+    var swapvx = swapv * udx;
+    var swapvy = swapv * udy;
+    if(DBG) console.log("     swapv:", swapv, "swapvx,y:", swapvx, swapvy)
     a.v.x += swapvx;
     b.v.x -= swapvx;
     a.v.y += swapvy;
