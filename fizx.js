@@ -1,14 +1,14 @@
 RADIUS = 150;
 RADIUS_SHOW = 4;
 TICK_PHYS = 0.001;
-TICK_SHOW = 0.01;
-REALTIME = .25;
+TICK_SHOW = 0.02;
+REALTIME = 1;
 TICK_MAX = 1000000;
 // TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
 BOND_COLOR = "#cc88bb"
 ATOM_COLOR = "#000000"
 
-BOND_P = 3
+BOND_P = 5
 BOND_D = 0
 DAMP = 0.975
 
@@ -291,7 +291,7 @@ randy = function() {
 
 test = function() {
   rand32(123567);
-  for (var i=0; i<23; i++) {
+  for (var i=0; i<36; i++) {
     // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
     ATOMS.push(new atom(randy() * WIDTH, randy() * HEIGHT));
   }
@@ -312,8 +312,8 @@ test = function() {
     if (ii==150) {
       console.log("HIT ME")
       DAMP = 1//0.998
-      BOND_P = 5;
-      BOND_D = .05;
+      BOND_P = 200;
+      BOND_D = .21;
       // ATOMS[0].v.x = -2000;
       BONDS = [];
       bond_triangulate(ATOMS, true)
