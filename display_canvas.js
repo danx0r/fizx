@@ -1,5 +1,5 @@
 /*
- * simple API to display
+ * simple API to display, canvas implementation
  */ 
 
 BOND_COLOR = "#cc88bb"
