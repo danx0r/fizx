@@ -334,16 +334,18 @@ test = function() {
 test2 = function() {
   DAMP = 1
   BOND_P = 1
-  BOND_D = 0//.1
+  BOND_D = -.5
   RADIUS = 150
   TICK_PHYS = 1
   TICK_SHOW = 1
-  REALTIME = 10
+  REALTIME = 20
   ATOMS = []
   BONDS = [];
-  ATOMS.push(new atom(188.5045597249305, 99.36340591910486, -10, 0));
-  ATOMS.push(new atom(110.85884619417598, 389.1411538058254, 10, 0));
-  ATOMS.push(new atom(400.6365940808962, 311.49544027506806));
+  // ATOMS.push(new atom(188.5045597249305, 99.36340591910486, -10, 0));
+  // ATOMS.push(new atom(110.85884619417598, 389.1411538058254, 10, 0));
+  // ATOMS.push(new atom(400.6365940808962, 311.49544027506806));
+  ATOMS.push(new atom(200, 100, 0, 10));
+  ATOMS.push(new atom(200, 400, 0, -10));
   bond_all(ATOMS);
   clear();
   bonds_draw();
