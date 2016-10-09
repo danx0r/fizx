@@ -426,13 +426,13 @@ test4 = function() {
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
   var floor = new thing("floor");
-  for (i=0; i<20; i++) {
-    var at = new atom(100+i*20, 100, 0, 0, 20, true);
+  for (i=0; i<60; i++) {
+    var at = new atom(100+i*20, 100+i, 0, 0, 20, true);
     floor.add(at);
     ATOMS.push(at);
   }
   asx("./ball37.json?x="+randy(), function() {
-    var ball2 = new thing("ball2", 200, 600, 0, 0, JSON.parse(this.responseText));
+    var ball2 = new thing("ball2", 1100, 300, 0, 0, JSON.parse(this.responseText));
     bond_triangulate(ball2.atoms, true);
     COLLIDES.push([floor, ball2]);
     console.log(BONDS.length, "bonds")
