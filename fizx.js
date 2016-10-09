@@ -400,17 +400,28 @@ function asx(url, cb) {
 
 test3 = function() {
   DAMP = 1
-  BOND_P = 100
-  BOND_D = .05
+  BOND_P = 33
+  BOND_D = .5
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
+  var floor = new thing("floor");
+  for (i=0; i<60; i++) {
+    var at = new atom(100+i*20, 120+i*3, 0, 0, 10, true);
+    floor.add(at);
+    ATOMS.push(at);
+  }
+  for (i=0; i<60; i++) {
+    var at = new atom(10+i*20, 90+(60-i)*3, 0, 0, 10, true);
+    floor.add(at);
+    ATOMS.push(at);
+  }
   asx("./ball60.json?x="+randy(), function() {
-    var ball1 = new thing("ball1", 794, 100, -300, 0, JSON.parse(this.responseText), true);
-    // bond_triangulate(ball1.atoms, true);
-    asx("./ball37.json?x="+randy(), function() {
-      var ball2 = new thing("ball2", 800, 600, 0, 0, JSON.parse(this.responseText));
+    var ball1 = new thing("ball1", 1194, 600, -300, 0, JSON.parse(this.responseText));
+    bond_triangulate(ball1.atoms, true);
+    asx("./ball23_slip.json?x="+randy(), function() {
+      var ball2 = new thing("ball2", 130, 600, 0, 0, JSON.parse(this.responseText));
       bond_triangulate(ball2.atoms, true);
-      COLLIDES.push([ball1, ball2]);
+      COLLIDES.push([ball1, ball2], [ball1, floor], [ball2, floor]);
       console.log(BONDS.length, "bonds")
       display_clear();
       bonds_draw();
