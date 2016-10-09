@@ -372,9 +372,9 @@ test3 = function() {
   // REALTIME = .1
   display_init();
   asx("./ball.json", function() {
-    var ball1 = new thing("ball1", 800, 300, -100, 0, JSON.parse(this.responseText));
+    var ball1 = new thing("ball1", 800, 200, -300, 0, JSON.parse(this.responseText));
     bond_triangulate(ball1.atoms, true);
-    var ball2 = new thing("ball2", 300, 400, 100, 0, JSON.parse(this.responseText));
+    var ball2 = new thing("ball2", 300, 400, 300, 0, JSON.parse(this.responseText));
     bond_triangulate(ball2.atoms, true);
     COLLIDES.push([ball1, ball2]);
     console.log(BONDS.length, "bonds")
