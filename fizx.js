@@ -1,7 +1,7 @@
-RADIUS = 100;
+RADIUS = 35;
 RADIUS_SHOW = 4;
 TICK_PHYS = 0.001;
-TICK_SHOW = 0.02;
+TICK_SHOW = 0.001;
 REALTIME = 1;
 TICK_MAX = 1000000;
 // TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
@@ -15,11 +15,13 @@ BONDS = []
 CONTACTS = []
 COLLIDES = []
 
-atom = function (x, y, vx, vy) {
+atom = function (x, y, vx, vy, radius) {
   if (vx==null) vx = vy = 0;
+  if (radius==null) radius=RADIUS;
   this.p = {x: x, y: y};
   this.v = {x: vx, y: vy};
-  console.log("atom:", this.p, this.v)
+  this.radius=radius;
+  // console.log("atom:", this.p, this.v)
   
   this.update = function() {
     this.p.x += this.v.x * TICK_PHYS;
@@ -70,7 +72,7 @@ atoms_draw = function() {
 }
 
 refresh_contacts = function() {
-  var thresh = 25;              // FIXME each atom should have a radius
+  // var thresh = 25;              // FIXME each atom should have a radius
   CONTACTS = [];
   for (var i=0; i<COLLIDES.length; i++) {
     var ta = COLLIDES[i][0];
@@ -80,6 +82,7 @@ refresh_contacts = function() {
       for (var k=0; k<tb.atoms.length; k++) {
         var b = tb.atoms[k];
         var dx = a.p.x-b.p.x;
+        var thresh = a.radius+b.radius;
         if (Math.abs(dx) < thresh) {
           var dy = a.p.y-b.p.y;
           if (Math.abs(dy) < thresh) {
@@ -378,7 +381,7 @@ test3 = function() {
   DAMP = 1
   BOND_P = 50
   BOND_D = .05
-  // REALTIME = .25
+  REALTIME = .2
   display_init();
   asx("./ball16.json", function() {
     var ball1 = new thing("ball1", 800, 200, -300, 0, JSON.parse(this.responseText));
