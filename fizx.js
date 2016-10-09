@@ -343,10 +343,11 @@ test3 = function() {
   // REALTIME = .1
   display_init();
   asx("./ball.json", function() {
-    var ball = new thing("ball1", 500, 300, 100, 0, JSON.parse(this.responseText));
-    bond_triangulate(ball.atoms, true);
+    var ball1 = new thing("ball1", 800, 300, -100, 0, JSON.parse(this.responseText));
+    bond_triangulate(ball1.atoms, true);
+    var ball2 = new thing("ball2", 300, 400, 100, 0, JSON.parse(this.responseText));
+    bond_triangulate(ball2.atoms, true);
     console.log(BONDS.length, "bonds")
-    console.log("ball:", ball)
     display_clear();
     bonds_draw();
     atoms_draw();
@@ -357,11 +358,6 @@ test3 = function() {
       atoms_draw();
       update_all(TICK_SHOW/TICK_PHYS);
       ii++;
-      if (ii==100) {
-        console.log("HIT ME AGIN bonds:", BONDS.length);
-        ATOMS[0].v.x = -700;
-        ATOMS[1].v.x = 550;
-      }
       if (ii >= TICK_MAX) {
         clearInterval(int)
       }
