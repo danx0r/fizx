@@ -418,7 +418,7 @@ test3 = function() {
   asx("./ball60.json?x="+randy(), function() {
     var ball1 = new thing("ball1", 1194, 600, -300, 0, JSON.parse(this.responseText));
     bond_triangulate(ball1.atoms, true);
-    asx("./ball23_slip.json?x="+randy(), function() {
+    asx("./ball37.json?x="+randy(), function() {
       var ball2 = new thing("ball2", 130, 600, 0, 0, JSON.parse(this.responseText));
       bond_triangulate(ball2.atoms, true);
       COLLIDES.push([ball1, ball2], [ball1, floor], [ball2, floor]);
