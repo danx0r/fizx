@@ -368,7 +368,7 @@ function asx(url, cb) {
 test3 = function() {
   DAMP = 1
   BOND_P = 1
-  BOND_D = .02
+  BOND_D = .01
   // REALTIME = .1
   display_init();
   asx("./ball.json", function() {
