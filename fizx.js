@@ -411,7 +411,7 @@ test3 = function() {
     ATOMS.push(at);
   }
   for (i=0; i<60; i++) {
-    var at = new atom(10+i*20, 90+(60-i)*3, 0, 0, 10, true);
+    var at = new atom(10+i*20, 90+(60-i)*5, 0, 0, 10, true);
     floor.add(at);
     ATOMS.push(at);
   }
