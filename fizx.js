@@ -13,6 +13,7 @@ DAMP = 0.975
 ATOMS = []
 BONDS = []
 CONTACTS = []
+COLLIDES = []
 
 atom = function (x, y, vx, vy) {
   if (vx==null) vx = vy = 0;
@@ -68,23 +69,41 @@ atoms_draw = function() {
   }
 }
 
+refresh_contacts = function() {
+  var thresh = 25;              // FIXME each atom should have a radius
+  CONTACTS = [];
+  for (var i=0; i<COLLIDES.length; i++) {
+    var ta = COLLIDES[i][0];
+    var tb = COLLIDES[i][1];
+    for (var j=0; j<ta.atoms.length; j++) {
+      var a = ta.atoms[j];
+      for (var k=0; k<tb.atoms.length; k++) {
+        var b = tb.atoms[k];
+        var dx = a.p.x-b.p.x;
+        if (Math.abs(dx) < thresh) {
+          var dy = a.p.y-b.p.y;
+          if (Math.abs(dy) < thresh) {
+            var dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < thresh) {
+              CONTACTS.push([a, b])
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 contacts_update = function(verbose) {
   for (var i=0; i<CONTACTS.length; i++) {
     var a = CONTACTS[i][0];
     var b = CONTACTS[i][1];
-    var dx = a.p.x-b.p.x;
-    var dy = a.p.y-b.p.y
-    var dist = Math.sqrt(dx*dx + dy*dy);
-    console.log("DIST:", dist)
-    if (dist < RADIUS*2) {
-      if(verbose) console.log("CONTACT!")
-      var vx = a.v.x;
-      var vy = a.v.y;
-      a.v.x = b.v.x;
-      a.v.y = b.v.y;
-      b.v.x = vx;
-      b.v.y = vy;
-    }
+    var vx = a.v.x;
+    var vy = a.v.y;
+    a.v.x = b.v.x;
+    a.v.y = b.v.y;
+    b.v.x = vx;
+    b.v.y = vy;
   }
 }
 
@@ -109,10 +128,10 @@ bonds_update = function(verbose) {
       var uvy = dvy / vdif;
       vdot = uvx*udx + uvy*udy;             // dot product of positional direction vs rel vel - we only
     }                                       // want to adjust velocity along axis aligned with 2 particles,
-                                            // so we don't affect angular mo
     var dterm = vdif * vdot * BOND_D;        // Derivative term
     var xswap = (pterm + dterm) * udx;          // along axis a--b
     var yswap = (pterm + dterm) * udy;
+
     a.v.x += xswap;                          // swap momenta
     b.v.x -= xswap;
     a.v.y += yswap;
@@ -129,10 +148,20 @@ bonds_draw = function() {
   }
 }
 
+contacts_draw = function() {
+  for (var i=0; i<CONTACTS.length; i++) {
+    var a = CONTACTS[i][0];
+    var b = CONTACTS[i][1];
+    display_line(a.p.x, a.p.y, b.p.x, b.p.y, CONTACT_COLOR);
+    // console.log("line", a.p.x, a.p.y, b.p.x, b.p.y)
+  }
+}
+
 update_all = function(n) {
   for(var i=0; i<n; i++) {
     bonds_update(i==n-1);
     atoms_update(i==n-1);
+    refresh_contacts(i==n-1)
     contacts_update(i==n-1);
   }
 }
@@ -347,6 +376,7 @@ test3 = function() {
     bond_triangulate(ball1.atoms, true);
     var ball2 = new thing("ball2", 300, 400, 100, 0, JSON.parse(this.responseText));
     bond_triangulate(ball2.atoms, true);
+    COLLIDES.push([ball1, ball2]);
     console.log(BONDS.length, "bonds")
     display_clear();
     bonds_draw();
@@ -354,6 +384,7 @@ test3 = function() {
     var ii=0;
     var int = setInterval( function(){
       display_clear();
+      contacts_draw();
       bonds_draw();
       atoms_draw();
       update_all(TICK_SHOW/TICK_PHYS);

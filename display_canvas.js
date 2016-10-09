@@ -4,6 +4,7 @@
 
 BOND_COLOR = "#cc88bb"
 ATOM_COLOR = "#00004c"
+CONTACT_COLOR = "#dd2222"
 
 display_init = function() {
   g_canvas = document.getElementById("canvas");
