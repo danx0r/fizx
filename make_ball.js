@@ -10,7 +10,7 @@ ATOMS = [];
 BONDS = [];
 
 rand32(12356);
-for (var i=0; i<4; i++) {
+for (var i=0; i<process.argv[2]; i++) {
   // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
   ATOMS.push(new atom(randy() * 1000, randy() * 1000));
 }

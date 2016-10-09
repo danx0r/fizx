@@ -70,7 +70,7 @@ atoms_draw = function() {
 }
 
 refresh_contacts = function() {
-  var thresh = 11;              // FIXME each atom should have a radius
+  var thresh = 25;              // FIXME each atom should have a radius
   CONTACTS = [];
   for (var i=0; i<COLLIDES.length; i++) {
     var ta = COLLIDES[i][0];
@@ -98,12 +98,21 @@ contacts_update = function(verbose) {
   for (var i=0; i<CONTACTS.length; i++) {
     var a = CONTACTS[i][0];
     var b = CONTACTS[i][1];
-    var vx = a.v.x;
-    var vy = a.v.y;
-    a.v.x = b.v.x;
-    a.v.y = b.v.y;
-    b.v.x = vx;
-    b.v.y = vy;
+    var dx = b.p.x-a.p.x;
+    var dy = b.p.y-a.p.y;
+    var dist = Math.sqrt(dx*dx+dy*dy);      // distance between atoms
+    var udx = dx / dist;                    // unit vector pointing from a to b
+    var udy = dy / dist;
+    var dif = dist - BONDS[i].d;            // difference we want to restore to zero
+    var pterm = dif * BOND_P ;                // Proportional term for our springy bond 
+
+    var xswap = pterm * udx;                 // along axis a--b
+    var yswap = pterm * udy;
+
+    a.v.x += xswap;                          // swap momenta
+    b.v.x -= xswap;
+    a.v.y += yswap;
+    b.v.y -= yswap;
   }
 }
 
@@ -367,14 +376,14 @@ function asx(url, cb) {
 
 test3 = function() {
   DAMP = 1
-  BOND_P = 1
-  BOND_D = .01
-  // REALTIME = .1
+  BOND_P = 50
+  BOND_D = .05
+  // REALTIME = .25
   display_init();
   asx("./ball.json", function() {
-    var ball1 = new thing("ball1", 800, 200, -700, 0, JSON.parse(this.responseText));
+    var ball1 = new thing("ball1", 800, 200, -300, 0, JSON.parse(this.responseText));
     bond_triangulate(ball1.atoms, true);
-    var ball2 = new thing("ball2", 300, 400, 700, 0, JSON.parse(this.responseText));
+    var ball2 = new thing("ball2", 300, 300, 300, 0, JSON.parse(this.responseText));
     bond_triangulate(ball2.atoms, true);
     COLLIDES.push([ball1, ball2]);
     console.log(BONDS.length, "bonds")
