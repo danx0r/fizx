@@ -380,28 +380,30 @@ test3 = function() {
   BOND_D = .05
   // REALTIME = .25
   display_init();
-  asx("./ball.json", function() {
+  asx("./ball16.json", function() {
     var ball1 = new thing("ball1", 800, 200, -300, 0, JSON.parse(this.responseText));
     bond_triangulate(ball1.atoms, true);
-    var ball2 = new thing("ball2", 300, 300, 300, 0, JSON.parse(this.responseText));
-    bond_triangulate(ball2.atoms, true);
-    COLLIDES.push([ball1, ball2]);
-    console.log(BONDS.length, "bonds")
-    display_clear();
-    bonds_draw();
-    atoms_draw();
-    var ii=0;
-    var int = setInterval( function(){
+    asx("./ball37.json", function() {
+      var ball2 = new thing("ball2", 300, 200, 300, 0, JSON.parse(this.responseText));
+      bond_triangulate(ball2.atoms, true);
+      COLLIDES.push([ball1, ball2]);
+      console.log(BONDS.length, "bonds")
       display_clear();
-      contacts_draw();
       bonds_draw();
       atoms_draw();
-      update_all(TICK_SHOW/TICK_PHYS);
-      ii++;
-      if (ii >= TICK_MAX) {
-        clearInterval(int)
-      }
-    }, TICK_SHOW/REALTIME * 1000);
+      var ii=0;
+      var int = setInterval( function(){
+        display_clear();
+        contacts_draw();
+        bonds_draw();
+        atoms_draw();
+        update_all(TICK_SHOW/TICK_PHYS);
+        ii++;
+        if (ii >= TICK_MAX) {
+          clearInterval(int)
+        }
+      }, TICK_SHOW/REALTIME * 1000);
+    });
   });
 }
 
