@@ -482,3 +482,53 @@ test4 = function() {
   });
 }
 
+first_run = function() {
+  DAMP = 1
+  BOND_P = 33
+  BOND_D = .5
+  // REALTIME = .1; TICK_SHOW=TICK_PHYS
+  display_init();
+  var floor = new thing("floor");
+  for (i=0; i<44; i++) {
+    var at = new atom(220+i*20, 420+i*4, 0, 0, 10, true);
+    floor.add(at);
+    ATOMS.push(at);
+  }
+  for (i=0; i<40; i++) {
+    var at = new atom(15+i*20, 620+(60-i)*3, 0, 0, 10, true);
+    floor.add(at);
+    ATOMS.push(at);
+  }
+  for (i=0; i<20; i++) {
+    var at = new atom(50-i, 250+i*20, 0, 0, 5, true);
+    floor.add(at);
+    ATOMS.push(at);
+  }
+  for (i=0; i<50; i++) {
+    var at = new atom(25+i*20, 221, 0, 0, 10, true);
+    floor.add(at);
+    ATOMS.push(at);
+  }
+  asx("./ball23.json?x="+randy(), function() {
+    var ball2 = new thing("ball2", 130, 900, 0, 0, JSON.parse(this.responseText));
+    bond_triangulate(ball2.atoms, true);
+    COLLIDES.push([ball2, floor]);
+    console.log(BONDS.length, "bonds")
+    display_clear();
+    bonds_draw();
+    atoms_draw();
+    var ii=0;
+    var int = setInterval( function(){
+      display_clear();
+      contacts_draw();
+      bonds_draw();
+      atoms_draw();
+      update_all(TICK_SHOW/TICK_PHYS);
+      ii++;
+      if (ii >= TICK_MAX) {
+        clearInterval(int)
+      }
+    }, TICK_SHOW/REALTIME * 1000);
+  });
+}
+
