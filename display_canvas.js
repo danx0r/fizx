@@ -4,7 +4,7 @@
 
 BOND_COLOR = "#cc88bb"
 ATOM_COLOR = "#00004c"
-ATOM_COLOR2 = "#aabbaa"
+ATOM_COLOR2 = "#99aa99"
 CONTACT_COLOR = "#dd2222"
 
 display_init = function() {
