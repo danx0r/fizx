@@ -15,7 +15,7 @@ BONDS = []
 CONTACTS = []
 COLLIDES = []
 
-atom = function (x, y, vx, vy, radius) {
+atom = function (x, y, vx, vy, radius, locked) {
   if (vx==null) vx = vy = 0;
   if (radius==null) radius=RADIUS;
   this.p = {x: x, y: y};
@@ -24,10 +24,15 @@ atom = function (x, y, vx, vy, radius) {
   // console.log("atom:", this.p, this.v)
   
   this.update = function() {
-    this.p.x += this.v.x * TICK_PHYS;
-    this.p.y += this.v.y * TICK_PHYS;
-    this.v.x *= DAMP;
-    this.v.y *= DAMP;
+    if(!locked) {
+      this.p.x += this.v.x * TICK_PHYS;
+      this.p.y += this.v.y * TICK_PHYS;
+      this.v.x *= DAMP;
+      this.v.y *= DAMP;
+    } else {
+      this.v.x = 0;
+      this.v.y = 0;
+    }
   };
   
   this.draw = function() {
@@ -44,7 +49,7 @@ bond = function(atom1, atom2, dist) {
   this.d = dist;
 }
 
-thing = function(name, x, y, vx, vy, obj) {
+thing = function(name, x, y, vx, vy, obj, locked) {
   this.name = name;
   this.atoms = [];
   this.add = function(atom) {
@@ -53,7 +58,7 @@ thing = function(name, x, y, vx, vy, obj) {
   if (obj != undefined) {
     for (var i=0; i<obj.length; i++) {
       var o = obj[i];
-      var a = new atom(o.p.x+x, o.p.y+y, o.v.x+vx, o.v.y+vy, o.radius);
+      var a = new atom(o.p.x+x, o.p.y+y, o.v.x+vx, o.v.y+vy, o.radius, locked);
       this.atoms.push(a);
       ATOMS.push(a);
     }
@@ -387,10 +392,10 @@ test3 = function() {
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
   asx("./ball60.json?x="+randy(), function() {
-    var ball1 = new thing("ball1", 800, 200, -300, 0, JSON.parse(this.responseText));
-    bond_triangulate(ball1.atoms, true);
+    var ball1 = new thing("ball1", 800, 200, -300, 0, JSON.parse(this.responseText), true);
+    // bond_triangulate(ball1.atoms, true);
     asx("./ball23.json?x="+randy(), function() {
-      var ball2 = new thing("ball2", 300, 230, 300, 0, JSON.parse(this.responseText));
+      var ball2 = new thing("ball2", 300, 280, 300, 0, JSON.parse(this.responseText));
       bond_triangulate(ball2.atoms, true);
       COLLIDES.push([ball1, ball2]);
       console.log(BONDS.length, "bonds")
