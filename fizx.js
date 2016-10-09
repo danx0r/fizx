@@ -103,10 +103,11 @@ contacts_update = function(verbose) {
     var b = CONTACTS[i][1];
     var dx = b.p.x-a.p.x;
     var dy = b.p.y-a.p.y;
+    var thresh = a.radius+b.radius;
     var dist = Math.sqrt(dx*dx+dy*dy);      // distance between atoms
     var udx = dx / dist;                    // unit vector pointing from a to b
     var udy = dy / dist;
-    var dif = dist - BONDS[i].d;            // difference we want to restore to zero
+    var dif = dist - thresh;            // difference we want to restore to zero
     var pterm = dif * BOND_P ;                // Proportional term for our springy bond 
 
     var xswap = pterm * udx;                 // along axis a--b
