@@ -383,13 +383,13 @@ test3 = function() {
   DAMP = 1
   BOND_P = 150
   BOND_D = .05
-  REALTIME = .5
+  REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
   asx("./ball60.json", function() {
     var ball1 = new thing("ball1", 800, 200, -300, 0, JSON.parse(this.responseText));
     bond_triangulate(ball1.atoms, true);
     asx("./ball23.json", function() {
-      var ball2 = new thing("ball2", 300, 300, 300, 0, JSON.parse(this.responseText));
+      var ball2 = new thing("ball2", 300, 400, 300, 0, JSON.parse(this.responseText));
       bond_triangulate(ball2.atoms, true);
       COLLIDES.push([ball1, ball2]);
       console.log(BONDS.length, "bonds")
