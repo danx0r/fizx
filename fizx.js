@@ -420,7 +420,7 @@ test3 = function() {
 }
 
 test4 = function() {
-  DAMP = 1
+  DAMP = .998
   BOND_P = 33
   BOND_D = .05
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
