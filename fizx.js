@@ -53,7 +53,7 @@ thing = function(name, x, y, vx, vy, obj) {
   if (obj != undefined) {
     for (var i=0; i<obj.length; i++) {
       var o = obj[i];
-      var a = new atom(o.p.x+x, o.p.y+y, o.v.x+vx, o.v.y+vy);
+      var a = new atom(o.p.x+x, o.p.y+y, o.v.x+vx, o.v.y+vy, o.radius);
       this.atoms.push(a);
       ATOMS.push(a);
     }
@@ -382,15 +382,15 @@ function asx(url, cb) {
 test3 = function() {
   RADIUS = 11
   DAMP = 1
-  BOND_P = 150
+  BOND_P = 100
   BOND_D = .05
-  // REALTIME = .2; TICK_SHOW=TICK_PHYS
+  // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
-  asx("./ball60.json", function() {
+  asx("./ball60.json?x="+randy(), function() {
     var ball1 = new thing("ball1", 800, 200, -300, 0, JSON.parse(this.responseText));
     bond_triangulate(ball1.atoms, true);
-    asx("./ball16.json", function() {
-      var ball2 = new thing("ball2", 300, 220, 300, 0, JSON.parse(this.responseText));
+    asx("./ball23.json?x="+randy(), function() {
+      var ball2 = new thing("ball2", 300, 230, 300, 0, JSON.parse(this.responseText));
       bond_triangulate(ball2.atoms, true);
       COLLIDES.push([ball1, ball2]);
       console.log(BONDS.length, "bonds")

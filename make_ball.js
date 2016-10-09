@@ -19,6 +19,13 @@ update_all(3000);
 BONDS = [];
 bond_triangulate(ATOMS, true)
 
+// compute average bond length
+var avgd = 0
+for(var i=0; i<BONDS.length; i++) {
+  avgd += BONDS[i].d;
+}
+avgd /= BONDS.length;
+console.log("average distance twixt atoms:", avgd);
 // center the ball
 
 var avgx = 0;
@@ -34,9 +41,11 @@ for(var i=0; i<ATOMS.length; i++) {
   ATOMS[i].v.y = 0;
   ATOMS[i].p.x -= avgx;
   ATOMS[i].p.y -= avgy;
+  ATOMS[i].radius = avgd * .6;     // somwat arbitrary
 }
 
 console.log(ATOMS.length, "atoms");
 console.log(BONDS.length, "bonds");
-
-fs.writeFileSync("ball.json", JSON.stringify(ATOMS));
+var fn = "ball"+process.argv[2]+".json"
+fs.writeFileSync(fn, JSON.stringify(ATOMS));
+console.log("wrote to file", fn)
