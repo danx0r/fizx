@@ -427,7 +427,7 @@ test4 = function() {
   display_init();
   var floor = new thing("floor");
   for (i=0; i<60; i++) {
-    var at = new atom(100+i*20, 100+i*2, 0, 0, 10, true);
+    var at = new atom(100+i*20, 220+i*0, 0, 0, 10, true);
     floor.add(at);
     ATOMS.push(at);
   }
