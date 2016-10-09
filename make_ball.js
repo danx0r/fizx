@@ -41,7 +41,7 @@ for(var i=0; i<ATOMS.length; i++) {
   ATOMS[i].v.y = 0;
   ATOMS[i].p.x -= avgx;
   ATOMS[i].p.y -= avgy;
-  ATOMS[i].radius = avgd * 1.3;     // somwat arbitrary
+  ATOMS[i].radius = avgd * .3;     // somwat arbitrary
 }
 
 console.log(ATOMS.length, "atoms");

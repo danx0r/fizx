@@ -427,12 +427,12 @@ test4 = function() {
   display_init();
   var floor = new thing("floor");
   for (i=0; i<60; i++) {
-    var at = new atom(100+i*20, 220+i*0, 0, 0, 10, true);
+    var at = new atom(100+i*20, 120+i*0, 0, 0, 10, true);
     floor.add(at);
     ATOMS.push(at);
   }
   asx("./ball60.json?x="+randy(), function() {
-    var ball2 = new thing("ball2", 1100, 330, 0, 0, JSON.parse(this.responseText));
+    var ball2 = new thing("ball2", 400, 330, 0, 0, JSON.parse(this.responseText));
     bond_triangulate(ball2.atoms, true);
     COLLIDES.push([floor, ball2]);
     console.log(BONDS.length, "bonds")
