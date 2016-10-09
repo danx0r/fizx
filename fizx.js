@@ -70,7 +70,7 @@ atoms_draw = function() {
 }
 
 refresh_contacts = function() {
-  var thresh = 25;              // FIXME each atom should have a radius
+  var thresh = 11;              // FIXME each atom should have a radius
   CONTACTS = [];
   for (var i=0; i<COLLIDES.length; i++) {
     var ta = COLLIDES[i][0];
@@ -368,13 +368,13 @@ function asx(url, cb) {
 test3 = function() {
   DAMP = 1
   BOND_P = 1
-  BOND_D = .2
+  BOND_D = .02
   // REALTIME = .1
   display_init();
   asx("./ball.json", function() {
-    var ball1 = new thing("ball1", 800, 200, -300, 0, JSON.parse(this.responseText));
+    var ball1 = new thing("ball1", 800, 200, -700, 0, JSON.parse(this.responseText));
     bond_triangulate(ball1.atoms, true);
-    var ball2 = new thing("ball2", 300, 400, 300, 0, JSON.parse(this.responseText));
+    var ball2 = new thing("ball2", 300, 400, 700, 0, JSON.parse(this.responseText));
     bond_triangulate(ball2.atoms, true);
     COLLIDES.push([ball1, ball2]);
     console.log(BONDS.length, "bonds")
