@@ -1,3 +1,4 @@
+GRAVITY = -1
 RADIUS = 25;
 RADIUS_SHOW = 2.5;
 TICK_PHYS = 0.001;
@@ -29,6 +30,7 @@ atom = function (x, y, vx, vy, radius, locked) {
       this.p.y += this.v.y * TICK_PHYS;
       this.v.x *= DAMP;
       this.v.y *= DAMP;
+      this.v.y += GRAVITY;
     } else {
       this.v.x = 0;
       this.v.y = 0;
@@ -385,17 +387,16 @@ function asx(url, cb) {
 }
 
 test3 = function() {
-  RADIUS = 11
   DAMP = 1
   BOND_P = 100
   BOND_D = .05
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
   asx("./ball60.json?x="+randy(), function() {
-    var ball1 = new thing("ball1", 800, 200, -300, 0, JSON.parse(this.responseText), true);
+    var ball1 = new thing("ball1", 794, 100, -300, 0, JSON.parse(this.responseText), true);
     // bond_triangulate(ball1.atoms, true);
-    asx("./ball23.json?x="+randy(), function() {
-      var ball2 = new thing("ball2", 300, 280, 300, 0, JSON.parse(this.responseText));
+    asx("./ball37.json?x="+randy(), function() {
+      var ball2 = new thing("ball2", 800, 600, 0, 0, JSON.parse(this.responseText));
       bond_triangulate(ball2.atoms, true);
       COLLIDES.push([ball1, ball2]);
       console.log(BONDS.length, "bonds")
@@ -415,6 +416,41 @@ test3 = function() {
         }
       }, TICK_SHOW/REALTIME * 1000);
     });
+  });
+}
+
+test4 = function() {
+  DAMP = 1
+  BOND_P = 100
+  BOND_D = .05
+  // REALTIME = .1; TICK_SHOW=TICK_PHYS
+  display_init();
+  var floor = new thing("floor");
+  for (i=0; i<20; i++) {
+    var at = new atom(100+i*20, 100, 0, 0, 20, true);
+    floor.add(at);
+    ATOMS.push(at);
+  }
+  asx("./ball37.json?x="+randy(), function() {
+    var ball2 = new thing("ball2", 200, 600, 0, 0, JSON.parse(this.responseText));
+    bond_triangulate(ball2.atoms, true);
+    COLLIDES.push([floor, ball2]);
+    console.log(BONDS.length, "bonds")
+    display_clear();
+    bonds_draw();
+    atoms_draw();
+    var ii=0;
+    var int = setInterval( function(){
+      display_clear();
+      contacts_draw();
+      bonds_draw();
+      atoms_draw();
+      update_all(TICK_SHOW/TICK_PHYS);
+      ii++;
+      if (ii >= TICK_MAX) {
+        clearInterval(int)
+      }
+    }, TICK_SHOW/REALTIME * 1000);
   });
 }
 
