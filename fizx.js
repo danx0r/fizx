@@ -1,7 +1,7 @@
 RADIUS = 15;
 RADIUS_SHOW = 4;
 TICK_PHYS = 0.001;
-TICK_SHOW = 0.001;
+TICK_SHOW = 0.01;
 REALTIME = 1;
 TICK_MAX = 1000000;
 // TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
@@ -381,15 +381,15 @@ function asx(url, cb) {
 
 test3 = function() {
   DAMP = 1
-  BOND_P = 50
+  BOND_P = 150
   BOND_D = .05
-  // REALTIME = .2
+  REALTIME = .2
   display_init();
-  asx("./ball16.json", function() {
+  asx("./ball60.json", function() {
     var ball1 = new thing("ball1", 800, 200, -300, 0, JSON.parse(this.responseText));
     bond_triangulate(ball1.atoms, true);
-    asx("./ball37.json", function() {
-      var ball2 = new thing("ball2", 300, 200, 300, 0, JSON.parse(this.responseText));
+    asx("./ball16.json", function() {
+      var ball2 = new thing("ball2", 300, 300, 300, 0, JSON.parse(this.responseText));
       bond_triangulate(ball2.atoms, true);
       COLLIDES.push([ball1, ball2]);
       console.log(BONDS.length, "bonds")
