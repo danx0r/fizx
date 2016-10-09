@@ -9,6 +9,8 @@ TICK_MAX = 1000000;
 
 BOND_P = 5
 BOND_D = 0
+CONTACT_P = 200
+CONTACT_D = 2
 DAMP = 0.975
 
 ATOMS = []
@@ -116,10 +118,20 @@ contacts_update = function(verbose) {
     var udx = dx / dist;                    // unit vector pointing from a to b
     var udy = dy / dist;
     var dif = dist - thresh;            // difference we want to restore to zero
-    var pterm = dif * BOND_P ;                // Proportional term for our springy bond 
+    var pterm = dif * CONTACT_P ;                // Proportional term for our springy bond 
 
-    var xswap = pterm * udx;                 // along axis a--b
-    var yswap = pterm * udy;
+    var dvx = b.v.x-a.v.x;
+    var dvy = b.v.y-a.v.y;
+    var vdif = Math.sqrt(dvx*dvx+dvy*dvy);  // relative velocity
+    var vdot = 0;                           // if relative velocity==0, no Derivative term for our PiD
+    if (vdif) {
+      var uvx = dvx / vdif;                 // velocity unit vector (direction of rel vel)
+      var uvy = dvy / vdif;
+      vdot = uvx*udx + uvy*udy;             // dot product of positional direction vs rel vel - we only
+    }                                       // want to adjust velocity along axis aligned with 2 particles,
+    var dterm = vdif * vdot * CONTACT_D;        // Derivative term
+    var xswap = (pterm + dterm) * udx;          // along axis a--b
+    var yswap = (pterm + dterm) * udy;
 
     a.v.x += xswap;                          // swap momenta
     b.v.x -= xswap;
@@ -420,9 +432,9 @@ test3 = function() {
 }
 
 test4 = function() {
-  DAMP = .998
+  DAMP = 1
   BOND_P = 33
-  BOND_D = .05
+  BOND_D = .5
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
   var floor = new thing("floor");
