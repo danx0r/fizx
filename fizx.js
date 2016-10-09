@@ -40,7 +40,7 @@ bond = function(atom1, atom2, dist) {
   this.d = dist;
 }
 
-thing = function(name, x, y, obj) {
+thing = function(name, x, y, vx, vy, obj) {
   this.name = name;
   this.atoms = [];
   this.add = function(atom) {
@@ -49,7 +49,7 @@ thing = function(name, x, y, obj) {
   if (obj != undefined) {
     for (var i=0; i<obj.length; i++) {
       var o = obj[i];
-      var a = new atom(o.p.x+x, o.p.y+y, o.v.x, o.v.y);
+      var a = new atom(o.p.x+x, o.p.y+y, o.v.x+vx, o.v.y+vy);
       this.atoms.push(a);
       ATOMS.push(a);
     }
@@ -343,7 +343,7 @@ test3 = function() {
   // REALTIME = .1
   display_init();
   asx("./ball.json", function() {
-    var ball = new thing("ball1", 500, 300, JSON.parse(this.responseText));
+    var ball = new thing("ball1", 500, 300, 100, 0, JSON.parse(this.responseText));
     bond_triangulate(ball.atoms, true);
     console.log(BONDS.length, "bonds")
     console.log("ball:", ball)
