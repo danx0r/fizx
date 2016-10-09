@@ -1,4 +1,4 @@
-RADIUS = 35;
+RADIUS = 15;
 RADIUS_SHOW = 4;
 TICK_PHYS = 0.001;
 TICK_SHOW = 0.001;
@@ -33,6 +33,7 @@ atom = function (x, y, vx, vy, radius) {
   this.draw = function() {
     // console.log("draw at", this.p.x, this.p.y)
     display_circle(this.p.x, this.p.y, RADIUS_SHOW, ATOM_COLOR);
+    display_circle(this.p.x, this.p.y, this.radius, ATOM_COLOR2);
   };
 }
 
@@ -382,7 +383,7 @@ test3 = function() {
   DAMP = 1
   BOND_P = 50
   BOND_D = .05
-  REALTIME = .2
+  // REALTIME = .2
   display_init();
   asx("./ball16.json", function() {
     var ball1 = new thing("ball1", 800, 200, -300, 0, JSON.parse(this.responseText));
