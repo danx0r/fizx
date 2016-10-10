@@ -504,11 +504,14 @@ first_run = function() {
     floor.add(at);
     ATOMS.push(at);
   }
-  for (i=0; i<50; i++) {
+  for (i=0; i<30; i++) {
     var at = new atom(25+i*20, 221, 0, 0, 10, true);
     floor.add(at);
     ATOMS.push(at);
   }
+  var at = new atom(725, 221, 0, 0, 10, true);
+  floor.add(at);
+  ATOMS.push(at);
   asx("./ball23.json?x="+randy(), function() {
     var ball2 = new thing("ball2", 130, 900, 0, 0, JSON.parse(this.responseText));
     bond_triangulate(ball2.atoms, true);
