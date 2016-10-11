@@ -107,68 +107,49 @@ refresh_contacts = function() {
   }
 }
 
-contacts_update = function(verbose) {
-  for (var i=0; i<CONTACTS.length; i++) {
-    var a = CONTACTS[i][0];
-    var b = CONTACTS[i][1];
-    var dx = b.p.x-a.p.x;
-    var dy = b.p.y-a.p.y;
-    var thresh = a.radius+b.radius;
-    var dist = Math.sqrt(dx*dx+dy*dy);      // distance between atoms
-    var udx = dx / dist;                    // unit vector pointing from a to b
-    var udy = dy / dist;
-    var dif = dist - thresh;            // difference we want to restore to zero
-    var pterm = dif * CONTACT_P ;                // Proportional term for our springy bond 
+var momentum_swap = function(a, b, P, D, thresh) {
+  var dx = b.p.x-a.p.x;
+  var dy = b.p.y-a.p.y;
+  var dist = Math.sqrt(dx*dx+dy*dy);      // distance between atoms
+  var udx = dx / dist;                    // unit vector pointing from a to b
+  var udy = dy / dist;
+  var dif = dist - thresh;            // difference we want to restore to zero
+  var pterm = dif * P ;                // Proportional term for our springy bond 
 
-    var dvx = b.v.x-a.v.x;
-    var dvy = b.v.y-a.v.y;
-    var vdif = Math.sqrt(dvx*dvx+dvy*dvy);  // relative velocity
-    var vdot = 0;                           // if relative velocity==0, no Derivative term for our PiD
-    if (vdif) {
-      var uvx = dvx / vdif;                 // velocity unit vector (direction of rel vel)
-      var uvy = dvy / vdif;
-      vdot = uvx*udx + uvy*udy;             // dot product of positional direction vs rel vel - we only
-    }                                       // want to adjust velocity along axis aligned with 2 particles,
-    var dterm = vdif * vdot * CONTACT_D;        // Derivative term
-    var xswap = (pterm + dterm) * udx;          // along axis a--b
-    var yswap = (pterm + dterm) * udy;
+  var dvx = b.v.x-a.v.x;
+  var dvy = b.v.y-a.v.y;
+  var vdif = Math.sqrt(dvx*dvx+dvy*dvy);  // relative velocity
+  var vdot = 0;                           // if relative velocity==0, no Derivative term for our PiD
+  if (vdif) {
+    var uvx = dvx / vdif;                 // velocity unit vector (direction of rel vel)
+    var uvy = dvy / vdif;
+    vdot = uvx*udx + uvy*udy;             // dot product of positional direction vs rel vel - we only
+  }                                       // want to adjust velocity along axis aligned with 2 particles,
+  var dterm = vdif * vdot * D;        // Derivative term
+  var xswap = (pterm + dterm) * udx;          // along axis a--b
+  var yswap = (pterm + dterm) * udy;
 
-    a.v.x += xswap;                          // swap momenta
-    b.v.x -= xswap;
-    a.v.y += yswap;
-    b.v.y -= yswap;
-  }
+  a.v.x += xswap;                          // swap momenta
+  b.v.x -= xswap;
+  a.v.y += yswap;
+  b.v.y -= yswap;
 }
 
-bonds_update = function(verbose) {
+bonds_update = function() {
   for (var i=0; i<BONDS.length; i++) {
     var a = BONDS[i].a;
     var b = BONDS[i].b;
-    var dx = b.p.x-a.p.x;
-    var dy = b.p.y-a.p.y;
-    var dist = Math.sqrt(dx*dx+dy*dy);      // distance between atoms
-    var udx = dx / dist;                    // unit vector pointing from a to b
-    var udy = dy / dist;
-    var dif = dist - BONDS[i].d;            // difference we want to restore to zero
-    var pterm = dif * BOND_P ;                // Proportional term for our springy bond 
+    var thresh = BONDS[i].d;
+    momentum_swap(a, b, BOND_P, BOND_D, thresh);
+  }
+}
 
-    var dvx = b.v.x-a.v.x;
-    var dvy = b.v.y-a.v.y;
-    var vdif = Math.sqrt(dvx*dvx+dvy*dvy);  // relative velocity
-    var vdot = 0;                           // if relative velocity==0, no Derivative term for our PiD
-    if (vdif) {
-      var uvx = dvx / vdif;                 // velocity unit vector (direction of rel vel)
-      var uvy = dvy / vdif;
-      vdot = uvx*udx + uvy*udy;             // dot product of positional direction vs rel vel - we only
-    }                                       // want to adjust velocity along axis aligned with 2 particles,
-    var dterm = vdif * vdot * BOND_D;        // Derivative term
-    var xswap = (pterm + dterm) * udx;          // along axis a--b
-    var yswap = (pterm + dterm) * udy;
-
-    a.v.x += xswap;                          // swap momenta
-    b.v.x -= xswap;
-    a.v.y += yswap;
-    b.v.y -= yswap;
+contacts_update = function() {
+  for (var i=0; i<CONTACTS.length; i++) {
+    var a = CONTACTS[i][0];
+    var b = CONTACTS[i][1];
+    var thresh = a.radius+b.radius;
+    momentum_swap(a, b, CONTACT_P, CONTACT_D, thresh);
   }
 }
 
@@ -192,10 +173,10 @@ contacts_draw = function() {
 
 update_all = function(n) {
   for(var i=0; i<n; i++) {
-    bonds_update(i==n-1);
-    atoms_update(i==n-1);
-    refresh_contacts(i==n-1)
-    contacts_update(i==n-1);
+    bonds_update();
+    refresh_contacts()
+    contacts_update();
+    atoms_update();
   }
 }
 
