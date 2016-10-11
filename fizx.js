@@ -484,12 +484,12 @@ test4 = function() {
 
 first_run = function() {
   DAMP = 1
-  BOND_P = 33
+  BOND_P = 100
   BOND_D = .5
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
   var floor = new thing("floor");
-  for (i=0; i<44; i++) {
+  for (i=0; i<48; i++) {
     var at = new atom(220+i*20, 420+i*4, 0, 0, 10, true);
     floor.add(at);
     ATOMS.push(at);
@@ -512,7 +512,7 @@ first_run = function() {
   var at = new atom(725, 221, 0, 0, 10, true);
   floor.add(at);
   ATOMS.push(at);
-  asx("./ball23.json?x="+randy(), function() {
+  asx("./ball19.json?x="+randy(), function() {
     var ball2 = new thing("ball2", 130, 900, 0, 0, JSON.parse(this.responseText));
     bond_triangulate(ball2.atoms, true);
     COLLIDES.push([ball2, floor]);

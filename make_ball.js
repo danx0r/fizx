@@ -2,7 +2,7 @@ var fs=require('fs');
 require('./fizx.js');
 require('./delaunay.js');
 
-RADIUS = 35;
+RADIUS = 23;
 BOND_P = 5
 BOND_D = 0
 DAMP = 0.975
@@ -41,7 +41,7 @@ for(var i=0; i<ATOMS.length; i++) {
   ATOMS[i].v.y = 0;
   ATOMS[i].p.x -= avgx;
   ATOMS[i].p.y -= avgy;
-  ATOMS[i].radius = avgd * .3;     // somwat arbitrary
+  ATOMS[i].radius = avgd * 1.25;     // somwat arbitrary
 }
 
 console.log(ATOMS.length, "atoms");
