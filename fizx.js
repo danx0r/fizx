@@ -493,10 +493,15 @@ first_run = function() {
   var at = new atom(725, 221, 0, 0, 10, true);
   floor.add(at);
   ATOMS.push(at);
+
+  var small = new thing("x");
+  var at = new atom(130, 1100, 0, 0, 30);
+  small.add(at);
+  ATOMS.push(at);
   asx("./ball23.json?x="+randy(), function() {
     var ball2 = new thing("ball2", 130, 900, 0, 0, JSON.parse(this.responseText));
     bond_triangulate(ball2.atoms, true);
-    COLLIDES.push([ball2, floor]);
+    COLLIDES.push([ball2, floor],[small, floor],[small, ball2]);
     console.log(BONDS.length, "bonds")
     display_clear();
     bonds_draw();
