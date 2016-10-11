@@ -2,7 +2,7 @@ var fs=require('fs');
 require('./fizx.js');
 require('./delaunay.js');
 
-RADIUS = 50;
+RADIUS = 6;
 BOND_P = 5
 BOND_D = 0
 DAMP = 0.975
