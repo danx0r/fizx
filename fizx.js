@@ -495,13 +495,16 @@ first_run = function() {
   ATOMS.push(at);
 
   var small = new thing("x");
-  var at = new atom(330, 300, 0, 0, 30);
+  var at = new atom(330, 300, 0, 0, 10);
   small.add(at);
   ATOMS.push(at);
-  var at2 = new atom(230, 300, 0, 0, 30);
+  var at2 = new atom(300, 300, 0, 0, 10);
   small.add(at2);
   ATOMS.push(at2);
-  BONDS.push(new bond(at, at2, 50));
+  var at3 = new atom(315, 370, 0, 0, 10);
+  small.add(at3);
+  ATOMS.push(at3);
+  bond_nearest([at,at2,at3],2,true);
   
   asx("./ball23.json?x="+randy(), function() {
     var ball2 = new thing("ball2", 130, 900, 0, 0, JSON.parse(this.responseText));
