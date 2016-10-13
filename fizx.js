@@ -283,6 +283,14 @@ bond_triangulate = function(atoms, freeze) {
   // console.log(bonded)
 }
 
+collide_all = function(things) {
+  for (var i=0; i<things.length; i++) {
+    for (var j=i+1; j<things.length; j++) {
+      COLLIDES.push([things[i], things[j]]);
+    }
+  }
+}
+
 rand32_A = 1664525;
 rand32_C = 1013904223;
 rand32_seed = 12345678;
@@ -470,7 +478,7 @@ first_run = function() {
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
   var floor = new thing("floor");
-  for (i=0; i<44; i++) {
+  for (i=0; i<49; i++) {
     var at = new atom(220+i*20, 420+i*4, 0, 0, 10, true);
     floor.add(at);
     ATOMS.push(at);
@@ -506,9 +514,11 @@ first_run = function() {
   ATOMS.push(at3);
   bond_nearest([at,at2,at3],2,true);
   
+  var ball1 = new thing("ball2", 140, 1100, 0, 0, ball23);
+  bond_triangulate(ball1.atoms, true);
   var ball2 = new thing("ball2", 130, 900, 0, 0, ball23);
   bond_triangulate(ball2.atoms, true);
-  COLLIDES.push([ball2, floor],[small, floor],[small, ball2]);
+  collide_all([floor, ball1, ball2]);
   console.log(BONDS.length, "bonds")
   display_clear();
   bonds_draw();
