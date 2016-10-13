@@ -2,7 +2,7 @@ var fs=require('fs');
 require('./fizx.js');
 require('./delaunay.js');
 
-RADIUS = 6;
+RADIUS = 35;
 BOND_P = 5
 BOND_D = 0
 DAMP = 0.975
@@ -41,11 +41,12 @@ for(var i=0; i<ATOMS.length; i++) {
   ATOMS[i].v.y = 0;
   ATOMS[i].p.x -= avgx;
   ATOMS[i].p.y -= avgy;
-  ATOMS[i].radius = 50//avgd * 2;     // somwat arbitrary
+  ATOMS[i].radius = avgd * .3;     // somwat arbitrary
 }
 
 console.log(ATOMS.length, "atoms");
 console.log(BONDS.length, "bonds");
-var fn = "ball"+process.argv[2]+".json"
-fs.writeFileSync(fn, JSON.stringify(ATOMS));
+var nom = "ball"+process.argv[2]; 
+var fn = nom+".js"
+fs.writeFileSync(fn, nom+"="+JSON.stringify(ATOMS));
 console.log("wrote to file", fn)

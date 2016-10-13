@@ -506,26 +506,24 @@ first_run = function() {
   ATOMS.push(at3);
   bond_nearest([at,at2,at3],2,true);
   
-  asx("./ball23.json?x="+randy(), function() {
-    var ball2 = new thing("ball2", 130, 900, 0, 0, JSON.parse(this.responseText));
-    bond_triangulate(ball2.atoms, true);
-    COLLIDES.push([ball2, floor],[small, floor],[small, ball2]);
-    console.log(BONDS.length, "bonds")
+  var ball2 = new thing("ball2", 130, 900, 0, 0, ball23);
+  bond_triangulate(ball2.atoms, true);
+  COLLIDES.push([ball2, floor],[small, floor],[small, ball2]);
+  console.log(BONDS.length, "bonds")
+  display_clear();
+  bonds_draw();
+  atoms_draw();
+  var ii=0;
+  var int = setInterval( function(){
     display_clear();
+    contacts_draw();
     bonds_draw();
     atoms_draw();
-    var ii=0;
-    var int = setInterval( function(){
-      display_clear();
-      contacts_draw();
-      bonds_draw();
-      atoms_draw();
-      update_all(TICK_SHOW/TICK_PHYS);
-      ii++;
-      if (ii >= TICK_MAX) {
-        clearInterval(int)
-      }
-    }, TICK_SHOW/REALTIME * 1000);
-  });
+    update_all(TICK_SHOW/TICK_PHYS);
+    ii++;
+    if (ii >= TICK_MAX) {
+      clearInterval(int)
+    }
+  }, TICK_SHOW/REALTIME * 1000);
 }
 
