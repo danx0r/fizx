@@ -1,4 +1,4 @@
-GRAVITY = -1
+GRAVITY = -1000
 RADIUS = 25;
 RADIUS_SHOW = 2.5;
 TICK_PHYS = 0.001;
@@ -32,7 +32,7 @@ atom = function (x, y, vx, vy, radius, locked) {
       this.p.y += this.v.y * TICK_PHYS;
       this.v.x *= DAMP;
       this.v.y *= DAMP;
-      this.v.y += GRAVITY;
+      this.v.y += GRAVITY * TICK_PHYS;
     } else {
       this.v.x = 0;
       this.v.y = 0;
