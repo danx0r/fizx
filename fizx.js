@@ -24,10 +24,10 @@ atom = function (x, y, vx, vy, radius, locked) {
   this.p = {x: x, y: y};
   this.v = {x: vx, y: vy};
   this.radius=radius;
-  // console.log("atom:", this.p, this.v)
+  this.locked=locked;
   
   this.update = function() {
-    if(!locked) {
+    if(!this.locked) {
       this.p.x += this.v.x * TICK_PHYS;
       this.p.y += this.v.y * TICK_PHYS;
       this.v.x *= DAMP;
