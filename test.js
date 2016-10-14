@@ -222,8 +222,11 @@ first_run = function() {
   bonds_draw();
   atoms_draw();
   var ii=0;
+  console.log("START");
+
   var intv = setInterval( function(){
-    console.log("draw");
+    // console.log("draw", ii);
+    console.log(ball1.atoms[1].v.y);
     display_clear();
     contacts_draw();
     bonds_draw();
