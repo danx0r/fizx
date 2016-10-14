@@ -242,8 +242,10 @@ first_run = function() {
 sound = function() {
   GRAVITY = 0
   DAMP = 1
-  BOND_P = 400
-  BOND_D = 0.01
+  BOND_P = 500
+  BOND_D = 0.05
+  CONTACT_P = 2000
+  CONTACT_D = 0
   TICK_PHYS=0.00005
   REALTIME = 1000; TICK_SHOW=TICK_PHYS
   TICK_MAX = 22000;
@@ -257,7 +259,7 @@ sound = function() {
   // BONDS.push(new bond(a, b, 110))
   // BONDS.push(new bond(b, c, 130))
   // BONDS.push(new bond(a, c, 160))
-  var ball1 = new thing("ball2", 100, 200, 10000, 0, ball16);
+  var ball1 = new thing("ball2", 100, 212, 10000, 0, ball23);
   bond_triangulate(ball1.atoms, true);
   var ball2 = new thing("ball2", 1100, 200, -10000, 0, ball23);
   bond_triangulate(ball2.atoms, true);
