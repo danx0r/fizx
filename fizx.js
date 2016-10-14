@@ -82,7 +82,6 @@ atoms_draw = function() {
 }
 
 refresh_contacts = function() {
-  // var thresh = 25;              // FIXME each atom should have a radius
   CONTACTS = [];
   for (var i=0; i<COLLIDES.length; i++) {
     var ta = COLLIDES[i][0];
@@ -107,13 +106,13 @@ refresh_contacts = function() {
   }
 }
 
-var momentum_swap = function(a, b, P, D, thresh) {
+var momentum_swap = function(a, b, P, D, target) {
   var dx = b.p.x-a.p.x;
   var dy = b.p.y-a.p.y;
   var dist = Math.sqrt(dx*dx+dy*dy);      // distance between atoms
   var udx = dx / dist;                    // unit vector pointing from a to b
   var udy = dy / dist;
-  var dif = dist - thresh;            // difference we want to restore to zero
+  var dif = dist - target;            // difference we want to restore to zero
   var pterm = dif * P ;                // Proportional term for our springy bond 
 
   var dvx = b.v.x-a.v.x;
@@ -139,8 +138,8 @@ bonds_update = function() {
   for (var i=0; i<BONDS.length; i++) {
     var a = BONDS[i].a;
     var b = BONDS[i].b;
-    var thresh = BONDS[i].d;
-    momentum_swap(a, b, BOND_P, BOND_D, thresh);
+    var target = BONDS[i].d;
+    momentum_swap(a, b, BOND_P, BOND_D, target);
   }
 }
 
@@ -148,8 +147,8 @@ contacts_update = function() {
   for (var i=0; i<CONTACTS.length; i++) {
     var a = CONTACTS[i][0];
     var b = CONTACTS[i][1];
-    var thresh = a.radius+b.radius;
-    momentum_swap(a, b, CONTACT_P, CONTACT_D, thresh);
+    var target = a.radius+b.radius;
+    momentum_swap(a, b, CONTACT_P, CONTACT_D, target);
   }
 }
 
@@ -249,7 +248,7 @@ bond_nearest = function(atoms, n, freeze) {
 bond_triangulate = function(atoms, freeze) {
   var verts = [];
   for (var i=0; i<atoms.length; i++) {
-    verts.push([atoms[i].p.x, atoms[i].p.y, atoms[i]])
+    verts.push([atoms[i].p.x, atoms[i].p.y])
   }
   var triangles = Delaunay.triangulate(verts);
   var bonded = {};
