@@ -488,8 +488,8 @@ first_run = function() {
     floor.add(at);
     ATOMS.push(at);
   }
-  for (i=0; i<30; i++) {
-    var at = new atom(25+i*20, 221, 0, 0, 10, true);
+  for (i=0; i<60; i++) {
+    var at = new atom(25+i*10, 221, 0, 0, 10, true);
     floor.add(at);
     ATOMS.push(at);
   }
