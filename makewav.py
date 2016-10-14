@@ -13,7 +13,7 @@ for li in f.readlines():
     if li.strip()=="DONE":
         break
     if start:
-        i = int(float(li.strip())*1000)
+        i = int(float(li.strip())*2000)
         print i
         raw.append(i)
 f.close()
@@ -30,7 +30,7 @@ f=wave.open("wave.wav", 'w')
 f.setnchannels(1)
 f.setsampwidth(2)
 f.setframerate(22050)
-f.setnframes(len(buf)*2)        #why?
-for i in range(2):
+f.setnframes(len(buf)*10)        #why?
+for i in range(10):
     f.writeframesraw(buf)
 f.close()

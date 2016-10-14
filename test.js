@@ -243,28 +243,35 @@ sound = function() {
   GRAVITY = 0
   DAMP = 1
   BOND_P = 400
-  BOND_D = 0.001
+  BOND_D = 0.01
   TICK_PHYS=0.00005
   REALTIME = 1000; TICK_SHOW=TICK_PHYS
   TICK_MAX = 22000;
   display_init();
-  var a=new atom(100,110,0,0,50)
-  var b=new atom(100,200,0,0,50)
-  var c=new atom(200,200,0,0,50)
-  ATOMS.push(a);
-  ATOMS.push(b);
-  ATOMS.push(c);
-  BONDS.push(new bond(a, b, 110))
-  BONDS.push(new bond(b, c, 130))
-  BONDS.push(new bond(a, c, 160))
+  // var a=new atom(100,110,0,0,50)
+  // var b=new atom(100,200,0,0,50)
+  // var c=new atom(200,200,0,0,50)
+  // ATOMS.push(a);
+  // ATOMS.push(b);
+  // ATOMS.push(c);
+  // BONDS.push(new bond(a, b, 110))
+  // BONDS.push(new bond(b, c, 130))
+  // BONDS.push(new bond(a, c, 160))
+  var ball1 = new thing("ball2", 100, 200, 10000, 0, ball16);
+  bond_triangulate(ball1.atoms, true);
+  var ball2 = new thing("ball2", 1100, 200, -10000, 0, ball23);
+  bond_triangulate(ball2.atoms, true);
+  collide_all([ball1, ball2]);
   ii=0;
   console.log("START");
+  var a = ball1.atoms[4];
+  var b = ball1.atoms[5]; 
   var intv = setInterval( function(){
     // console.log("draw", ii);
     var dx = b.p.x-a.p.x;
     var dy = b.p.y-a.p.y;
     var d = Math.sqrt(dx*dx+dy*dy)
-    d -= a.radius+b.radius;
+    d -= 50;
     console.log(d);
     display_clear();
     contacts_draw();
