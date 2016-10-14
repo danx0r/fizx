@@ -3,7 +3,7 @@ RADIUS = 25;
 RADIUS_SHOW = 2.5;
 TICK_PHYS = 0.001;
 TICK_SHOW = 0.02;
-REALTIME = 2.5;
+REALTIME = 1//2.5;
 TICK_MAX = 1000000;
 // TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
 
@@ -488,11 +488,6 @@ first_run = function() {
     floor.add(at);
     ATOMS.push(at);
   }
-  for (i=0; i<20; i++) {
-    var at = new atom(50-i, 250+i*20, 0, 0, 5, true);
-    floor.add(at);
-    ATOMS.push(at);
-  }
   for (i=0; i<30; i++) {
     var at = new atom(25+i*20, 221, 0, 0, 10, true);
     floor.add(at);
@@ -501,6 +496,14 @@ first_run = function() {
   var at = new atom(725, 221, 0, 0, 10, true);
   floor.add(at);
   ATOMS.push(at);
+
+  var curtain = new thing("curtain");
+  for (i=0; i<20; i++) {
+    var at = new atom(208, 250+i*20, 0, 0, 11, i==19);
+    curtain.add(at);
+    ATOMS.push(at);
+  }
+  bond_nearest(curtain.atoms,4,true);
 
   var small = new thing("x");
   var at = new atom(330, 300, 0, 0, 10);
@@ -518,7 +521,7 @@ first_run = function() {
   bond_triangulate(ball1.atoms, true);
   var ball2 = new thing("ball2", 130, 900, 0, 0, ball23);
   bond_triangulate(ball2.atoms, true);
-  collide_all([floor, ball1, ball2, small]);
+  collide_all([floor, ball1, ball2, small, curtain]);
   console.log(BONDS.length, "bonds")
   display_clear();
   bonds_draw();
