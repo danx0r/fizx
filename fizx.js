@@ -3,7 +3,7 @@ RADIUS = 25;
 RADIUS_SHOW = 2.5;
 TICK_PHYS = 0.001;
 TICK_SHOW = 0.02;
-REALTIME = 1;
+REALTIME = 2.5;
 TICK_MAX = 1000000;
 // TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
 
@@ -518,7 +518,7 @@ first_run = function() {
   bond_triangulate(ball1.atoms, true);
   var ball2 = new thing("ball2", 130, 900, 0, 0, ball23);
   bond_triangulate(ball2.atoms, true);
-  collide_all([floor, ball1, ball2]);
+  collide_all([floor, ball1, ball2, small]);
   console.log(BONDS.length, "bonds")
   display_clear();
   bonds_draw();
