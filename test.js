@@ -169,6 +169,7 @@ first_run = function() {
   DAMP = 1
   BOND_P = 33
   BOND_D = .5
+  TICK_MAX = 1000;
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
   var floor = new thing("floor");
@@ -220,29 +221,24 @@ first_run = function() {
   display_clear();
   bonds_draw();
   atoms_draw();
-  var ii=0;
   console.log("START");
+  T = (new Date).getTime();
 
-  var intv = setInterval( function(){
+  display_iterate( function(){
     // console.log("draw", ii);
-    console.log(ball1.atoms[1].v.y);
     display_clear();
     contacts_draw();
     bonds_draw();
     atoms_draw();
     update_all(TICK_SHOW/TICK_PHYS);
-    ii++;
-    if (ii >= TICK_MAX) {
-      clearInterval(intv);
-      console.log("DONE");
-    }
-  }, TICK_SHOW/REALTIME * 1000);
+  }, 
+  function() {
+    console.log("DONE -- ms timing:", (new Date).getTime()-T);
+  },
+  TICK_SHOW/REALTIME * 1000, TICK_MAX);
 }
 
 sound = function() {
-  GRAVITY = -1000000
-  DAMP = 1
-  BOND_P = 1100
   BOND_D = 0.05
   CONTACT_P = 2000
   CONTACT_D = 0

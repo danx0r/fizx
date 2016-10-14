@@ -41,3 +41,14 @@ display_line = function(x, y, x2, y2, color) {
 display_clear = function() {
   g_context.clearRect(0, 0, WIDTH, HEIGHT);
 }
+
+display_iterate = function(cb, cb2, sec, max) {
+  var ii = 0;
+  var iv = setInterval(function() {
+    cb();
+    if (ii++ >= max) {
+      clearInterval(iv);
+      cb2();
+    }
+  }, sec)
+}

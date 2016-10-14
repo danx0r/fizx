@@ -17,3 +17,10 @@ display_line = function(x, y, x2, y2, color) {
 
 display_clear = function() {
 }
+
+display_iterate = function(cb, cb2, sec, max) {
+  for(var ii=0; ii<max; ii++) {
+    cb();
+  }
+  cb2();
+}
