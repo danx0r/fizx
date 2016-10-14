@@ -517,7 +517,7 @@ first_run = function() {
   ATOMS.push(at3);
   bond_nearest([at,at2,at3],2,true);
   
-  var ball1 = new thing("ball2", 140, 1100, 0, 0, ball23);
+  var ball1 = new thing("ball2", 140, 1100, 0, 0, ball16);
   bond_triangulate(ball1.atoms, true);
   var ball2 = new thing("ball2", 130, 900, 0, 0, ball23);
   bond_triangulate(ball2.atoms, true);
