@@ -5,5 +5,4 @@ require('./test.js');
 require('./delaunay.js');
 require('./display_null.js');
 
-REALTIME=1000;
-first_run();
+sound();

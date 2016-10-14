@@ -169,7 +169,6 @@ first_run = function() {
   DAMP = 1
   BOND_P = 33
   BOND_D = .5
-  TICK_MAX = 1200;
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
   var floor = new thing("floor");
@@ -227,6 +226,46 @@ first_run = function() {
   var intv = setInterval( function(){
     // console.log("draw", ii);
     console.log(ball1.atoms[1].v.y);
+    display_clear();
+    contacts_draw();
+    bonds_draw();
+    atoms_draw();
+    update_all(TICK_SHOW/TICK_PHYS);
+    ii++;
+    if (ii >= TICK_MAX) {
+      clearInterval(intv);
+      console.log("DONE");
+    }
+  }, TICK_SHOW/REALTIME * 1000);
+}
+
+sound = function() {
+  GRAVITY = 0
+  DAMP = 1
+  BOND_P = 400
+  BOND_D = 0.001
+  TICK_PHYS=0.00005
+  REALTIME = 1000; TICK_SHOW=TICK_PHYS
+  TICK_MAX = 22000;
+  display_init();
+  var a=new atom(100,110,0,0,50)
+  var b=new atom(100,200,0,0,50)
+  var c=new atom(200,200,0,0,50)
+  ATOMS.push(a);
+  ATOMS.push(b);
+  ATOMS.push(c);
+  BONDS.push(new bond(a, b, 110))
+  BONDS.push(new bond(b, c, 130))
+  BONDS.push(new bond(a, c, 160))
+  ii=0;
+  console.log("START");
+  var intv = setInterval( function(){
+    // console.log("draw", ii);
+    var dx = b.p.x-a.p.x;
+    var dy = b.p.y-a.p.y;
+    var d = Math.sqrt(dx*dx+dy*dy)
+    d -= a.radius+b.radius;
+    console.log(d);
     display_clear();
     contacts_draw();
     bonds_draw();
