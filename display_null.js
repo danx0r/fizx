@@ -1,6 +1,10 @@
 /*
  * simple API to display -- null version for node
  */ 
+BOND_COLOR = "#cc88bb"
+ATOM_COLOR = "#00004c"
+ATOM_COLOR2 = "#99aa99"
+CONTACT_COLOR = "#9999ff"
 
 display_init = function() {
 }

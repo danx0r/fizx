@@ -13,7 +13,7 @@ test = function() {
   bonds_draw();
   atoms_draw();
   var ii=0;
-  var int = setInterval( function(){
+  var intv = setInterval( function(){
     display_clear();
     bonds_draw();
     atoms_draw();
@@ -36,7 +36,7 @@ test = function() {
       ATOMS[11].v.x = 9500;
     }
     if (ii >= TICK_MAX) {
-      clearInterval(int)
+      clearInterval(intv)
     }
   }, TICK_SHOW/REALTIME * 1000);
 }
@@ -61,14 +61,14 @@ test2 = function() {
   bonds_draw();
   atoms_draw();
   var ii=0;
-  var int = setInterval( function(){
+  var intv = setInterval( function(){
     display_clear();
     bonds_draw();
     atoms_draw();
     update_all(TICK_SHOW/TICK_PHYS);
     ii++;
     if (ii >= TICK_MAX) {
-      clearInterval(int)
+      clearInterval(intv)
     }
   }, TICK_SHOW/REALTIME * 1000);
 }
@@ -110,7 +110,7 @@ test3 = function() {
       bonds_draw();
       atoms_draw();
       var ii=0;
-      var int = setInterval( function(){
+      var intv = setInterval( function(){
         display_clear();
         contacts_draw();
         bonds_draw();
@@ -118,7 +118,7 @@ test3 = function() {
         update_all(TICK_SHOW/TICK_PHYS);
         ii++;
         if (ii >= TICK_MAX) {
-          clearInterval(int)
+          clearInterval(intv)
         }
       }, TICK_SHOW/REALTIME * 1000);
     });
@@ -151,7 +151,7 @@ test4 = function() {
     bonds_draw();
     atoms_draw();
     var ii=0;
-    var int = setInterval( function(){
+    var intv = setInterval( function(){
       display_clear();
       contacts_draw();
       bonds_draw();
@@ -159,7 +159,7 @@ test4 = function() {
       update_all(TICK_SHOW/TICK_PHYS);
       ii++;
       if (ii >= TICK_MAX) {
-        clearInterval(int)
+        clearInterval(intv)
       }
     }, TICK_SHOW/REALTIME * 1000);
   });
@@ -169,6 +169,7 @@ first_run = function() {
   DAMP = 1
   BOND_P = 33
   BOND_D = .5
+  TICK_MAX = 1200;
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
   var floor = new thing("floor");
@@ -221,7 +222,8 @@ first_run = function() {
   bonds_draw();
   atoms_draw();
   var ii=0;
-  var int = setInterval( function(){
+  var intv = setInterval( function(){
+    console.log("draw");
     display_clear();
     contacts_draw();
     bonds_draw();
@@ -229,8 +231,8 @@ first_run = function() {
     update_all(TICK_SHOW/TICK_PHYS);
     ii++;
     if (ii >= TICK_MAX) {
-      clearInterval(int)
+      clearInterval(intv);
+      console.log("DONE");
     }
   }, TICK_SHOW/REALTIME * 1000);
 }
-
