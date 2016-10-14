@@ -13,7 +13,7 @@ for li in f.readlines():
     if li.strip()=="DONE":
         break
     if start:
-        i = int(float(li.strip())*10000)
+        i = int(float(li.strip())*1000)
         print i
         raw.append(i)
 f.close()

@@ -240,9 +240,9 @@ first_run = function() {
 }
 
 sound = function() {
-  GRAVITY = 0
+  GRAVITY = -1000000
   DAMP = 1
-  BOND_P = 500
+  BOND_P = 1100
   BOND_D = 0.05
   CONTACT_P = 2000
   CONTACT_D = 0
@@ -259,11 +259,17 @@ sound = function() {
   // BONDS.push(new bond(a, b, 110))
   // BONDS.push(new bond(b, c, 130))
   // BONDS.push(new bond(a, c, 160))
-  var ball1 = new thing("ball2", 100, 212, 10000, 0, ball23);
+  var floor = new thing("floor");
+  for (i=0; i<100; i++) {
+    var at = new atom(25+i*10, 221, 0, 0, 10, true);
+    floor.add(at);
+    ATOMS.push(at);
+  }
+  var ball1 = new thing("ball2", 100, 552, 10000, 0, ball23);
   bond_triangulate(ball1.atoms, true);
-  var ball2 = new thing("ball2", 1100, 200, -10000, 0, ball23);
+  var ball2 = new thing("ball2", 1100, 500, -10000, 0, ball23);
   bond_triangulate(ball2.atoms, true);
-  collide_all([ball1, ball2]);
+  collide_all([ball1, ball2, floor]);
   ii=0;
   console.log("START");
   var a = ball1.atoms[4];
