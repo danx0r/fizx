@@ -45,10 +45,11 @@ display_clear = function() {
 display_iterate = function(cb, cb2, sec, max) {
   var ii = 0;
   var iv = setInterval(function() {
-    cb();
     if (ii++ >= max) {
       clearInterval(iv);
       cb2();
+    } else {
+      cb();
     }
   }, sec)
 }

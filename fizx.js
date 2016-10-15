@@ -2,7 +2,7 @@ GRAVITY = -1000
 RADIUS = 25;
 RADIUS_SHOW = 2.5;
 TICK_PHYS = 0.001;
-TICK_SHOW = 0.02;
+TICK_SHOW = 0.01;
 REALTIME = 1//2.5;
 TICK_MAX = 1000000;
 // TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
@@ -82,6 +82,7 @@ atoms_draw = function() {
 }
 
 refresh_contacts = function() {
+  var tot=xchk=ychk=dchk=0;
   CONTACTS = [];
   for (var i=0; i<COLLIDES.length; i++) {
     var ta = COLLIDES[i][0];
@@ -89,14 +90,18 @@ refresh_contacts = function() {
     for (var j=0; j<ta.atoms.length; j++) {
       var a = ta.atoms[j];
       for (var k=0; k<tb.atoms.length; k++) {
+        tot++;
         var b = tb.atoms[k];
         var dx = a.p.x-b.p.x;
         var thresh = a.radius+b.radius;
         if (Math.abs(dx) < thresh) {
+          xchk++;
           var dy = a.p.y-b.p.y;
           if (Math.abs(dy) < thresh) {
+            ychk++;
             var dist = Math.sqrt(dx*dx + dy*dy);
             if (dist < thresh) {
+              dchk++;
               CONTACTS.push([a, b])
             }
           }
@@ -104,6 +109,7 @@ refresh_contacts = function() {
       }
     }
   }
+  return {x:xchk, y:ychk, d:dchk, t:tot}
 }
 
 var momentum_swap = function(a, b, P, D, target) {
@@ -170,12 +176,21 @@ contacts_draw = function() {
   }
 }
 
+profile_counts={bonds:0, atoms:0, contacts_total:0, contacts_x:0, contacts_y:0, contacts_deep:0, real_contacts:0, iterations:0}
 update_all = function(n) {
   for(var i=0; i<n; i++) {
     bonds_update();
-    refresh_contacts()
+    var cprof=refresh_contacts()
     contacts_update();
     atoms_update();
+    profile_counts.iterations++;
+    profile_counts.bonds += BONDS.length;
+    profile_counts.atoms += ATOMS.length;
+    profile_counts.real_contacts += CONTACTS.length;
+    profile_counts.contacts_total += cprof.t;
+    profile_counts.contacts_y += cprof.x;
+    profile_counts.contacts_y += cprof.y;
+    profile_counts.contacts_deep += cprof.d;
   }
 }
 

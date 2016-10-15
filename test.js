@@ -289,3 +289,50 @@ sound = function() {
     }
   }, TICK_SHOW/REALTIME * 1000);
 }
+
+test_profile = function() {
+  DAMP = 1
+  BOND_P = 33
+  BOND_D = .5
+  GRAVITY = 0
+  TICK_MAX = 100;
+  // REALTIME = .1; TICK_SHOW=TICK_PHYS
+  display_init();
+  var ob1 = new thing("1");
+  for (i=0; i<10; i++) {
+    var at = new atom(100+i*20, 400, 0, 0, 10);
+    ob1.add(at);
+    ATOMS.push(at);
+  }
+
+  var ob2 = new thing();
+  for (i=0; i<10; i++) {
+    var at = new atom(100+i*20, 500, 0, 0, 10);
+    ob2.add(at);
+    ATOMS.push(at);
+  }
+
+  collide_all([ob1, ob2]);
+  console.log(BONDS.length, "bonds")
+  var ret=refresh_contacts()
+  console.log("CONTACTS:", ret)
+  display_clear();
+  bonds_draw();
+  atoms_draw();
+  console.log("START");
+  T = (new Date).getTime();
+
+  display_iterate( function(){
+    // console.log("draw", ii);
+    display_clear();
+    contacts_draw();
+    bonds_draw();
+    atoms_draw();
+    update_all(TICK_SHOW/TICK_PHYS);
+    console.log(profile_counts);
+  },
+  function() {
+    console.log("DONE -- ms timing:", (new Date).getTime()-T);
+  },
+  TICK_SHOW/REALTIME * 1000, TICK_MAX);
+}
