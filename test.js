@@ -168,55 +168,87 @@ test4 = function() {
 first_run = function() {
   DAMP = 1
   BOND_P = 33
-  BOND_D = 0.25
-  TICK_MAX = 1000;
+  BOND_D = 0.5
+  TICK_MAX = 1000000;
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
   var floor = new thing("floor");
-  for (i=0; i<49; i++) {
-    var at = new atom(220+i*20, 420+i*4, 0, 0, 10, true);
+  floor.setLayer("FLOOR");
+  /*for (i=0; i<50; i+=4) {
+    var at = new atom(430+Math.cos(i/100*Math.PI)*200, 520+Math.sin(i/100*Math.PI)*200, 0, 0, 10, true);
     floor.add(at);
     ATOMS.push(at);
   }
-  for (i=0; i<40; i++) {
-    var at = new atom(15+i*20, 620+(60-i)*3, 0, 0, 10, true);
+  for (i=-100; i<-50; i+=2) {
+    var at = new atom(360+Math.cos(i/100*Math.PI)*300, 900+Math.sin(i/100*Math.PI)*300, 0, 0, 10, true);
     floor.add(at);
     ATOMS.push(at);
   }
-  for (i=0; i<60; i++) {
-    var at = new atom(25+i*10, 221, 0, 0, 10, true);
+  */
+  /*for (i=-100; i<0; i+=4) {
+    var at = new atom(660+Math.cos(i/100*Math.PI)*150, 400+Math.sin(i/100*Math.PI)*150, 0, 0, 10, true);
     floor.add(at);
     ATOMS.push(at);
-  }
-  var at = new atom(725, 221, 0, 0, 10, true);
+}*/
+for (i=-160; i<0; i+=1) {
+  var at = new atom(200+Math.cos(i/100*Math.PI)*200, 400+Math.sin(i/100*Math.PI)*200, 0, 0, 10, true);
   floor.add(at);
   ATOMS.push(at);
+}
+  for (i=0; i<26; i++) {
+    var at = new atom(900+i*20, 100, 0, 0, 10, true);
+    floor.add(at);
+    ATOMS.push(at);
+  }
+  /*for (i=0; i<26; i++) {
+    var at = new atom(500+500, 220+i*20, 0, 0, 10, true);
+    floor.add(at);
+    ATOMS.push(at);
+}*/
+  var at = new atom(725, 221, 0, 0, 10, true);
+  //floor.add(at);
+  //ATOMS.push(at);
 
   var curtain = new thing("curtain");
-  for (i=0; i<20; i++) {
-    var at = new atom(208, 250+i*20, 0, 0, 11, i==19);
+  curtain.setLayer("CURTAIN");
+  LAYER_FILTERS.push(["CURTAIN","CURTAIN"]);
+  LAYER_FILTERS.push(["FLOOR","CURTAIN"]);
+  LAYER_FILTERS.push(["FLOOR","DEFAULT"]);
+  LAYER_FILTERS.push(["CURTAIN","DEFAULT"]);
+  for (i=-100; i<2; i+=2) {
+    //var at = new atom(420+i*16, 400+i*12, 0, 0, 8, i==0||i==19);
+    var at = new atom(630+Math.cos(i/100*Math.PI)*250, 400+Math.sin(i/100*Math.PI)*250, 0, 0, 5, i==-100||i==0);
+
     curtain.add(at);
     ATOMS.push(at);
   }
-  bond_nearest(curtain.atoms,4,true);
+  for (i=-100; i<4; i+=4) {
+    //var at = new atom(420+i*16, 400+i*12, 0, 0, 8, i==0||i==19);
+    var at = new atom(1020+Math.cos(i/100*Math.PI)*100, 300+Math.sin(i/100*Math.PI)*150, 0, 0, 5, i==-100||i==0);
 
-  var small = new thing("x");
-  var at = new atom(330, 300, 0, 0, 10);
+    curtain.add(at);
+    ATOMS.push(at);
+  }
+  bond_nearest(curtain.atoms,2,true);
+
+  /*var small = new thing("x");
+  var at = new atom(560, 350, 0, 0, 10);
   small.add(at);
   ATOMS.push(at);
-  var at2 = new atom(300, 300, 0, 0, 10);
+  var at2 = new atom(500, 350, 0, 0, 10);
   small.add(at2);
   ATOMS.push(at2);
-  var at3 = new atom(315, 370, 0, 0, 10);
+  var at3 = new atom(520, 390, -100, 0, 10);
   small.add(at3);
   ATOMS.push(at3);
-  bond_nearest([at,at2,at3],2,true);
-  
-  var ball1 = new thing("ball2", 140, 1100, 0, 0, ball16);
+
+  bond_nearest([at,at2,at3],2,true);*/
+
+  var ball1 = new thing("ball2", 330, 700, 0, -1500, ball16);
   bond_triangulate(ball1.atoms, true);
-  var ball2 = new thing("ball2", 130, 900, 0, 0, ball23);
+  var ball2 = new thing("ball2", 560, 200, 0, 0, ball16);
   bond_triangulate(ball2.atoms, true);
-  collide_all([floor, ball1, ball2, small, curtain]);
+  collide_all([floor, ball1, ball2, curtain]);//, ball2, small, curtain]);
   console.log(BONDS.length, "bonds")
   display_clear();
   bonds_draw();
@@ -231,7 +263,7 @@ first_run = function() {
     bonds_draw();
     atoms_draw();
     update_all(TICK_SHOW/TICK_PHYS);
-  }, 
+  },
   function() {
     console.log("DONE -- ms timing:", (new Date).getTime()-T);
   },
@@ -269,7 +301,7 @@ sound = function() {
   ii=0;
   console.log("START");
   var a = ball1.atoms[4];
-  var b = ball1.atoms[5]; 
+  var b = ball1.atoms[5];
   var intv = setInterval( function(){
     // console.log("draw", ii);
     var dx = b.p.x-a.p.x;

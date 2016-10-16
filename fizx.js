@@ -7,26 +7,33 @@ REALTIME = 1//2.5;
 TICK_MAX = 1000000;
 // TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
 
-BOND_P = 5
-BOND_D = 0
+BOND_P = 200
+BOND_D = 0.5
 CONTACT_P = 200
-CONTACT_D = .3
+CONTACT_D = .5
 DAMP = 0.975
 
 ATOMS = []
 BONDS = []
 CONTACTS = []
 COLLIDES = []
-
-atom = function (x, y, vx, vy, radius, locked) {
+LAYER_FILTERS=[["DEFAULT","DEFAULT"]]
+function componentAlong(a,b){
+    return (a.x*b.x+a.y*b.y)/Math.sqrt(a.x*a.x+b.x*b.x);
+}
+atom = function (x, y, vx, vy, radius, locked,layer) {
   if (vx==null) vx = vy = 0;
   if (radius==null) radius=RADIUS;
   this.p = {x: x, y: y};
   this.v = {x: vx, y: vy};
   this.radius=radius;
+  if(layer==null || layer==undefined || layer==""){
+      layer="DEFAULT";
+  }
+  this.layer=layer;
   this.locked=locked;
   this.f = {x:0, y:0}
-  
+
   this.update = function() {
     if(!this.locked) {
       this.v.x += this.f.x;
@@ -43,7 +50,7 @@ atom = function (x, y, vx, vy, radius, locked) {
       this.v.y = 0;
     }
   };
-  
+
   this.draw = function() {
     // console.log("draw at", this.p.x, this.p.y)
     display_circle(this.p.x, this.p.y, RADIUS_SHOW, ATOM_COLOR);
@@ -58,19 +65,30 @@ bond = function(atom1, atom2, dist) {
   this.d = dist;
 }
 
-thing = function(name, x, y, vx, vy, obj, locked) {
+thing = function(name, x, y, vx, vy, obj, locked,layer) {
   this.name = name;
   this.atoms = [];
+  if(layer==null || layer==undefined || layer==""){
+      layer="DEFAULT";
+  }
+  this.layer=layer;
   this.add = function(atom) {
+      atom.layer=this.layer;
     this.atoms.push(atom);
   }
   if (obj != undefined) {
     for (var i=0; i<obj.length; i++) {
       var o = obj[i];
-      var a = new atom(o.p.x+x, o.p.y+y, o.v.x+vx, o.v.y+vy, o.radius, locked);
+      var a = new atom(o.p.x+x, o.p.y+y, o.v.x+vx, o.v.y+vy, o.radius, locked,this.layer);
       this.atoms.push(a);
       ATOMS.push(a);
     }
+  }
+  this.setLayer=function(name){
+      this.layer=name;
+      for(var i=0;i<this.atoms.length;i++){
+          this.atoms[i].layer=name;
+      }
   }
 }
 
@@ -89,7 +107,47 @@ atoms_draw = function() {
 refresh_contacts = function() {
   var tot=xchk=ychk=dchk=0;
   CONTACTS = [];
-  for (var i=0; i<COLLIDES.length; i++) {
+  var layerNames=[];
+  var layerObjectIndicies=[];
+  for(var i=0;i<ATOMS.length;i++){
+      var a = ATOMS[i];
+      var layerNum=layerNames.indexOf(a.layer);
+      if(layerNum<0){
+          layerNames.push(a.layer);
+          layerObjectIndicies.push([i]);
+      }else{
+          layerObjectIndicies[layerNum].push(i);
+      }
+  }
+  for(var i=0;i<LAYER_FILTERS.length;i++){
+      var ta = layerNames.indexOf(LAYER_FILTERS[i][0]);
+      var tb = layerNames.indexOf(LAYER_FILTERS[i][1]);
+      for (var j=0; j<layerObjectIndicies[ta].length; j++) {
+        var a = ATOMS[layerObjectIndicies[ta][j]];
+        for (var k=0; k<layerObjectIndicies[tb].length; k++) {
+            var b = ATOMS[layerObjectIndicies[tb][k]];
+            if(layerObjectIndicies[tb][k]!=layerObjectIndicies[ta][j]){
+          tot++;
+
+          var dx = a.p.x-b.p.x;
+          var thresh = a.radius+b.radius;
+          if (Math.abs(dx) < thresh) {
+            xchk++;
+            var dy = a.p.y-b.p.y;
+            if (Math.abs(dy) < thresh) {
+              ychk++;
+              var dist = Math.sqrt(dx*dx + dy*dy);
+              if (dist < thresh) {
+                dchk++;
+                CONTACTS.push([a, b])
+              }
+            }
+          }
+      }
+        }
+      }
+  }
+  /*for (var i=0; i<COLLIDES.length; i++) {
     var ta = COLLIDES[i][0];
     var tb = COLLIDES[i][1];
     for (var j=0; j<ta.atoms.length; j++) {
@@ -113,7 +171,7 @@ refresh_contacts = function() {
         }
       }
     }
-  }
+}*/
   return {x:xchk, y:ychk, d:dchk, t:tot}
 }
 
@@ -124,7 +182,9 @@ var momentum_swap = function(a, b, P, D, target) {
   var udx = dx / dist;                    // unit vector pointing from a to b
   var udy = dy / dist;
   var dif = dist - target;            // difference we want to restore to zero
-  var pterm = dif * P ;                // Proportional term for our springy bond 
+  var vacomp1 = componentAlong(a.v,{x:udx,y:udy});//dvx*udx + dvy*udy;
+  var vbcomp1 = componentAlong(b.v,{x:udx,y:udy});//dvx*udx + dvy*udy;
+  var pterm = (dif )*P;//*P;                // Proportional term for our springy bond
 
 // original logic for posterity
   // var dvx = b.v.x-a.v.x;
@@ -141,16 +201,34 @@ var momentum_swap = function(a, b, P, D, target) {
 // equivalent yet optimized:
   var dvx = b.v.x-a.v.x;
   var dvy = b.v.y-a.v.y;
-  var vcomp = dvx*udx + dvy*udy;
-  var dterm = vcomp * D;        // Derivative term
-
-  var xswap = (pterm + dterm) * udx;          // along axis a--b
-  var yswap = (pterm + dterm) * udy;
+  var vcomp = componentAlong({x:dvx,y:dvy},{x:udx,y:udy});//dvx*udx + dvy*udy;
+  var vacomp = componentAlong(a.v,{x:udx,y:udy});//dvx*udx + dvy*udy;
+  var vbcomp = componentAlong(b.v,{x:udx,y:udy});//dvx*udx + dvy*udy;
+  //pterm=dif*(target+Math.abs(dif+vacomp-vbcomp))/target
+  var dterm = vcomp* D;        // Derivative term
+  if(a.locked){
+      dterm=0;
+  }
+  if(b.locked){
+      dterm=0;
+  }
+  var xswap = (pterm + dterm) * udx/100*100;//*(target+Math.abs(dif))/target;          // along axis a--b
+  var yswap = (pterm + dterm) * udy/100*100;//*(target+Math.abs(dif))/target;
 
   a.f.x += xswap;                          // swap momenta
   b.f.x -= xswap;
   a.f.y += yswap;
   b.f.y -= yswap;
+  if(a.locked){
+      b.f.x -= xswap;
+      //a.v.y += yswap;
+      b.f.y -= yswap;
+  }
+  if(b.locked){
+      a.f.x += xswap;
+      //a.v.y += yswap;
+      a.f.y += yswap;
+  }
 }
 
 bonds_update = function() {
@@ -158,7 +236,7 @@ bonds_update = function() {
     var a = BONDS[i].a;
     var b = BONDS[i].b;
     var target = BONDS[i].d;
-    momentum_swap(a, b, BOND_P, BOND_D, target);
+    momentum_swap(a, b, target, 0.5, target);
   }
 }
 
@@ -167,7 +245,7 @@ contacts_update = function() {
     var a = CONTACTS[i][0];
     var b = CONTACTS[i][1];
     var target = a.radius+b.radius;
-    momentum_swap(a, b, CONTACT_P, CONTACT_D, target);
+    momentum_swap(a, b, 64, 0.5, target);
   }
 }
 
