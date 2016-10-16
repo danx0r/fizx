@@ -26,6 +26,19 @@ total              1.0069 sec
 MAXED OUT!
 Dominant factor: bond updates
 
+Plausible Runibal scenario:
+
+ball - 100 atoms
+many objects - 1000 atoms each
+most objects are in stasis most of the time
+ball interacts with one object at a time
+500 ticks/sec (not sounding good)
+1100 * 500 = .55M atom checks .026 sec
+1100 * 6 * 500 = 3.3M bond updates = .42 sec 
+
+or, just ball (all else static) @ 10K/sec
+600 * 10K = 6M bonds = .85 sec OOPS~!
+
 ==================
 Objects are made up of atoms. A static object's atoms are all attracted to a single x,y,z global position (do we even care that they are separte objects?)  Whenever the atom strays from its ideal position, a force is imposed opposing the difference. (square law? linear force? damping?)
   correction: if we want sound, static objects need to be like dynamic objects with anchors to global coords
