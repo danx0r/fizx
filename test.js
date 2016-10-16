@@ -295,7 +295,7 @@ test_profile = function() {
   BOND_P = 33
   BOND_D = .5
   GRAVITY = 0
-  TICK_MAX = 100;
+  TICK_MAX = 1000;
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
   var ob1 = new thing("1");
