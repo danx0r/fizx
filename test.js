@@ -168,7 +168,7 @@ test4 = function() {
 first_run = function() {
   DAMP = 1
   BOND_P = 33
-  BOND_D = .5
+  BOND_D = 0.25
   TICK_MAX = 1000;
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
