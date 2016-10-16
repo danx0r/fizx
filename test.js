@@ -217,7 +217,8 @@ first_run = function() {
   var ball2 = new thing("ball2", 130, 900, 0, 0, ball23);
   bond_triangulate(ball2.atoms, true);
   collide_all([floor, ball1, ball2, small, curtain]);
-  console.log(BONDS.length, "bonds")
+  console.log("atoms:", ATOMS.length)
+  console.log("bonds:", BONDS.length)
   display_clear();
   bonds_draw();
   atoms_draw();
@@ -225,7 +226,6 @@ first_run = function() {
   T = (new Date).getTime();
 
   display_iterate( function(){
-    // console.log("draw", ii);
     display_clear();
     contacts_draw();
     bonds_draw();
@@ -234,6 +234,7 @@ first_run = function() {
   }, 
   function() {
     console.log("DONE -- ms timing:", (new Date).getTime()-T);
+    console.log(profile_counts);
   },
   TICK_SHOW/REALTIME * 1000, TICK_MAX);
 }
@@ -315,6 +316,7 @@ test_profile = function() {
   bond_nearest(ATOMS, 2)
 
   collide_all([ob1, ob2]);
+  console.log(ATOMS.length, "atoms")
   console.log(BONDS.length, "bonds")
   var ret=refresh_contacts()
   console.log("CONTACTS:", ret)

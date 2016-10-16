@@ -199,7 +199,7 @@ update_all = function(n) {
     profile_counts.atoms += ATOMS.length;
     profile_counts.real_contacts += CONTACTS.length;
     profile_counts.contacts_total += cprof.t;
-    profile_counts.contacts_y += cprof.x;
+    profile_counts.contacts_x += cprof.x;
     profile_counts.contacts_y += cprof.y;
     profile_counts.contacts_deep += cprof.d;
   }
