@@ -1,3 +1,4 @@
+fizx = new fizxlib();
 test = function() {
   display_init();
   rand32(123563);
@@ -165,80 +166,102 @@ test4 = function() {
   });
 }
 
+/*
+ var GRAVITY = -1000
+-  var RADIUS = 25;
+-  var RADIUS_SHOW = 2.5;
+-  var TICK_PHYS = 0.001;
+-  var TICK_SHOW = 0.01;
+-  var REALTIME = 1//2.5;
+-  // var TICK_MAX = 1000000;
+-  var TIME_MAX = 10.0;
+-  // var TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
+-  
+-  var BOND_P = 5
+-  var BOND_D = 0
+-  var CONTACT_P = 200
+-  var CONTACT_D = .3
+-  var DAMP = 0.975
+ */
 first_run = function() {
-  DAMP = 1
-  BOND_P = 33
-  BOND_D = 0.25
-  TIME_MAX = 15;
-  TICK_PHYS = 0.001;
-  // REALTIME = .1; 
-  // TICK_SHOW=TICK_PHYS
+  var TIME_MAX = 15;
+  params = {};
+  params.DAMP = 1
+  params.BOND_P = 33
+  params.BOND_D = 0.25
+  params.CONTACT_P = 200
+  params.CONTACT_D = 0.3
+  params.TICK_PHYS = 0.001;
+  params.TICK_SHOW = 0.01;
+  params.REALTIME = 1; 
+  fizx.set_params(params);
+
   display_init();
-  var floor = new thing("floor");
+  var floor = new fizx.thing("floor");
   for (i=0; i<49; i++) {
-    var at = new atom(220+i*20, 420+i*4, 0, 0, 10, true);
+    var at = new fizx.atom(220+i*20, 420+i*4, 0, 0, 10, true);
     floor.add(at);
-    ATOMS.push(at);
+    fizx.ATOMS.push(at);
   }
   for (i=0; i<40; i++) {
-    var at = new atom(15+i*20, 620+(60-i)*3, 0, 0, 10, true);
+    var at = new fizx.atom(15+i*20, 620+(60-i)*3, 0, 0, 10, true);
     floor.add(at);
-    ATOMS.push(at);
+    fizx.ATOMS.push(at);
   }
   for (i=0; i<60; i++) {
-    var at = new atom(25+i*10, 221, 0, 0, 10, true);
+    var at = new fizx.atom(25+i*10, 221, 0, 0, 10, true);
     floor.add(at);
-    ATOMS.push(at);
+    fizx.ATOMS.push(at);
   }
-  var at = new atom(725, 221, 0, 0, 10, true);
+  var at = new fizx.atom(725, 221, 0, 0, 10, true);
   floor.add(at);
-  ATOMS.push(at);
+  fizx.ATOMS.push(at);
 
-  var curtain = new thing("curtain");
+  var curtain = new fizx.thing("curtain");
   for (i=0; i<20; i++) {
-    var at = new atom(208, 250+i*20, 0, 0, 11, i==19);
+    var at = new fizx.atom(208, 250+i*20, 0, 0, 11, i==19);
     curtain.add(at);
-    ATOMS.push(at);
+    fizx.ATOMS.push(at);
   }
-  bond_nearest(curtain.atoms,4,true);
+  fizx.bond_nearest(curtain.atoms,4,true);
 
-  var small = new thing("x");
-  var at = new atom(330, 300, 0, 0, 10);
+  var small = new fizx.thing("x");
+  var at = new fizx.atom(330, 300, 0, 0, 10);
   small.add(at);
-  ATOMS.push(at);
-  var at2 = new atom(300, 300, 0, 0, 10);
+  fizx.ATOMS.push(at);
+  var at2 = new fizx.atom(300, 300, 0, 0, 10);
   small.add(at2);
-  ATOMS.push(at2);
-  var at3 = new atom(315, 370, 0, 0, 10);
+  fizx.ATOMS.push(at2);
+  var at3 = new fizx.atom(315, 370, 0, 0, 10);
   small.add(at3);
-  ATOMS.push(at3);
-  bond_nearest([at,at2,at3],2,true);
+  fizx.ATOMS.push(at3);
+  fizx.bond_nearest([at,at2,at3],2,true);
   
-  var ball1 = new thing("ball2", 140, 1100, 0, 0, ball16);
-  bond_triangulate(ball1.atoms, true);
-  var ball2 = new thing("ball2", 130, 900, 0, 0, ball23);
-  bond_triangulate(ball2.atoms, true);
-  collide_all([floor, ball1, ball2, small, curtain]);
-  console.log("atoms:", ATOMS.length)
-  console.log("bonds:", BONDS.length)
+  var ball1 = new fizx.thing("ball2", 140, 1100, 0, 0, ball16);
+  fizx.bond_triangulate(ball1.atoms, true);
+  var ball2 = new fizx.thing("ball2", 130, 900, 0, 0, ball23);
+  fizx.bond_triangulate(ball2.atoms, true);
+  fizx.collide_all([floor, ball1, ball2, small, curtain]);
+  console.log("atoms:", fizx.ATOMS.length)
+  console.log("bonds:", fizx.BONDS.length)
   display_clear();
-  bonds_draw();
-  atoms_draw();
+  fizx.bonds_draw();
+  fizx.atoms_draw();
   console.log("START");
   T = (new Date).getTime();
 
   display_iterate( function(){
     display_clear();
-    contacts_draw();
-    bonds_draw();
-    atoms_draw();
-    update_all(TICK_SHOW/TICK_PHYS);
+    fizx.contacts_draw();
+    fizx.bonds_draw();
+    fizx.atoms_draw();
+    fizx.update_all(params.TICK_SHOW/params.TICK_PHYS);
   }, 
   function() {
     console.log("DONE -- ms timing:", (new Date).getTime()-T);
-    console.log(profile_counts);
+    console.log(fizx.profile_counts);
   },
-  TICK_SHOW/REALTIME * 1000, TIME_MAX/TICK_SHOW);
+  params.TICK_SHOW/params.REALTIME * 1000, TIME_MAX/params.TICK_SHOW);
 }
 
 sound = function() {

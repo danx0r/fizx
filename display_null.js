@@ -19,6 +19,7 @@ display_clear = function() {
 }
 
 display_iterate = function(cb, cb2, sec, max) {
+  console.log("di", sec, max)
   for(var ii=0; ii<max; ii++) {
     cb();
   }

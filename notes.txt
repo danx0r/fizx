@@ -34,10 +34,24 @@ most objects are in stasis most of the time
 ball interacts with one object at a time
 500 ticks/sec (not sounding good)
 1100 * 500 = .55M atom checks .026 sec
-1100 * 6 * 500 = 3.3M bond updates = .42 sec 
+1100 * 6 * 500 = 3.3M bond updates = .42 sec (worst case)
 
 or, just ball (all else static) @ 10K/sec
 600 * 10K = 6M bonds = .85 sec OOPS~!
+
+momentum_swap 100M iterations:
+node 6.382 sec = 15.66M it/sec = 0.06382 micsec per it
+chrome 2.354 = 42.5M it/sec = 0.02354 micsec per it
+bonds_update similar (node 7.5, chrome 2.9)
+conclusion: memory access slows us by about 2X; chrome is 2X faster than node
+check on other hardware
+workers for multi-CPU
+GPU?
+
+first_run:
+git a8db
+chrome 1.257 sec (1.31 after refactor yay)
+node 2.802 (2.917)
 
 ==================
 Objects are made up of atoms. A static object's atoms are all attracted to a single x,y,z global position (do we even care that they are separte objects?)  Whenever the atom strays from its ideal position, a force is imposed opposing the difference. (square law? linear force? damping?)
