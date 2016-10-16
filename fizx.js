@@ -25,9 +25,14 @@ atom = function (x, y, vx, vy, radius, locked) {
   this.v = {x: vx, y: vy};
   this.radius=radius;
   this.locked=locked;
+  this.f = {x:0, y:0}
   
   this.update = function() {
     if(!this.locked) {
+      this.v.x += this.f.x;
+      this.f.x = 0;
+      this.v.y += this.f.y;
+      this.f.x = 0;
       this.p.x += this.v.x * TICK_PHYS;
       this.p.y += this.v.y * TICK_PHYS;
       this.v.x *= DAMP;
@@ -134,10 +139,10 @@ var momentum_swap = function(a, b, P, D, target) {
   var xswap = (pterm + dterm) * udx;          // along axis a--b
   var yswap = (pterm + dterm) * udy;
 
-  a.v.x += xswap;                          // swap momenta
-  b.v.x -= xswap;
-  a.v.y += yswap;
-  b.v.y -= yswap;
+  a.f.x += xswap;                          // swap momenta
+  b.f.x -= xswap;
+  a.f.y += yswap;
+  b.f.y -= yswap;
 }
 
 bonds_update = function() {
