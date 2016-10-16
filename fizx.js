@@ -250,7 +250,7 @@ bond_nearest = function(atoms, n, freeze) {
     pts.sort(function (p, q) {
       return p[0] - q[0];
     });
-    console.log("PTS:", pts)
+    // console.log("PTS:", pts)
     for (var k=0; k<n; k++) {
       var b = pts[k][1];
       var already = false;
@@ -269,7 +269,7 @@ bond_nearest = function(atoms, n, freeze) {
       }
     }
   }
-  console.log("NEAREST BONDS:", BONDS)
+  // console.log("NEAREST BONDS:", BONDS)
 }
 
 bond_triangulate = function(atoms, freeze) {

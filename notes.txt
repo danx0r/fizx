@@ -15,7 +15,7 @@ bond update takes .1356 micsec
 
 17M atom updates/sec
 74M contact checks/sec
-7.37M bond checks/sec
+7.37M bond updates/sec
 
 world w 1K atoms 1K tics/sec
 
