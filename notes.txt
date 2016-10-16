@@ -1,3 +1,32 @@
+profiling:
+
+5M atom updates, 50M contact checks in 938 ms
+10M atom, 50M contact 1232 ms
+5M atom updates, 50M contact, 5.25M bond checks in 1650 ms
+10M atom, 200M contact 3250 ms
+
+5M atoms in 294 ms
+150M contacts in 2018 ms
+5.25M bonds in 712 ms 
+
+atom check takes .0588 micsec
+contact check takes .01345 micsec
+bond check takes .1356 micsec
+
+17M atom updates/sec
+74M contact checks/sec
+7.37M bond checks/sec
+
+world w 1K atoms 1K tics/sec
+
+1M atom checks     0.0588 sec
+10M contact checks 0.1345 sec
+6M bond checks     0.8136 sec
+total              1.0069 sec
+MAXED OUT!
+Dominant factor: bond updates
+
+==================
 Objects are made up of atoms. A static object's atoms are all attracted to a single x,y,z global position (do we even care that they are separte objects?)  Whenever the atom strays from its ideal position, a force is imposed opposing the difference. (square law? linear force? damping?)
   correction: if we want sound, static objects need to be like dynamic objects with anchors to global coords
 

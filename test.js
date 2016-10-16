@@ -295,22 +295,24 @@ test_profile = function() {
   BOND_P = 33
   BOND_D = .5
   GRAVITY = 0
-  TICK_MAX = 1000;
+  TICK_MAX = 12500;
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
   var ob1 = new thing("1");
-  for (i=0; i<10; i++) {
+  for (i=0; i<20; i++) {
     var at = new atom(100+i*20, 400, 0, 0, 10);
     ob1.add(at);
     ATOMS.push(at);
   }
 
   var ob2 = new thing();
-  for (i=0; i<10; i++) {
+  for (i=0; i<20; i++) {
     var at = new atom(100+i*20, 500, 0, 0, 10);
     ob2.add(at);
     ATOMS.push(at);
   }
+
+  bond_nearest(ATOMS, 2)
 
   collide_all([ob1, ob2]);
   console.log(BONDS.length, "bonds")
@@ -329,9 +331,9 @@ test_profile = function() {
     bonds_draw();
     atoms_draw();
     update_all(TICK_SHOW/TICK_PHYS);
-    console.log(profile_counts);
   },
   function() {
+    console.log(profile_counts);
     console.log("DONE -- ms timing:", (new Date).getTime()-T);
   },
   TICK_SHOW/REALTIME * 1000, TICK_MAX);
