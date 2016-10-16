@@ -126,16 +126,24 @@ var momentum_swap = function(a, b, P, D, target) {
   var dif = dist - target;            // difference we want to restore to zero
   var pterm = dif * P ;                // Proportional term for our springy bond 
 
+// original logic for posterity
+  // var dvx = b.v.x-a.v.x;
+  // var dvy = b.v.y-a.v.y;
+  // var vdif = Math.sqrt(dvx*dvx+dvy*dvy);  // relative velocity
+  // var vdot = 0;                           // if relative velocity==0, no Derivative term for our PiD
+  // if (vdif) {
+    // var uvx = dvx / vdif;                 // velocity unit vector (direction of rel vel)
+    // var uvy = dvy / vdif;
+    // vdot = uvx*udx + uvy*udy;             // dot product of positional direction vs rel vel - we only
+  // }                                       // want to adjust velocity along axis aligned with 2 particles,
+  // var dterm = vdif * vdot * D;        // Derivative term
+
+// equivalent yet optimized:
   var dvx = b.v.x-a.v.x;
   var dvy = b.v.y-a.v.y;
-  var vdif = Math.sqrt(dvx*dvx+dvy*dvy);  // relative velocity
-  var vdot = 0;                           // if relative velocity==0, no Derivative term for our PiD
-  if (vdif) {
-    var uvx = dvx / vdif;                 // velocity unit vector (direction of rel vel)
-    var uvy = dvy / vdif;
-    vdot = uvx*udx + uvy*udy;             // dot product of positional direction vs rel vel - we only
-  }                                       // want to adjust velocity along axis aligned with 2 particles,
-  var dterm = vdif * vdot * D;        // Derivative term
+  var vcomp = dvx*udx + dvy*udy;
+  var dterm = vcomp * D;        // Derivative term
+
   var xswap = (pterm + dterm) * udx;          // along axis a--b
   var yswap = (pterm + dterm) * udy;
 
