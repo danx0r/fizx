@@ -9,9 +9,9 @@ profiling:
 150M contacts in 2018 ms
 5.25M bonds in 712 ms 
 
-atom check takes .0588 micsec
+atom update takes .0588 micsec
 contact check takes .01345 micsec
-bond check takes .1356 micsec
+bond update takes .1356 micsec
 
 17M atom updates/sec
 74M contact checks/sec

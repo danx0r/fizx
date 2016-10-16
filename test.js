@@ -169,8 +169,10 @@ first_run = function() {
   DAMP = 1
   BOND_P = 33
   BOND_D = 0.25
-  TICK_MAX = 1000;
-  // REALTIME = .1; TICK_SHOW=TICK_PHYS
+  TIME_MAX = 15;
+  TICK_PHYS = 0.001;
+  // REALTIME = .1; 
+  // TICK_SHOW=TICK_PHYS
   display_init();
   var floor = new thing("floor");
   for (i=0; i<49; i++) {
@@ -236,7 +238,7 @@ first_run = function() {
     console.log("DONE -- ms timing:", (new Date).getTime()-T);
     console.log(profile_counts);
   },
-  TICK_SHOW/REALTIME * 1000, TICK_MAX);
+  TICK_SHOW/REALTIME * 1000, TIME_MAX/TICK_SHOW);
 }
 
 sound = function() {
@@ -338,5 +340,5 @@ test_profile = function() {
     console.log(profile_counts);
     console.log("DONE -- ms timing:", (new Date).getTime()-T);
   },
-  TICK_SHOW/REALTIME * 1000, TICK_MAX);
+  TICK_SHOW/REALTIME * 1000, TIME_MAX/TICK_SHOW);
 }

@@ -5,4 +5,4 @@ require('./test.js');
 require('./delaunay.js');
 require('./display_null.js');
 
-test_profile();
+first_run();
