@@ -217,7 +217,7 @@ for (i=-160; i<0; i+=1) {
   LAYER_FILTERS.push(["CURTAIN","DEFAULT"]);
   for (i=-100; i<2; i+=2) {
     //var at = new atom(420+i*16, 400+i*12, 0, 0, 8, i==0||i==19);
-    var at = new atom(630+Math.cos(i/100*Math.PI)*250, 400+Math.sin(i/100*Math.PI)*250, 0, 0, 5, i==-100||i==0);
+    var at = new atom(650+Math.cos(i/100*Math.PI)*230, 400+Math.sin(i/100*Math.PI)*230, 0, 0, 5, i==-100||i==0);
 
     curtain.add(at);
     ATOMS.push(at);
@@ -246,7 +246,7 @@ for (i=-160; i<0; i+=1) {
 
   var ball1 = new thing("ball2", 330, 700, 0, -1500, ball16);
   bond_triangulate(ball1.atoms, true);
-  var ball2 = new thing("ball2", 560, 200, 0, 0, ball16);
+  var ball2 = new thing("ball2", 560, 250, 0, 0, ball16);
   bond_triangulate(ball2.atoms, true);
   collide_all([floor, ball1, ball2, curtain]);//, ball2, small, curtain]);
   console.log(BONDS.length, "bonds")
