@@ -2,7 +2,7 @@ GRAVITY = -1000
 RADIUS = 25;
 RADIUS_SHOW = 2.5;
 TICK_PHYS = 0.001;
-TICK_SHOW = 0.01;
+TICK_SHOW = 0.001*(1000/60);
 REALTIME = 1//2.5;
 TICK_MAX = 1000000;
 // TICK_SHOW = TICK_PHYS; REALTIME=0.01; TICK_MAX=20
@@ -126,8 +126,7 @@ refresh_contacts = function() {
         var a = ATOMS[layerObjectIndicies[ta][j]];
         for (var k=0; k<layerObjectIndicies[tb].length; k++) {
             var b = ATOMS[layerObjectIndicies[tb][k]];
-            if(layerObjectIndicies[tb][k]!=layerObjectIndicies[ta][j]){
-          tot++;
+            if(a!=b){
 
           var dx = a.p.x-b.p.x;
           var thresh = a.radius+b.radius;
@@ -312,7 +311,7 @@ bond_near = function(atoms, thresh, freeze) {
   }
 }
 
-bond_nearest = function(atoms, n, freeze) {
+bond_nearest = function(atoms, n, freeze,Bdist) {
   for (var i=0; i<atoms.length; i++) {
     var pts = [];
     var a = atoms[i];
@@ -343,7 +342,10 @@ bond_nearest = function(atoms, n, freeze) {
         if (freeze) {
           BONDS.push(new bond(a, b, pts[k][0]));
         } else {
-          BONDS.push(new bond(a, b));
+            //if(Bdist==undefined||Bdist==null){
+
+            //}
+          BONDS.push(new bond(a, b,Bdist));
         }
       }
     }
