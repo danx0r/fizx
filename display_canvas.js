@@ -1,11 +1,11 @@
 /*
  * simple API to display, canvas implementation
- */ 
+ */
 
-BOND_COLOR = "#cc88bb"
-ATOM_COLOR = "#00004c"
-ATOM_COLOR2 = "#99aa99"
-CONTACT_COLOR = "#9999ff"
+BOND_COLOR = "#AF4846"
+ATOM_COLOR = "#0A388A"
+ATOM_COLOR2 = "#9a9a79"
+CONTACT_COLOR = "#6969AA"
 
 display_init = function() {
   g_canvas = document.getElementById("canvas");
@@ -39,7 +39,11 @@ display_line = function(x, y, x2, y2, color) {
 }
 
 display_clear = function() {
-  g_context.clearRect(0, 0, WIDTH, HEIGHT);
+    g_context.beginPath();
+    g_context.fillStyle="rgba(127,127,127,0.9)";
+    g_context.fillRect(0, 0, WIDTH, HEIGHT);
+
+  //g_context.clearRect(0, 0, WIDTH, HEIGHT);
 }
 
 display_iterate = function(cb, cb2, sec, max) {

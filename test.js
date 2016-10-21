@@ -164,7 +164,9 @@ test4 = function() {
     }, TICK_SHOW/REALTIME * 1000);
   });
 }
-
+var testCircle;
+var testCircle2;
+var specialAtom;
 first_run = function() {
   DAMP = 1
   BOND_P = 33
@@ -190,13 +192,13 @@ first_run = function() {
     floor.add(at);
     ATOMS.push(at);
 }*/
-for (i=-160; i<0; i+=1) {
+for (i=-150; i<0; i+=3) {
   var at = new atom(200+Math.cos(i/100*Math.PI)*200, 400+Math.sin(i/100*Math.PI)*200, 0, 0, 10, true);
   floor.add(at);
   ATOMS.push(at);
 }
-  for (i=0; i<26; i++) {
-    var at = new atom(900+i*20, 100, 0, 0, 10, true);
+  for (i=0; i<26+45; i++) {
+    var at = new atom(0+i*20, 30, 0, 0, 10, true);
     floor.add(at);
     ATOMS.push(at);
   }
@@ -215,21 +217,66 @@ for (i=-160; i<0; i+=1) {
   LAYER_FILTERS.push(["FLOOR","CURTAIN"]);
   LAYER_FILTERS.push(["FLOOR","DEFAULT"]);
   LAYER_FILTERS.push(["CURTAIN","DEFAULT"]);
+
+  //var testSquare = new square("square", 400, 500, 0, 0, 3);
+   testCircle = new circle("circle", 1020, 650, 0, 0, 20,false);
+   specialAtom=testCircle.atoms[1];
+   specialAtom.v.x=1000;
+  //bond_all(testCircle.atoms,true);
+  //bond_triangulate(testCircle.atoms, true);
+  //bond_nearest(testSquare.atoms,2,true);
   for (i=-100; i<2; i+=2) {
     //var at = new atom(420+i*16, 400+i*12, 0, 0, 8, i==0||i==19);
-    var at = new atom(650+Math.cos(i/100*Math.PI)*230, 400+Math.sin(i/100*Math.PI)*230, 0, 0, 5, i==-100||i==0);
+    var at = new atom(650+Math.cos(i/100*Math.PI)*160, 400+Math.sin(i/100*Math.PI)*230, 0, 0, 5, i==-100||i==0);
 
     curtain.add(at);
     ATOMS.push(at);
   }
-  for (i=-100; i<4; i+=4) {
+   bond_nearest(curtain.atoms,2,true);
+   var firstCon;
+   var prevCon;
+  for (i=0; i<200; i+=4) {
     //var at = new atom(420+i*16, 400+i*12, 0, 0, 8, i==0||i==19);
-    var at = new atom(1020+Math.cos(i/100*Math.PI)*100, 300+Math.sin(i/100*Math.PI)*150, 0, 0, 5, i==-100||i==0);
-
+    var at = new atom(1020+Math.cos(i/100*Math.PI)*100, 600+Math.sin(i/100*Math.PI)*100, 0, 0, 2, false);
+    if(i===0){
+        firstCon=at;
+    }
+    if(i>0){
+        var distA=Math.sqrt(Math.pow(at.p.x-prevCon.p.x,2)+Math.pow(at.p.y-prevCon.p.y,2));
+        //console.log(distA);
+        BONDS.push(new bond(at,prevCon,distA));
+    }
+    if(i==200-4){
+        var distA=Math.sqrt(Math.pow(at.p.x-firstCon.p.x,2)+Math.pow(at.p.y-firstCon.p.y,2));
+        //console.log(distA);
+        BONDS.push(new bond(at,firstCon,distA));
+    }
+    prevCon=at;
     curtain.add(at);
     ATOMS.push(at);
   }
-  bond_nearest(curtain.atoms,2,true);
+
+  var atw = new atom(1020, 550, 0, 0, 40, false);
+  atw.mass=1;
+  ATOMS.push(atw);
+for(var i=0;i<10;i++){
+    var atp = new atom(560+i*40, 800, 0, 0, 10, true);
+
+    ATOMS.push(atp);
+
+    var atb = new atom(560+i*40, 700, 0, 0, 20, false);
+    atb.mass=10;
+    if(i===0){
+        atb = new atom(560-100/5*5, 800-100/5*0, 0, 0, 20, false);
+        atb.mass=10;
+    }
+
+    ATOMS.push(atb);
+    BONDS.push(new bond(atp,atb,100));
+
+}
+
+
 
   /*var small = new thing("x");
   var at = new atom(560, 350, 0, 0, 10);
@@ -246,7 +293,7 @@ for (i=-160; i<0; i+=1) {
 
   var ball1 = new thing("ball2", 330, 700, 0, -1500, ball16);
   bond_triangulate(ball1.atoms, true);
-  var ball2 = new thing("ball2", 560, 250, 0, 0, ball16);
+  var ball2 = new thing("ball2", 600, 250, 0, 0, ball16);
   bond_triangulate(ball2.atoms, true);
   collide_all([floor, ball1, ball2, curtain]);//, ball2, small, curtain]);
   console.log(BONDS.length, "bonds")
@@ -262,6 +309,12 @@ for (i=-160; i<0; i+=1) {
     contacts_draw();
     bonds_draw();
     atoms_draw();
+    var middleAtom=testCircle.atoms[0];
+    for(var i=1;i<testCircle.atoms.length;i++){
+        var targetAtom=testCircle.atoms[i];
+    targetAtom.v.x=(targetAtom.p.y-middleAtom.p.y)*2+targetAtom.v.x/2;
+    targetAtom.v.y=(targetAtom.p.x-middleAtom.p.x)*-2+targetAtom.v.y/2;
+}
     update_all(TICK_SHOW/TICK_PHYS);
   },
   function() {

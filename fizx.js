@@ -1,6 +1,6 @@
 GRAVITY = -1000
 RADIUS = 25;
-RADIUS_SHOW = 2.5;
+RADIUS_SHOW = 1;
 TICK_PHYS = 0.001;
 TICK_SHOW = 0.001*(1000/60);
 REALTIME = 1//2.5;
@@ -11,13 +11,14 @@ BOND_P = 200
 BOND_D = 0.5
 CONTACT_P = 200
 CONTACT_D = .5
-DAMP = 0.975
+DAMP = 0.95
 
 ATOMS = []
 BONDS = []
 CONTACTS = []
 COLLIDES = []
 LAYER_FILTERS=[["DEFAULT","DEFAULT"]]
+STEP_RES=10 // DONOT CHANGE TO VERY LOW
 function componentAlong(a,b){
     return (a.x*b.x+a.y*b.y)/Math.sqrt(a.x*a.x+b.x*b.x);
 }
@@ -27,19 +28,31 @@ atom = function (x, y, vx, vy, radius, locked,layer) {
   this.p = {x: x, y: y};
   this.v = {x: vx, y: vy};
   this.radius=radius;
+  this.mass=1;
   if(layer==null || layer==undefined || layer==""){
       layer="DEFAULT";
   }
   this.layer=layer;
   this.locked=locked;
   this.f = {x:0, y:0}
+  this.applyForce = function() {
+    if(!this.locked) {
+      this.v.x += this.f.x/STEP_RES;
 
+      this.v.y += this.f.y/STEP_RES;
+    } else {
+      this.v.x = 0;
+      this.v.y = 0;
+    }
+    this.f.x = 0;
+     this.f.y = 0;
+  };
   this.update = function() {
     if(!this.locked) {
-      this.v.x += this.f.x;
-      this.f.x = 0;
-      this.v.y += this.f.y;
-      this.f.y = 0;
+      //this.v.x += this.f.x;
+      //this.f.x = 0;
+      //this.v.y += this.f.y;
+      //this.f.y = 0;
       this.p.x += this.v.x * TICK_PHYS;
       this.p.y += this.v.y * TICK_PHYS;
       this.v.x *= DAMP;
@@ -75,6 +88,7 @@ thing = function(name, x, y, vx, vy, obj, locked,layer) {
   this.add = function(atom) {
       atom.layer=this.layer;
     this.atoms.push(atom);
+
   }
   if (obj != undefined) {
     for (var i=0; i<obj.length; i++) {
@@ -90,6 +104,90 @@ thing = function(name, x, y, vx, vy, obj, locked,layer) {
           this.atoms[i].layer=name;
       }
   }
+}
+square= function(name,x,y,vx,vy,r,locked,layer){
+    var temp=new thing(name,x,y,vx,vy,[],locked,layer);
+    for(var p in temp){
+        this[p]=temp[p];
+    }
+    var atomArray=[];
+
+      for (var i=0; i<r; i++) {
+        atomArray[i]=[];
+        for (var j=0; j<r; j++) {
+        var a = new atom(x+(i/2-r)*4*4, y+(j/2-r)*4*4, vx, vy, 2, locked);
+        atomArray[i][j]=a;
+        this.atoms.push(a);
+        ATOMS.push(a);
+    }
+      }
+      for (var i=0; i<r; i++) {
+
+        for (var j=0; j<r; j++) {
+            for(var m=0;m<1;m++){
+if(i>0){
+BONDS.push(new bond(atomArray[i][j],atomArray[i-1][j],8 ));
+}
+if(j>0){
+BONDS.push(new bond(atomArray[i][j],atomArray[i][j-1],8 ));
+}
+if(j>0 && i>0){
+BONDS.push(new bond(atomArray[i][j],atomArray[i-1][j-1],8*Math.sqrt(2) ));
+}
+if(j>0 && i<atomArray.length-1){
+BONDS.push(new bond(atomArray[i][j],atomArray[i+1][j-1],8*Math.sqrt(2) ));
+}
+}
+
+    }
+}
+
+}
+
+circle= function(name,x,y,vx,vy,r,locked,layer){
+    var temp=new thing(name,x,y,vx,vy,[],locked,layer);
+    for(var p in temp){
+        this[p]=temp[p];
+    }
+
+    var c = new atom(x, y, vx*0, vy*0, r-2, locked||true);
+
+    this.atoms.push(c);
+ATOMS.push(c);
+    var atomArray=[];
+    var atomCount=Math.floor(Math.PI*r/6);
+      for (var i=0; i<atomCount; i++) {
+
+
+        var a = new atom(x+Math.sin(i/atomCount*Math.PI*2)*r, y+Math.cos(i/atomCount*Math.PI*2)*r, 0, 0, 2, locked);
+        atomArray[i]=a;
+        this.atoms.push(a);
+
+        //if(i>0){
+        BONDS.push(new bond(a,c ,r));
+        ///}
+        if(i>0){
+            var distA=Math.sqrt(Math.pow(a.p.x-atomArray[i-1].p.x,2)+Math.pow(a.p.y-atomArray[i-1].p.y,2));
+            console.log(distA);
+        BONDS.push(new bond(a,atomArray[i-1],distA));
+
+        }
+
+        if(i==atomCount-1){
+            var distA=Math.sqrt(Math.pow(a.p.x-atomArray[0].p.x,2)+Math.pow(a.p.y-atomArray[0].p.y,2));
+            console.log(distA);
+        BONDS.push(new bond(atomArray[0],atomArray[atomArray.length-1],distA));
+
+        }
+        ATOMS.push(a);
+      }
+
+
+
+
+
+
+
 }
 
 atoms_update = function() {
@@ -138,13 +236,27 @@ refresh_contacts = function() {
               var dist = Math.sqrt(dx*dx + dy*dy);
               if (dist < thresh) {
                 dchk++;
-                CONTACTS.push([a, b])
+                var ai=layerObjectIndicies[ta][j];
+                var bi=layerObjectIndicies[tb][k];
+                if(layerObjectIndicies[ta][j]>layerObjectIndicies[tb][k]){
+                    if(CONTACTS.indexOf(bi+","+ ai)<0){
+                    CONTACTS.push(bi+","+ ai);
+                }
+                }else{
+                    if(CONTACTS.indexOf(ai+","+ bi)<0){
+                    CONTACTS.push(ai+","+ bi);
+                }
+                }
+
               }
             }
           }
       }
         }
       }
+  }
+  for(var i=0;i<CONTACTS.length;i++){
+      CONTACTS[i]=[ATOMS[parseInt(CONTACTS[i].split(",")[0])],ATOMS[parseInt(CONTACTS[i].split(",")[1])]];
   }
   /*for (var i=0; i<COLLIDES.length; i++) {
     var ta = COLLIDES[i][0];
@@ -174,7 +286,7 @@ refresh_contacts = function() {
   return {x:xchk, y:ychk, d:dchk, t:tot}
 }
 
-var momentum_swap = function(a, b, P, D, target) {
+var momentum_swap = function(a, b, P, D, target,for_bond) {
   var dx = b.p.x-a.p.x;
   var dy = b.p.y-a.p.y;
   var dist = Math.sqrt(dx*dx+dy*dy);      // distance between atoms
@@ -200,9 +312,16 @@ var momentum_swap = function(a, b, P, D, target) {
 // equivalent yet optimized:
   var dvx = b.v.x-a.v.x;
   var dvy = b.v.y-a.v.y;
+
+  var dvmx = b.v.x*b.mass-a.v.x*a.mass;
+  var dvmy = b.v.y*b.mass-a.v.y*a.mass;
   var vcomp = componentAlong({x:dvx,y:dvy},{x:udx,y:udy});//dvx*udx + dvy*udy;
   var vacomp = componentAlong(a.v,{x:udx,y:udy});//dvx*udx + dvy*udy;
   var vbcomp = componentAlong(b.v,{x:udx,y:udy});//dvx*udx + dvy*udy;
+  var vmcomp=(vbcomp*b.mass-vacomp*a.mass)/(a.mass+b.mass)*2;
+  vmcomp=componentAlong({x:dvmx,y:dvmy},{x:udx,y:udy})/(a.mass+b.mass)*2;
+  //pterm = (dif )*target;//(Math.abs(vmcomp)+1+target);
+ // D = 1/target;//(Math.abs(vmcomp)+1+target);
   //pterm=dif*(target+Math.abs(dif+vacomp-vbcomp))/target
   var dterm = vcomp* D;        // Derivative term
   if(a.locked){
@@ -211,22 +330,33 @@ var momentum_swap = function(a, b, P, D, target) {
   if(b.locked){
       dterm=0;
   }
-  var xswap = (pterm + dterm) * udx/100*100;//*(target+Math.abs(dif))/target;          // along axis a--b
-  var yswap = (pterm + dterm) * udy/100*100;//*(target+Math.abs(dif))/target;
+  if(for_bond){
+      pterm=pterm;//*Math.abs();//STEP_RES;
+  }
+  var xswap = (pterm + dterm) * udx;//*100;//*(target+Math.abs(dif))/target;          // along axis a--b
+  var yswap = (pterm + dterm) * udy;//*100;//*(target+Math.abs(dif))/target;
 
-  a.f.x += xswap;                          // swap momenta
-  b.f.x -= xswap;
-  a.f.y += yswap;
-  b.f.y -= yswap;
+                          // swap momenta
+
+
+
   if(a.locked){
       b.f.x -= xswap;
-      //a.v.y += yswap;
+      b.f.y -= yswap;
+      b.f.x -= xswap;
       b.f.y -= yswap;
   }
   if(b.locked){
       a.f.x += xswap;
-      //a.v.y += yswap;
       a.f.y += yswap;
+      a.f.x += xswap;
+      a.f.y += yswap;
+  }
+  if(!(b.locked||a.locked)){
+      b.f.x -= (pterm + vmcomp*D) * udx*(a.mass+b.mass)/2/b.mass;
+      b.f.y -= (pterm + vmcomp*D) * udy*(a.mass+b.mass)/2/b.mass;
+      a.f.x += (pterm + vmcomp*D) * udx*(a.mass+b.mass)/2/b.mass;
+      a.f.y += (pterm + vmcomp*D) * udy*(a.mass+b.mass)/2/b.mass;
   }
 }
 
@@ -235,7 +365,7 @@ bonds_update = function() {
     var a = BONDS[i].a;
     var b = BONDS[i].b;
     var target = BONDS[i].d;
-    momentum_swap(a, b, target, 0.5, target);
+    momentum_swap(a, b, target, 0.999, target,true);
   }
 }
 
@@ -244,7 +374,7 @@ contacts_update = function() {
     var a = CONTACTS[i][0];
     var b = CONTACTS[i][1];
     var target = a.radius+b.radius;
-    momentum_swap(a, b, 64, 0.5, target);
+    momentum_swap(a, b, 1000, 0.999, target);
   }
 }
 
@@ -269,9 +399,15 @@ contacts_draw = function() {
 profile_counts={bonds:0, atoms:0, contacts_total:0, contacts_x:0, contacts_y:0, contacts_deep:0, real_contacts:0, iterations:0}
 update_all = function(n) {
   for(var i=0; i<n; i++) {
-    bonds_update();
+
     var cprof=refresh_contacts()
+    for(var ti=0;ti<STEP_RES;ti++){
+        bonds_update();
     contacts_update();
+    for (var j=0; j<ATOMS.length; j++) {
+      ATOMS[j].applyForce();
+    }
+}
     atoms_update();
     profile_counts.iterations++;
     profile_counts.bonds += BONDS.length;
