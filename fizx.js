@@ -348,21 +348,33 @@ var difPV = Math.sqrt(dpvx*dpvx+dpvy*dpvy)- target;
       b.f.y -= yswap;
       b.f.x -= xswap;
       b.f.y -= yswap;
+      if(for_sound ){//}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
+
+          // nextVol=Math.min(Math.max(nextVol,Math.sqrt((Math.abs(difPV)*100+10)*(b.mass*2))/5000-0.1),1);//(vmcomp+Math.abs(dif))/10);
+    //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
+      }
   }
   if(b.locked){
       a.f.x += xswap;
       a.f.y += yswap;
       a.f.x += xswap;
       a.f.y += yswap;
+      if(for_sound ){//}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
+
+           //nextVol=Math.min(Math.max(nextVol,Math.sqrt((Math.abs(difPV)*100+10)*(a.mass*2))/5000-0.1),1);//(vmcomp+Math.abs(dif))/10);
+    //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
+      }
   }
   if(!(b.locked||a.locked)){
-      if(for_sound){
-          nextVol=Math.min(Math.max(nextVol,Math.abs(vbcomp*b.mass-vacomp*a.mass)/10000),0.5);//(vmcomp+Math.abs(dif))/10);
+      if(for_sound ){//}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
+
+          // nextVol=Math.min(Math.max(nextVol,Math.sqrt((Math.abs(difPV)*100+10)*(a.mass+b.mass))/5000-0.1),1);//(vmcomp+Math.abs(dif))/10);
+    //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
       }
       b.f.x -= (pterm + vmcomp*D) * udx*(a.mass+b.mass)/2/b.mass;
       b.f.y -= (pterm + vmcomp*D) * udy*(a.mass+b.mass)/2/b.mass;
-      a.f.x += (pterm + vmcomp*D) * udx*(a.mass+b.mass)/2/b.mass;
-      a.f.y += (pterm + vmcomp*D) * udy*(a.mass+b.mass)/2/b.mass;
+      a.f.x += (pterm + vmcomp*D) * udx*(a.mass+b.mass)/2/a.mass;
+      a.f.y += (pterm + vmcomp*D) * udy*(a.mass+b.mass)/2/a.mass;
   }
 }
 
@@ -371,7 +383,7 @@ bonds_update = function() {
     var a = BONDS[i].a;
     var b = BONDS[i].b;
     var target = BONDS[i].d;
-    momentum_swap(a, b, target, 1-TICK_PHYS, target);
+    momentum_swap(a, b, target, (1-TICK_PHYS), target);
   }
 }
 
@@ -380,7 +392,7 @@ contacts_update = function() {
     var a = CONTACTS[i][0];
     var b = CONTACTS[i][1];
     var target = a.radius+b.radius;
-    momentum_swap(a, b, 1/TICK_PHYS, 1-TICK_PHYS, target,true);
+    momentum_swap(a, b, 1/TICK_PHYS,(1-TICK_PHYS), target,true);
   }
 }
 
@@ -388,7 +400,7 @@ bonds_draw = function() {
   for (var i=0; i<BONDS.length; i++) {
     var a = BONDS[i].a;
     var b = BONDS[i].b;
-    display_line(a.p.x, a.p.y, b.p.x, b.p.y, BOND_COLOR);
+    display_line(a.p.x, a.p.y, b.p.x, b.p.y, BOND_COLOR,1);
     // console.log("line", a.p.x, a.p.y, b.p.x, b.p.y)
   }
 }
@@ -405,20 +417,24 @@ contacts_draw = function() {
 profile_counts={bonds:0, atoms:0, contacts_total:0, contacts_x:0, contacts_y:0, contacts_deep:0, real_contacts:0, iterations:0}
 update_all = function(n) {
     nextVol=0;
+    var aveVol=0;
+    var volSamples=0;
   for(var i=0; i<n; i++) {
 
     var cprof=refresh_contacts()
     for(var ti=0;ti<STEP_RES;ti++){
         bonds_update();
     contacts_update();
-    //if(i===0 && ti===0){
-
-    //}
+    aveVol+=nextVol;
+    volSamples+=1;
+    /*if(i===0 && ti===0){
+vol=nextVol;
+    }*/
     for (var j=0; j<ATOMS.length; j++) {
       ATOMS[j].applyForce();
     }
 }
-vol=nextVol;
+
     atoms_update();
     profile_counts.iterations++;
     profile_counts.bonds += BONDS.length;
@@ -429,6 +445,7 @@ vol=nextVol;
     profile_counts.contacts_y += cprof.y;
     profile_counts.contacts_deep += cprof.d;
   }
+  vol=aveVol/Math.max(1,volSamples);
 }
 
 bond_all = function(atoms) {

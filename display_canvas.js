@@ -26,8 +26,12 @@ display_circle = function(x, y, r, color) {
   g_context.stroke();
 }
 
-display_line = function(x, y, x2, y2, color) {
+display_line = function(x, y, x2, y2, color,w) {
+    if(!(w>0)){
+        w=1;
+    }
   g_context.beginPath();
+  g_context.lineWidth=w;
   g_context.moveTo(x, HEIGHT-1-y);
   g_context.lineTo(x2, HEIGHT-1-y2);
   if(color) {
@@ -40,7 +44,7 @@ display_line = function(x, y, x2, y2, color) {
 
 display_clear = function() {
     g_context.beginPath();
-    g_context.fillStyle="rgba(127,127,127,0.9)";
+    g_context.fillStyle="rgba(127,127,127,"+0.5+")";
     g_context.fillRect(0, 0, WIDTH, HEIGHT);
 
   //g_context.clearRect(0, 0, WIDTH, HEIGHT);

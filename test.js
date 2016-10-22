@@ -167,6 +167,7 @@ test4 = function() {
 var testCircle;
 var testCircle2;
 var specialAtom;
+var newtonsCradle=[];
 first_run = function() {
   DAMP = 1
   BOND_P = 33
@@ -192,7 +193,7 @@ first_run = function() {
     floor.add(at);
     ATOMS.push(at);
 }*/
-for (i=-150; i<0; i+=3) {
+for (i=-160; i<0; i+=3) {
   var at = new atom(200+Math.cos(i/100*Math.PI)*200, 400+Math.sin(i/100*Math.PI)*200, 0, 0, 10, true);
   floor.add(at);
   ATOMS.push(at);
@@ -202,11 +203,16 @@ for (i=-150; i<0; i+=3) {
     floor.add(at);
     ATOMS.push(at);
   }
-  /*for (i=0; i<26; i++) {
-    var at = new atom(500+500, 220+i*20, 0, 0, 10, true);
+  for (i=0; i<36; i++) {
+    var at = new atom(1300, 50+i*20, 0, 0, 10, true);
     floor.add(at);
     ATOMS.push(at);
-}*/
+}
+for (i=0; i<36; i++) {
+  var at = new atom(0, 50+i*20, 0, 0, 10, true);
+  floor.add(at);
+  ATOMS.push(at);
+}
   var at = new atom(725, 221, 0, 0, 10, true);
   //floor.add(at);
   //ATOMS.push(at);
@@ -225,19 +231,19 @@ for (i=-150; i<0; i+=3) {
   //bond_all(testCircle.atoms,true);
   //bond_triangulate(testCircle.atoms, true);
   //bond_nearest(testSquare.atoms,2,true);
-  for (i=-100; i<2; i+=2) {
+ /* for (i=-100; i<2; i+=2) {
     //var at = new atom(420+i*16, 400+i*12, 0, 0, 8, i==0||i==19);
     var at = new atom(650+Math.cos(i/100*Math.PI)*160, 400+Math.sin(i/100*Math.PI)*230, 0, 0, 5, i==-100||i==0);
 
     curtain.add(at);
     ATOMS.push(at);
   }
-   bond_nearest(curtain.atoms,2,true);
+   bond_nearest(curtain.atoms,2,true);*/
    var firstCon;
    var prevCon;
-  for (i=0; i<200; i+=2) {
+  for (i=0; i<200; i+=4) {
     //var at = new atom(420+i*16, 400+i*12, 0, 0, 8, i==0||i==19);
-    var at = new atom(1020+Math.cos(i/100*Math.PI)*200, 600+Math.sin(i/100*Math.PI)*200, 0, 0, 2, false);
+    var at = new atom(1020+Math.cos(i/100*Math.PI)*100, 730+Math.sin(i/100*Math.PI)*100, 0, 0, 2, false);
     if(i===0){
         firstCon=at;
     }
@@ -246,12 +252,13 @@ for (i=-150; i<0; i+=3) {
         //console.log(distA);
         BONDS.push(new bond(at,prevCon,distA));
     }
-    if(i==200-2){
+    if(i==200-4){
         var distA=Math.sqrt(Math.pow(at.p.x-firstCon.p.x,2)+Math.pow(at.p.y-firstCon.p.y,2));
         //console.log(distA);
         BONDS.push(new bond(at,firstCon,distA));
     }
     prevCon=at;
+    at.mass=0.1;
     curtain.add(at);
     ATOMS.push(at);
   }
@@ -259,17 +266,25 @@ for (i=-150; i<0; i+=3) {
   var atw = new atom(1020, 550, 0, 0, 40, false);
   atw.mass=10000000;
   //ATOMS.push(atw);
+  /*var atws = new atom(1020, 588, 0, 0, 40, true);
+  atws.mass=100;
+  ATOMS.push(atws);
+
+  var atws = new atom(1100, 588, 0, 0, 40, true);
+  atws.mass=100;
+  ATOMS.push(atws);*/
 for(var i=0;i<5;i++){
-    var atp = new atom(560+i*40, 800, 0, 0, 10, true);
+    var atp = new atom(500+i*40, 800, 0, 0, 10, true);
 
     ATOMS.push(atp);
 
-    var atb = new atom(560+i*40, 700, 0, 0, 20, false);
-    atb.mass=10;
-    if(i<2){
-        atb = new atom(560-100/5*5+i*40, 800-100/5*0, 0, 0, 20, false);
-        atb.mass=10;
+    var atb = new atom(500+i*40, 700, 0, 0, 20, false);
+    atb.mass=100;
+    if(i<0){
+        atb = new atom(500-100/5*5+i*40-2, 800-100/5*0, 0, 0, 20, false);
+        atb.mass=100;
     }
+    newtonsCradle[i]=atb;
     /*if(i===1){
         atb = new atom(560+i*40+100/5*5, 800-100/5*0, 0, -100, 20, false);
         atb.mass=1;
@@ -279,7 +294,26 @@ for(var i=0;i<5;i++){
     BONDS.push(new bond(atp,atb,100));
 
 }
+if(true){
+    var extraRatio=1;
+    var atp = new atom(500-20*(1+extraRatio), 800, 0, 0, 10, true);
 
+    ATOMS.push(atp);
+
+
+
+        var atb = new atom(500-100/5*5-20*(1+extraRatio), 800-100/5*0, 0, 0, 20*(extraRatio), false);
+        atb.mass=100*extraRatio*(extraRatio);
+
+    newtonsCradle[newtonsCradle.length]=atb;
+    /*if(i===1){
+        atb = new atom(560+i*40+100/5*5, 800-100/5*0, 0, -100, 20, false);
+        atb.mass=1;
+    }*/
+
+    ATOMS.push(atb);
+    BONDS.push(new bond(atp,atb,100));
+}
 
 
   /*var small = new thing("x");
@@ -295,10 +329,18 @@ for(var i=0;i<5;i++){
 
   bond_nearest([at,at2,at3],2,true);*/
 
-  var ball1 = new thing("ball2", 330, 700, 0, -1500, ball16);
+  var ball1 = new thing("ball1", 330, 500, 0, -1800, ball16);
   bond_triangulate(ball1.atoms, true);
   var ball2 = new thing("ball2", 600, 250, 0, 0, ball16);
   bond_triangulate(ball2.atoms, true);
+  for(var i=0;i<ball2.atoms.length;i++){
+      ball2.atoms[i].mass=10;
+  }
+  var ball3 = new thing("ball3", 800, 250, 0, 0, ball16);
+  bond_triangulate(ball3.atoms, true);
+  for(var i=0;i<ball3.atoms.length;i++){
+      ball3.atoms[i].mass=  1;
+  }
   collide_all([floor, ball1, ball2, curtain]);//, ball2, small, curtain]);
   console.log(BONDS.length, "bonds")
   display_clear();
@@ -316,8 +358,8 @@ for(var i=0;i<5;i++){
     var middleAtom=testCircle.atoms[0];
     for(var i=1;i<testCircle.atoms.length;i++){
         var targetAtom=testCircle.atoms[i];
-targetAtom.v.x=(targetAtom.p.y-middleAtom.p.y)*-10+targetAtom.v.x/2;
-    targetAtom.v.y=(targetAtom.p.x-middleAtom.p.x)*10+targetAtom.v.y/2;
+//targetAtom.v.x=(targetAtom.p.y-middleAtom.p.y)*-10+targetAtom.v.x/2;
+    //targetAtom.v.y=(targetAtom.p.x-middleAtom.p.x)*10+targetAtom.v.y/2;
 }
     update_all(TICK_SHOW/TICK_PHYS);
   },
