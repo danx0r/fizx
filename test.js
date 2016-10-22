@@ -235,9 +235,9 @@ for (i=-150; i<0; i+=3) {
    bond_nearest(curtain.atoms,2,true);
    var firstCon;
    var prevCon;
-  for (i=0; i<200; i+=4) {
+  for (i=0; i<200; i+=2) {
     //var at = new atom(420+i*16, 400+i*12, 0, 0, 8, i==0||i==19);
-    var at = new atom(1020+Math.cos(i/100*Math.PI)*100, 600+Math.sin(i/100*Math.PI)*100, 0, 0, 2, false);
+    var at = new atom(1020+Math.cos(i/100*Math.PI)*200, 600+Math.sin(i/100*Math.PI)*200, 0, 0, 2, false);
     if(i===0){
         firstCon=at;
     }
@@ -246,7 +246,7 @@ for (i=-150; i<0; i+=3) {
         //console.log(distA);
         BONDS.push(new bond(at,prevCon,distA));
     }
-    if(i==200-4){
+    if(i==200-2){
         var distA=Math.sqrt(Math.pow(at.p.x-firstCon.p.x,2)+Math.pow(at.p.y-firstCon.p.y,2));
         //console.log(distA);
         BONDS.push(new bond(at,firstCon,distA));
@@ -257,19 +257,23 @@ for (i=-150; i<0; i+=3) {
   }
 
   var atw = new atom(1020, 550, 0, 0, 40, false);
-  atw.mass=1;
-  ATOMS.push(atw);
-for(var i=0;i<10;i++){
+  atw.mass=10000000;
+  //ATOMS.push(atw);
+for(var i=0;i<5;i++){
     var atp = new atom(560+i*40, 800, 0, 0, 10, true);
 
     ATOMS.push(atp);
 
     var atb = new atom(560+i*40, 700, 0, 0, 20, false);
     atb.mass=10;
-    if(i===0){
-        atb = new atom(560-100/5*5, 800-100/5*0, 0, 0, 20, false);
+    if(i<2){
+        atb = new atom(560-100/5*5+i*40, 800-100/5*0, 0, 0, 20, false);
         atb.mass=10;
     }
+    /*if(i===1){
+        atb = new atom(560+i*40+100/5*5, 800-100/5*0, 0, -100, 20, false);
+        atb.mass=1;
+    }*/
 
     ATOMS.push(atb);
     BONDS.push(new bond(atp,atb,100));
@@ -312,8 +316,8 @@ for(var i=0;i<10;i++){
     var middleAtom=testCircle.atoms[0];
     for(var i=1;i<testCircle.atoms.length;i++){
         var targetAtom=testCircle.atoms[i];
-    targetAtom.v.x=(targetAtom.p.y-middleAtom.p.y)*2+targetAtom.v.x/2;
-    targetAtom.v.y=(targetAtom.p.x-middleAtom.p.x)*-2+targetAtom.v.y/2;
+targetAtom.v.x=(targetAtom.p.y-middleAtom.p.y)*-10+targetAtom.v.x/2;
+    targetAtom.v.y=(targetAtom.p.x-middleAtom.p.x)*10+targetAtom.v.y/2;
 }
     update_all(TICK_SHOW/TICK_PHYS);
   },

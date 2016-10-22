@@ -18,7 +18,9 @@ BONDS = []
 CONTACTS = []
 COLLIDES = []
 LAYER_FILTERS=[["DEFAULT","DEFAULT"]]
-STEP_RES=10 // DONOT CHANGE TO VERY LOW
+var nextVol=0;
+var vol=0;
+STEP_RES=10 // DONOT CHANGE TO VERY LOW (Higher Is More Real And More Stable)
 function componentAlong(a,b){
     return (a.x*b.x+a.y*b.y)/Math.sqrt(a.x*a.x+b.x*b.x);
 }
@@ -34,7 +36,7 @@ atom = function (x, y, vx, vy, radius, locked,layer) {
   }
   this.layer=layer;
   this.locked=locked;
-  this.f = {x:0, y:0}
+  this.f = {x:0, y:0};
   this.applyForce = function() {
     if(!this.locked) {
       this.v.x += this.f.x/STEP_RES;
@@ -151,6 +153,7 @@ circle= function(name,x,y,vx,vy,r,locked,layer){
     }
 
     var c = new atom(x, y, vx*0, vy*0, r-2, locked||true);
+    c.mass=10;
 
     this.atoms.push(c);
 ATOMS.push(c);
@@ -168,14 +171,14 @@ ATOMS.push(c);
         ///}
         if(i>0){
             var distA=Math.sqrt(Math.pow(a.p.x-atomArray[i-1].p.x,2)+Math.pow(a.p.y-atomArray[i-1].p.y,2));
-            console.log(distA);
+            //console.log(distA);
         BONDS.push(new bond(a,atomArray[i-1],distA));
 
         }
 
         if(i==atomCount-1){
             var distA=Math.sqrt(Math.pow(a.p.x-atomArray[0].p.x,2)+Math.pow(a.p.y-atomArray[0].p.y,2));
-            console.log(distA);
+            //console.log(distA);
         BONDS.push(new bond(atomArray[0],atomArray[atomArray.length-1],distA));
 
         }
@@ -286,9 +289,11 @@ refresh_contacts = function() {
   return {x:xchk, y:ychk, d:dchk, t:tot}
 }
 
-var momentum_swap = function(a, b, P, D, target,for_bond) {
+var momentum_swap = function(a, b, P, D, target,for_sound) {
   var dx = b.p.x-a.p.x;
   var dy = b.p.y-a.p.y;
+  var dpvx = b.p.x-a.p.x+b.v.x-a.v.x;
+  var dpvy = b.p.y-a.p.y+b.v.y-a.v.y;
   var dist = Math.sqrt(dx*dx+dy*dy);      // distance between atoms
   var udx = dx / dist;                    // unit vector pointing from a to b
   var udy = dy / dist;
@@ -296,7 +301,7 @@ var momentum_swap = function(a, b, P, D, target,for_bond) {
   var vacomp1 = componentAlong(a.v,{x:udx,y:udy});//dvx*udx + dvy*udy;
   var vbcomp1 = componentAlong(b.v,{x:udx,y:udy});//dvx*udx + dvy*udy;
   var pterm = (dif )*P;//*P;                // Proportional term for our springy bond
-
+var difPV = Math.sqrt(dpvx*dpvx+dpvy*dpvy)- target;
 // original logic for posterity
   // var dvx = b.v.x-a.v.x;
   // var dvy = b.v.y-a.v.y;
@@ -330,9 +335,7 @@ var momentum_swap = function(a, b, P, D, target,for_bond) {
   if(b.locked){
       dterm=0;
   }
-  if(for_bond){
-      pterm=pterm;//*Math.abs();//STEP_RES;
-  }
+
   var xswap = (pterm + dterm) * udx;//*100;//*(target+Math.abs(dif))/target;          // along axis a--b
   var yswap = (pterm + dterm) * udy;//*100;//*(target+Math.abs(dif))/target;
 
@@ -353,6 +356,9 @@ var momentum_swap = function(a, b, P, D, target,for_bond) {
       a.f.y += yswap;
   }
   if(!(b.locked||a.locked)){
+      if(for_sound){
+          nextVol=Math.min(Math.max(nextVol,Math.abs(vbcomp*b.mass-vacomp*a.mass)/10000),0.5);//(vmcomp+Math.abs(dif))/10);
+      }
       b.f.x -= (pterm + vmcomp*D) * udx*(a.mass+b.mass)/2/b.mass;
       b.f.y -= (pterm + vmcomp*D) * udy*(a.mass+b.mass)/2/b.mass;
       a.f.x += (pterm + vmcomp*D) * udx*(a.mass+b.mass)/2/b.mass;
@@ -365,7 +371,7 @@ bonds_update = function() {
     var a = BONDS[i].a;
     var b = BONDS[i].b;
     var target = BONDS[i].d;
-    momentum_swap(a, b, target, 0.999, target,true);
+    momentum_swap(a, b, target, 1-TICK_PHYS, target);
   }
 }
 
@@ -374,7 +380,7 @@ contacts_update = function() {
     var a = CONTACTS[i][0];
     var b = CONTACTS[i][1];
     var target = a.radius+b.radius;
-    momentum_swap(a, b, 1000, 0.999, target);
+    momentum_swap(a, b, 1/TICK_PHYS, 1-TICK_PHYS, target,true);
   }
 }
 
@@ -398,16 +404,21 @@ contacts_draw = function() {
 
 profile_counts={bonds:0, atoms:0, contacts_total:0, contacts_x:0, contacts_y:0, contacts_deep:0, real_contacts:0, iterations:0}
 update_all = function(n) {
+    nextVol=0;
   for(var i=0; i<n; i++) {
 
     var cprof=refresh_contacts()
     for(var ti=0;ti<STEP_RES;ti++){
         bonds_update();
     contacts_update();
+    //if(i===0 && ti===0){
+
+    //}
     for (var j=0; j<ATOMS.length; j++) {
       ATOMS[j].applyForce();
     }
 }
+vol=nextVol;
     atoms_update();
     profile_counts.iterations++;
     profile_counts.bonds += BONDS.length;
