@@ -350,7 +350,7 @@ var difPV = Math.sqrt(dpvx*dpvx+dpvy*dpvy)- target;
       b.f.y -= yswap;
       if(for_sound ){//}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
 
-          // nextVol=Math.min(Math.max(nextVol,Math.sqrt((Math.abs(difPV)*100+10)*(b.mass*2))/5000-0.1),1);//(vmcomp+Math.abs(dif))/10);
+          nextVol=Math.min(Math.max(nextVol,Math.sqrt((Math.abs(difPV)*100+10)*(b.mass*2))/5000-0.1),1);//(vmcomp+Math.abs(dif))/10);
     //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
       }
   }
@@ -361,14 +361,14 @@ var difPV = Math.sqrt(dpvx*dpvx+dpvy*dpvy)- target;
       a.f.y += yswap;
       if(for_sound ){//}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
 
-           //nextVol=Math.min(Math.max(nextVol,Math.sqrt((Math.abs(difPV)*100+10)*(a.mass*2))/5000-0.1),1);//(vmcomp+Math.abs(dif))/10);
+           nextVol=Math.min(Math.max(nextVol,Math.sqrt((Math.abs(difPV)*100+10)*(a.mass*2))/5000-0.1),1);//(vmcomp+Math.abs(dif))/10);
     //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
       }
   }
   if(!(b.locked||a.locked)){
       if(for_sound ){//}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
 
-          // nextVol=Math.min(Math.max(nextVol,Math.sqrt((Math.abs(difPV)*100+10)*(a.mass+b.mass))/5000-0.1),1);//(vmcomp+Math.abs(dif))/10);
+          nextVol=Math.min(Math.max(nextVol,Math.sqrt((Math.abs(difPV)*100+10)*(a.mass+b.mass))/5000-0.1),1);//(vmcomp+Math.abs(dif))/10);
     //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
       }
       b.f.x -= (pterm + vmcomp*D) * udx*(a.mass+b.mass)/2/b.mass;
@@ -383,7 +383,7 @@ bonds_update = function() {
     var a = BONDS[i].a;
     var b = BONDS[i].b;
     var target = BONDS[i].d;
-    momentum_swap(a, b, target, (1-TICK_PHYS), target);
+    momentum_swap(a, b, target, .5, target);
   }
 }
 
@@ -392,7 +392,7 @@ contacts_update = function() {
     var a = CONTACTS[i][0];
     var b = CONTACTS[i][1];
     var target = a.radius+b.radius;
-    momentum_swap(a, b, 1/TICK_PHYS,(1-TICK_PHYS), target,true);
+    momentum_swap(a, b, 1/TICK_PHYS,.5, target,true);
   }
 }
 

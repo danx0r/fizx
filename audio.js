@@ -5,8 +5,8 @@ n = 0
 node.onaudioprocess = function (e) {
   var output = e.outputBuffer.getChannelData(0);
   for (var i = 0; i < output.length; i++) {
-    output[i] = vol*Math.sin(n*1.6);//Math.sin(n);
-    n += 0.05
+    output[i] = vol*Math.sin(n);//Math.sin(n);
+    n += 0.1
   }
 };
 node.connect(context.destination);
