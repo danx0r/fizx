@@ -358,8 +358,8 @@ if(true){
     var middleAtom=testCircle.atoms[0];
     for(var i=1;i<testCircle.atoms.length;i++){
         var targetAtom=testCircle.atoms[i];
-targetAtom.v.x=(targetAtom.p.y-middleAtom.p.y)*-200;
-    targetAtom.v.y=(targetAtom.p.x-middleAtom.p.x)*200;
+targetAtom.v.x=(targetAtom.p.y-middleAtom.p.y)*-300;
+    targetAtom.v.y=(targetAtom.p.x-middleAtom.p.x)*300;
 }
     update_all(TICK_SHOW/TICK_PHYS);
   },
