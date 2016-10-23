@@ -169,7 +169,7 @@ var testCircle2;
 var specialAtom;
 var newtonsCradle=[];
 first_run = function() {
-  DAMP = 1//-TICK_PHYS/10
+  DAMP = 1-TICK_PHYS/10
   BOND_P = 33
   BOND_D = 0.5
   TICK_MAX = 1000000;
