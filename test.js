@@ -169,7 +169,7 @@ var testCircle2;
 var specialAtom;
 var newtonsCradle=[];
 first_run = function() {
-  DAMP = 1-TICK_PHYS/10
+  DAMP = 1//-TICK_PHYS/10
   BOND_P = 33
   BOND_D = 0.5
   TICK_MAX = 1000000;
@@ -358,8 +358,8 @@ if(true){
     var middleAtom=testCircle.atoms[0];
     for(var i=1;i<testCircle.atoms.length;i++){
         var targetAtom=testCircle.atoms[i];
-targetAtom.v.x=(targetAtom.p.y-middleAtom.p.y)*-300;
-    targetAtom.v.y=(targetAtom.p.x-middleAtom.p.x)*300;
+targetAtom.v.x=(targetAtom.p.y-middleAtom.p.y)*-15;
+    targetAtom.v.y=(targetAtom.p.x-middleAtom.p.x)*15;
 }
     update_all(TICK_SHOW/TICK_PHYS);
   },
