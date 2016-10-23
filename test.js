@@ -263,9 +263,9 @@ for (i=0; i<36; i++) {
     ATOMS.push(at);
   }
 
-  var atw = new atom(1020, 550, 0, 0, 40, false);
-  atw.mass=10000000;
-  //ATOMS.push(atw);
+  // var atw = new atom(1020, 550, 0, 0, 40, false);
+  // atw.mass=10000000;
+  // ATOMS.push(atw);
   /*var atws = new atom(1020, 588, 0, 0, 40, true);
   atws.mass=100;
   ATOMS.push(atws);
@@ -358,8 +358,8 @@ if(true){
     var middleAtom=testCircle.atoms[0];
     for(var i=1;i<testCircle.atoms.length;i++){
         var targetAtom=testCircle.atoms[i];
-targetAtom.v.x=(targetAtom.p.y-middleAtom.p.y)*-2+targetAtom.v.x/2;
-    targetAtom.v.y=(targetAtom.p.x-middleAtom.p.x)*2+targetAtom.v.y/2;
+targetAtom.v.x=(targetAtom.p.y-middleAtom.p.y)*-15+targetAtom.v.x/2;
+    targetAtom.v.y=(targetAtom.p.x-middleAtom.p.x)*15+targetAtom.v.y/2;
 }
     update_all(TICK_SHOW/TICK_PHYS);
   },
