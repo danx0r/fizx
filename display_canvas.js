@@ -2,7 +2,7 @@
  * simple API to display, canvas implementation
  */
 
-BOND_COLOR = "#AF4846"
+BOND_COLOR = "#A0A0A0";//"#AF4846"
 ATOM_COLOR = "#0A388A"
 ATOM_COLOR2 = "#9a9a79"
 CONTACT_COLOR = "#6969AA"
@@ -17,13 +17,18 @@ display_init = function() {
 
 display_circle = function(x, y, r, color) {
   g_context.beginPath();
-  g_context.arc(x, HEIGHT-1-y, r, 0, Math.PI*2);
+  var strokeTh=Math.min(r,2);
+  g_context.lineWidth=strokeTh;
+  g_context.arc(x, HEIGHT-1-y, r-strokeTh/2, 0, Math.PI*2);
   if(color) {
     g_context.strokeStyle = color;
   } else {
     g_context.strokeStyle = "#000000";
   }
+  g_context.fillStyle = g_context.strokeStyle;
+ // g_context.fill();
   g_context.stroke();
+  g_context.lineWidth=1;
 }
 
 display_line = function(x, y, x2, y2, color,w) {
@@ -31,6 +36,7 @@ display_line = function(x, y, x2, y2, color,w) {
         w=1;
     }
   g_context.beginPath();
+  var old=g_context.lineWidth;
   g_context.lineWidth=w;
   g_context.moveTo(x, HEIGHT-1-y);
   g_context.lineTo(x2, HEIGHT-1-y2);
@@ -40,11 +46,12 @@ display_line = function(x, y, x2, y2, color,w) {
     g_context.strokeStyle = "#000000";
   }
   g_context.stroke();
+  g_context.lineWidth=old;
 }
 
 display_clear = function() {
     g_context.beginPath();
-    g_context.fillStyle="rgba(127,127,127,"+0.5+")";
+    g_context.fillStyle="rgba(127,127,127,"+1+")";
     g_context.fillRect(0, 0, WIDTH, HEIGHT);
 
   //g_context.clearRect(0, 0, WIDTH, HEIGHT);

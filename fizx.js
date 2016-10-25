@@ -25,6 +25,7 @@ function componentAlong(a,b){
     return (a.x*b.x+a.y*b.y)/Math.sqrt(a.x*a.x+b.x*b.x);
 }
 atom = function (x, y, vx, vy, radius, locked,layer) {
+    this.color=0;
   if (vx==null) vx = vy = 0;
   if (radius==null) radius=RADIUS;
   this.p = {x: x, y: y};
@@ -68,8 +69,11 @@ atom = function (x, y, vx, vy, radius, locked,layer) {
 
   this.draw = function() {
     // console.log("draw at", this.p.x, this.p.y)
-    display_circle(this.p.x, this.p.y, RADIUS_SHOW, ATOM_COLOR);
-    display_circle(this.p.x, this.p.y, this.radius, ATOM_COLOR2);
+
+    var speed=Math.sqrt(this.v.y*this.v.y+this.v.x*this.v.x);
+    this.color=Math.atan2(this.v.y+Math.sin(this.color)*26,this.v.x+Math.cos(this.color)*26);
+    display_circle(this.p.x, this.p.y, this.radius, "hsl("+(speed>0?(this.color/Math.PI*180):0)+","+(Math.min(speed,50)+30)+"%,50%)");//ATOM_COLOR2);
+    //display_circle(this.p.x, this.p.y, RADIUS_SHOW+1, ATOM_COLOR);
   };
 }
 
@@ -152,19 +156,19 @@ circle= function(name,x,y,vx,vy,r,locked,layer){
         this[p]=temp[p];
     }
 
-    var c = new atom(x, y, vx*0, vy*0, r-2, locked||true);
+    var c = new atom(x, y, vx*0, vy*0, r-3, locked||true);
     c.mass=10;
 
-    this.atoms.push(c);
+    this.add(c);
 ATOMS.push(c);
     var atomArray=[];
-    var atomCount=Math.floor(Math.PI*r/6);
+    var atomCount=Math.floor(Math.PI*r/5);
       for (var i=0; i<atomCount; i++) {
 
 
         var a = new atom(x+Math.sin(i/atomCount*Math.PI*2)*r, y+Math.cos(i/atomCount*Math.PI*2)*r, 0, 0, 2, locked);
         atomArray[i]=a;
-        this.atoms.push(a);
+        this.add(a);
 
         //if(i>0){
         BONDS.push(new bond(a,c ,r));
@@ -185,7 +189,8 @@ ATOMS.push(c);
         ATOMS.push(a);
       }
 
-
+//bond_all(this.atoms,true);
+//bond_triangulate(this.atoms,true);
 
 
 
@@ -383,7 +388,7 @@ bonds_update = function() {
     var a = BONDS[i].a;
     var b = BONDS[i].b;
     var target = BONDS[i].d;
-    momentum_swap(a, b, target, .5, target);
+    momentum_swap(a, b, target, 0.5, target);
   }
 }
 
@@ -400,7 +405,7 @@ bonds_draw = function() {
   for (var i=0; i<BONDS.length; i++) {
     var a = BONDS[i].a;
     var b = BONDS[i].b;
-    display_line(a.p.x, a.p.y, b.p.x, b.p.y, BOND_COLOR,1);
+    display_line(a.p.x, a.p.y, b.p.x, b.p.y, BOND_COLOR,2);
     // console.log("line", a.p.x, a.p.y, b.p.x, b.p.y)
   }
 }
@@ -451,7 +456,8 @@ vol=nextVol;
 bond_all = function(atoms) {
   for (var i=0; i<atoms.length; i++) {
     for (var j=i+1; j<atoms.length; j++) {
-      BONDS.push(new bond(atoms[i], atoms[j]));
+        var d=Math.sqrt(Math.pow(atoms[i].p.x-atoms[j].p.x,2)+Math.pow(atoms[i].p.y-atoms[j].p.y,2));
+      BONDS.push(new bond(atoms[i], atoms[j],d));
     }
   }
 }

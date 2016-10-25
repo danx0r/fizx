@@ -193,8 +193,8 @@ first_run = function() {
     floor.add(at);
     ATOMS.push(at);
 }*/
-for (i=-160; i<0; i+=3) {
-  var at = new atom(200+Math.cos(i/100*Math.PI)*200, 400+Math.sin(i/100*Math.PI)*200, 0, 0, 10, true);
+for (i=-160; i<0; i+=Math.PI/5) {
+  var at = new atom(200+Math.cos(i/100*Math.PI)*200, 400+Math.sin(i/100*Math.PI)*200, 0, 0, 2, true);
   floor.add(at);
   ATOMS.push(at);
 }
@@ -225,9 +225,11 @@ for (i=0; i<36; i++) {
   LAYER_FILTERS.push(["CURTAIN","DEFAULT"]);
 
   //var testSquare = new square("square", 400, 500, 0, 0, 3);
-   testCircle = new circle("circle", 1020, 650, 0, 0, 20,false);
-   specialAtom=testCircle.atoms[1];
-   specialAtom.v.x=1000;
+   testCircle = new circle("circle", 1020, 750, 0, 0, 30,false);
+
+
+   //testCircle2 = new circle("circle2", 1020, 680, 0, 0, 30,false);
+
   //bond_all(testCircle.atoms,true);
   //bond_triangulate(testCircle.atoms, true);
   //bond_nearest(testSquare.atoms,2,true);
@@ -264,8 +266,8 @@ for (i=0; i<36; i++) {
   }
 
   // var atw = new atom(1020, 550, 0, 0, 40, false);
-  // atw.mass=10000000;
-  // ATOMS.push(atw);
+   //atw.mass=100000;
+   //ATOMS.push(atw);
   /*var atws = new atom(1020, 588, 0, 0, 40, true);
   atws.mass=100;
   ATOMS.push(atws);
@@ -348,7 +350,7 @@ if(true){
   atoms_draw();
   console.log("START");
   T = (new Date).getTime();
-
+//window.setTimeout(function(){for(var i=1;i<testCircle.atoms.length;i++){testCircle.atoms[i].locked=false}},1000)
   display_iterate( function(){
     // console.log("draw", ii);
     display_clear();
@@ -361,6 +363,13 @@ if(true){
 targetAtom.v.x=(targetAtom.p.y-middleAtom.p.y)*-15;
     targetAtom.v.y=(targetAtom.p.x-middleAtom.p.x)*15;
 }
+
+/*var middleAtom2=testCircle2.atoms[0];
+for(var i=1;i<testCircle2.atoms.length;i++){
+    var targetAtom=testCircle2.atoms[i];
+targetAtom.v.x=(targetAtom.p.y-middleAtom2.p.y)*-15;
+targetAtom.v.y=(targetAtom.p.x-middleAtom2.p.x)*15;
+}*/
     update_all(TICK_SHOW/TICK_PHYS);
   },
   function() {
