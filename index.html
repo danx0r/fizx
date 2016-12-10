@@ -10,7 +10,19 @@
   <script src="delaunay.js"></script>
   <script src="display_canvas.js"></script>
 </head>
-<body style="background-color: gray" onload="first_run()">
-  <canvas id="canvas" width="1300" height="950" style="background-color: #ccc"></canvas>
+<script>
+  //var mouse={x:0,y:0,d:false};
+</script>
+
+<body style="background-color: gray;padding:0px;margin:0px" onload="first_run()" onmousedown="nmouse.d=true" onmouseup="nmouse.d=false" onmouseexit="nmouse.d=false" onmousemove="nmouse.x=event.clientX-g_canvas.getBoundingClientRect().left;nmouse.y=950-event.clientY+g_canvas.getBoundingClientRect().top">
+  <canvas id="canvas" width="1300" height="950" style="background-color: #ccc;margin:0px"></canvas>
 </body>
+<script>
+  g_canvas = document.getElementById("canvas");
+  g_context = g_canvas.getContext("2d");
+  console.log("canvas context:", g_context);
+  var WIDTH = g_canvas.width;
+  var HEIGHT = g_canvas.height;
+
+</script>
 </html>
