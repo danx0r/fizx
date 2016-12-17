@@ -301,13 +301,13 @@ thing = function(name, x, y, vx, vy, obj, locked, layer) {
     }
   THINGS.push(this);
 }
-square = function(name, x, y, vx, vy, r, locked, layer) {
+square = function(name, x, y, vx, vy, r,res, locked, layer) {
     var temp = new thing(name, x, y, vx, vy, [], locked, layer);
     for (var p in temp) {
         this[p] = temp[p];
     }
     var atomArray = [];
-    var scale=4;
+    var scale=res;
     r=Math.floor(r/scale);
     for (var i = 0; i < r; i++) {
         atomArray[i] = [];
@@ -315,7 +315,7 @@ square = function(name, x, y, vx, vy, r, locked, layer) {
           //if(i===0||j===0||i==r-1||j==r-1){
 
 
-            var a = new atom(x + (i  - r/2) * scale, y + (j  - r/2) * scale, vx, vy, 2, locked);
+            var a = new atom(x + (i  - r/2) * scale, y + (j  - r/2) * scale, vx, vy, scale/2, locked);
             a.mass=1/25*scale*scale;
             atomArray[i][j] = a;
             this.atoms.push(a);
@@ -394,6 +394,29 @@ return this;
 
 }
 
+triangle = function(name, x, y, vx, vy, r,res, locked, layer) {
+    var temp = new thing(name, x, y, vx, vy, [], locked, layer);
+    for (var p in temp) {
+        this[p] = temp[p];
+    }
+
+
+    var atmData = fetchPointsToFillTriangle(x,y,r,res,Math.pow(r,2)*Math.PI/10-Math.floor(Math.PI * r / 4)*Math.pow(2,2)*Math.PI/10);
+    for(var cD of atmData){
+      var c = new atom(cD[0], cD[1], vx * 0, vy * 0, cD[2], locked );
+      this.add(c);
+      ATOMS.push(c);
+    }
+return this;
+    //bond_all(this.atoms,true);
+    //bond_triangulate(this.atoms,true);
+
+
+
+
+
+}
+
 atoms_update = function() {
     for (var i = 0; i < ATOMS.length; i++) {
         ATOMS[i].update();
@@ -405,7 +428,18 @@ atoms_draw = function() {
         ATOMS[i].draw();
     }
 }
+function fetchPointsToFillTriangle(x,y,r,depth,m){
+  if(depth<2){
+    return [[x,y,r,m]];
+  }else{
+    var top=fetchPointsToFillTriangle(x,y+r,r/2,depth-1,m/4);
+    var left=fetchPointsToFillTriangle(x-r/2*Math.sqrt(3),y-r/2,r/2,depth-1,m/4);
+    var right=fetchPointsToFillTriangle(x+r/2*Math.sqrt(3),y-r/2,r/2,depth-1,m/4);
+    var center=[[x,y,r/2,m/4]];//fetchPointsToFillTriangle(x,y,r/2,depth-1,m/4);
+    return top.concat(left).concat(right).concat(center);
+  }
 
+}
 refresh_contacts = function() {
     var tot = xchk = ychk = dchk = 0;
     CONTACTS = [];
@@ -495,7 +529,7 @@ refresh_contacts = function() {
     }
 }
 
-var momentum_swap = function(a, b, P, D, target, for_sound) {
+var momentum_swap = function(a, b, P, D,RESTITUTION, target, for_sound) {
   if(Number.isNaN(a.p.x)){
     a.p.x=0;
   }
@@ -577,7 +611,7 @@ var vbcomp = componentAlong(b.v, {
     x: udx,
     y: udy
 }); //dvx*udx + dvy*udy;
-var vmcomp = (vbcomp * (b.locked?0:b.mass) - vacomp * (a.locked?0:a.mass))/magicMult;// / magicMult;
+var vmcomp = (vbcomp +0* (b.locked?0:b.mass) - vacomp +0* (a.locked?0:a.mass))*(1+RESTITUTION);///magicMult;// / magicMult;
 //console.log(vmcomp);
 //var relativeMomentumBetween=(vbcomp * (b.locked?0:b.mass) - vacomp * (a.locked?0:a.mass));
 /*vmcomp = componentAlong({
@@ -648,8 +682,8 @@ var vmcomp = (vbcomp * (b.locked?0:b.mass) - vacomp * (a.locked?0:a.mass))/magic
           //b.f.x -= xswap;
           //b.f.y -= yswap;
           //console.log(b,dterm);
-          b.f.x -= 2*(pterm/2+dterm)*udx* magicMult / b.mass;//(pterm + vmcomp *D) * udx * magicMult / b.mass;
-          b.f.y -= 2*(pterm/2+dterm)*udy* magicMult / b.mass;//(pterm + vmcomp*D ) * udy * magicMult / b.mass;
+          b.f.x -= (pterm+dterm)*udx* magicMult / b.mass;//(pterm + vmcomp *D) * udx * magicMult / b.mass;
+          b.f.y -= (pterm+dterm)*udy* magicMult / b.mass;//(pterm + vmcomp*D ) * udy * magicMult / b.mass;
         //  b.f.x -= xswap;
         //  b.f.y -= yswap;
           if (for_sound) { //}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
@@ -659,8 +693,8 @@ var vmcomp = (vbcomp * (b.locked?0:b.mass) - vacomp * (a.locked?0:a.mass))/magic
           }
       }
       if (b.locked) {
-        a.f.x +=2*(pterm/2+dterm)*udx* magicMult / a.mass;//(pterm + vmcomp*D ) * udx * magicMult / a.mass;
-        a.f.y +=2*(pterm/2+dterm)*udy* magicMult / a.mass;// (pterm + vmcomp *D) * udy * magicMult / a.mass;
+        a.f.x +=(pterm+dterm)*udx* magicMult / a.mass;//(pterm + vmcomp*D ) * udx * magicMult / a.mass;
+        a.f.y +=(pterm+dterm)*udy* magicMult / a.mass;// (pterm + vmcomp *D) * udy * magicMult / a.mass;
           //a.f.x += xswap;
           //a.f.y += yswap;
           if (for_sound) { //}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
@@ -676,10 +710,10 @@ var vmcomp = (vbcomp * (b.locked?0:b.mass) - vacomp * (a.locked?0:a.mass))/magic
               //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
           }
           if(true){
-            b.f.x -= 2*(pterm/2 + dterm) * udx * magicMult / b.mass;
-            b.f.y -= 2*(pterm/2 +dterm) * udy * magicMult / b.mass;
-            a.f.x += 2*(pterm/2 + dterm) * udx * magicMult / a.mass;
-            a.f.y += 2*(pterm/2 + dterm) * udy * magicMult / a.mass;
+            b.f.x -= (pterm + dterm) * udx * magicMult / b.mass;
+            b.f.y -= (pterm +dterm) * udy * magicMult / b.mass;
+            a.f.x += (pterm + dterm) * udx * magicMult / a.mass;
+            a.f.y += (pterm + dterm) * udy * magicMult / a.mass;
 
           /*  b.nf.x -= 2*(pterm) * udx * magicMult / b.mass;
             b.nf.y -= 2*(pterm) * udy * magicMult / b.mass;
@@ -715,7 +749,7 @@ bonds_update = function() {
         var a = BONDS[i].a;
         var b = BONDS[i].b;
         var target = BONDS[i].d;
-        momentum_swap(a, b,1/TICK_PHYS,1, target);
+        momentum_swap(a, b,1/TICK_PHYS,1,1, target);
     }
 }
 
@@ -724,7 +758,7 @@ contacts_update = function() {
         var a = CONTACTS[i][0];
         var b = CONTACTS[i][1];
         var target = a.radius + b.radius;
-        momentum_swap(a, b, 1/TICK_PHYS, 1,target, true);
+        momentum_swap(a, b, 1/TICK_PHYS,1, 1,target, true);
     }
 }
 
