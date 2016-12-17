@@ -15,7 +15,7 @@ BOND_D = 0.5
 CONTACT_P = 200
 CONTACT_D = .5
 DAMP = 0.95
-
+MAX_SPEED=100000
 ATOMS = []
 BONDS = []
 THINGS = []
@@ -26,9 +26,9 @@ LAYER_FILTERS = [
 ]
 var nextVol = 0;
 var vol = 0;
-STEP_RES = 10 // DONOT CHANGE TO VERY LOW (Higher Is More Real And More Stable)
+STEP_RES = 20 // DONOT CHANGE TO VERY LOW (Higher Is More Real And More Stable)
 function componentAlong(a, b) {
-    return (a.x * b.x + a.y * b.y) / Math.sqrt(a.x * a.x + b.x * b.x);
+    return (a.x * b.x + a.y * b.y) / Math.sqrt(b.y * b.y + b.x * b.x);
 }
 atom = function(x, y, vx, vy, radius, locked, layer) {
     this.color = 0;
@@ -38,7 +38,7 @@ atom = function(x, y, vx, vy, radius, locked, layer) {
     if (radius == null) radius = RADIUS;
     this.p = {
         x: x,
-        y: y
+        y: y|0
     };
     this.dragDelta = {
       x:0,
@@ -59,21 +59,36 @@ atom = function(x, y, vx, vy, radius, locked, layer) {
         x: 0,
         y: 0
     };
+    this.nv = {
+        x: 0,
+        y: 0
+    };
+    this.nf = {
+        x: 0,
+        y: 0
+    };
     this.applyForce = function() {
       var vDist=Math.sqrt(Math.pow(this.v.x,2)+Math.pow(this.v.y,2));
-      if(vDist>1000){
-      this.v.y=this.v.y/vDist*1000;
-      this.v.x=this.v.x/vDist*1000;
+      if(vDist>MAX_SPEED){
+      this.v.y=this.v.y/vDist*MAX_SPEED;
+      this.v.x=this.v.x/vDist*MAX_SPEED;
     }
         if (!this.locked && !this.beingDragged) {
+        //  console.log(this.f.x , STEP_RES);
             this.v.x += this.f.x / STEP_RES;
 
             this.v.y += this.f.y / STEP_RES;
+
+            this.nv.x += this.nf.x / STEP_RES;
+
+            this.nv.y += this.nf.y / STEP_RES;
             //this.v.y += GRAVITY * TICK_PHYS;
 
         } else {
             this.v.x = 0;
             this.v.y = 0;
+            this.nv.x = 0;
+            this.nv.y = 0;
         }
         if(this.beingDragged){
           this.v.x=(mouse.x-oldMouse.x);
@@ -81,6 +96,8 @@ atom = function(x, y, vx, vy, radius, locked, layer) {
         }
         this.f.x = 0;
         this.f.y = 0;
+        this.nf.x = 0;
+        this.nf.y = 0;
     };
     this.update = function() {
         if (!this.locked) {
@@ -96,6 +113,8 @@ atom = function(x, y, vx, vy, radius, locked, layer) {
             }else{
             this.p.x += this.v.x * TICK_PHYS;
             this.p.y += this.v.y * TICK_PHYS;
+            this.v.x -=this.nv.x;
+            this.v.y -=this.nv.y;
           }
           this.v.y += GRAVITY * TICK_PHYS;
             this.v.x *= DAMP;
@@ -114,6 +133,8 @@ atom = function(x, y, vx, vy, radius, locked, layer) {
               this.p.y=mouse.y;
             }
         }
+        this.nv.x = 0;
+        this.nv.y = 0;
         if(Math.pow(Math.pow((mouse.x-this.p.x),2)+Math.pow((mouse.y-this.p.y),2),0.5)<=this.radius){
           //this.radius++;
         }
@@ -286,56 +307,62 @@ square = function(name, x, y, vx, vy, r, locked, layer) {
         this[p] = temp[p];
     }
     var atomArray = [];
-
+    var scale=4;
+    r=Math.floor(r/scale);
     for (var i = 0; i < r; i++) {
         atomArray[i] = [];
         for (var j = 0; j < r; j++) {
-            var a = new atom(x + (i / 2 - r) * 4 * 4, y + (j / 2 - r) * 4 * 4, vx, vy, 2, locked);
+          //if(i===0||j===0||i==r-1||j==r-1){
+
+
+            var a = new atom(x + (i  - r/2) * scale, y + (j  - r/2) * scale, vx, vy, 2, locked);
+            a.mass=1/25*scale*scale;
             atomArray[i][j] = a;
             this.atoms.push(a);
             ATOMS.push(a);
+        //  }
         }
     }
-    for (var i = 0; i < r; i++) {
 
         for (var j = 0; j < r; j++) {
-            for (var m = 0; m < 1; m++) {
+            for (var i = 0; i < r; i++) {
                 if (i > 0) {
-                    BONDS.push(new bond(atomArray[i][j], atomArray[i - 1][j], 8));
+                    BONDS.push(new bond(atomArray[i][j], atomArray[i - 1][j], scale));
                 }
                 if (j > 0) {
-                    BONDS.push(new bond(atomArray[i][j], atomArray[i][j - 1], 8));
+                    BONDS.push(new bond(atomArray[i][j], atomArray[i][j - 1], scale));
                 }
                 if (j > 0 && i > 0) {
-                    BONDS.push(new bond(atomArray[i][j], atomArray[i - 1][j - 1], 8 * Math.sqrt(2)));
+                    BONDS.push(new bond(atomArray[i][j], atomArray[i - 1][j - 1], scale * Math.sqrt(2)));
                 }
                 if (j > 0 && i < atomArray.length - 1) {
-                    BONDS.push(new bond(atomArray[i][j], atomArray[i + 1][j - 1], 8 * Math.sqrt(2)));
+                    BONDS.push(new bond(atomArray[i][j], atomArray[i + 1][j - 1], scale * Math.sqrt(2)));
                 }
             }
 
         }
-    }
+    return this;
 
 }
 
-circle = function(name, x, y, vx, vy, r, locked, layer) {
+circle = function(name, x, y, vx, vy, r, locked,lockedC, layer) {
     var temp = new thing(name, x, y, vx, vy, [], locked, layer);
     for (var p in temp) {
         this[p] = temp[p];
     }
 
-    var c = new atom(x, y, vx * 0, vy * 0, r - 3, locked || true);
-    c.mass = 10;
-
+    var c = new atom(x, y, vx * 0, vy * 0, r - 3, lockedC );
+    c.mass = Math.pow(r,2)*Math.PI/10-Math.floor(Math.PI * r / 4)*Math.pow(2,2)*Math.PI/10;
+    this.center=c;
     this.add(c);
     ATOMS.push(c);
     var atomArray = [];
-    var atomCount = Math.floor(Math.PI * r / 5);
+    var atomCount = Math.floor(Math.PI * r / 4);
     for (var i = 0; i < atomCount; i++) {
 
 
         var a = new atom(x + Math.sin(i / atomCount * Math.PI * 2) * r, y + Math.cos(i / atomCount * Math.PI * 2) * r, 0, 0, 2, locked);
+        a.mass=Math.pow(2,2)*Math.PI/10;
         atomArray[i] = a;
         this.add(a);
 
@@ -357,7 +384,7 @@ circle = function(name, x, y, vx, vy, r, locked, layer) {
         }
         ATOMS.push(a);
     }
-
+return this;
     //bond_all(this.atoms,true);
     //bond_triangulate(this.atoms,true);
 
@@ -469,6 +496,31 @@ refresh_contacts = function() {
 }
 
 var momentum_swap = function(a, b, P, D, target, for_sound) {
+  if(Number.isNaN(a.p.x)){
+    a.p.x=0;
+  }
+  if(Number.isNaN(a.p.y)){
+    a.p.y=0
+  }
+  if(Number.isNaN(a.v.x)){
+    a.v.x=0;
+  }
+  if(Number.isNaN(a.v.y)){
+    a.v.y=0;
+  }
+
+  if(Number.isNaN(b.p.x)){
+    b.p.x=0;
+  }
+  if(Number.isNaN(b.p.y)){
+    b.p.y=0
+  }
+  if(Number.isNaN(b.v.x)){
+    b.v.x=0;
+  }
+  if(Number.isNaN(b.v.y)){
+    b.v.y=0;
+  }
     var dx = b.p.x - a.p.x;
     var dy = b.p.y - a.p.y;
     var dpvx = b.p.x - a.p.x + b.v.x - a.v.x;
@@ -477,6 +529,7 @@ var momentum_swap = function(a, b, P, D, target, for_sound) {
     var udx = dx / dist; // unit vector pointing from a to b
     var udy = dy / dist;
     var dif = dist - target; // difference we want to restore to zero
+    /*
     var vacomp1 = componentAlong(a.v, {
         x: udx,
         y: udy
@@ -485,100 +538,176 @@ var momentum_swap = function(a, b, P, D, target, for_sound) {
         x: udx,
         y: udy
     }); //dvx*udx + dvy*udy;
-    var pterm = (dif) * P; //*P;                // Proportional term for our springy bond
-    var difPV = Math.sqrt(dpvx * dpvx + dpvy * dpvy) - target;
-    // original logic for posterity
-    // var dvx = b.v.x-a.v.x;
-    // var dvy = b.v.y-a.v.y;
-    // var vdif = Math.sqrt(dvx*dvx+dvy*dvy);  // relative velocity
-    // var vdot = 0;                           // if relative velocity==0, no Derivative term for our PiD
-    // if (vdif) {
-    // var uvx = dvx / vdif;                 // velocity unit vector (direction of rel vel)
-    // var uvy = dvy / vdif;
-    // vdot = uvx*udx + uvy*udy;             // dot product of positional direction vs rel vel - we only
-    // }                                       // want to adjust velocity along axis aligned with 2 particles,
-    // var dterm = vdif * vdot * D;        // Derivative term
+    */
+    var magicMult=a.mass*b.mass/(b.mass+a.mass);
 
-    // equivalent yet optimized:
-    var dvx = b.v.x - a.v.x;
-    var dvy = b.v.y - a.v.y;
+  //  if(!for_sound){
+    if (a.locked||a.mass===0) {
+        magicMult=b.mass;
+        //P=1;
 
-    var dvmx = b.v.x * b.mass - a.v.x * a.mass;
-    var dvmy = b.v.y * b.mass - a.v.y * a.mass;
-    var vcomp = componentAlong({
-        x: dvx,
-        y: dvy
-    }, {
-        x: udx,
-        y: udy
-    }); //dvx*udx + dvy*udy;
-    var vacomp = componentAlong(a.v, {
-        x: udx,
-        y: udy
-    }); //dvx*udx + dvy*udy;
-    var vbcomp = componentAlong(b.v, {
-        x: udx,
-        y: udy
-    }); //dvx*udx + dvy*udy;
-    var vmcomp = (vbcomp * b.mass - vacomp * a.mass) / (a.mass + b.mass) * 2;
-    vmcomp = componentAlong({
-        x: dvmx,
-        y: dvmy
-    }, {
-        x: udx,
-        y: udy
-    }) / (a.mass + b.mass) * 2;
-    //pterm = (dif )*target;//(Math.abs(vmcomp)+1+target);
-    // D = 1/target;//(Math.abs(vmcomp)+1+target);
-    //pterm=dif*(target+Math.abs(dif+vacomp-vbcomp))/target
-    var dterm = vcomp * D; // Derivative term
-    if (a.locked) {
-        dterm = 0;
     }
-    if (b.locked) {
-        dterm = 0;
+    if (b.locked||b.mass===0) {
+        magicMult=a.mass;
+      //  P=1;
     }
+  //  P=1;
+  /*if(!(magicMult>0)){
+//console.log(magicMult);
+}
+//}
+var dvx = b.v.x - a.v.x;
+var dvy = b.v.y - a.v.y;
 
-    var xswap = (pterm + dterm) * udx; //*100;//*(target+Math.abs(dif))/target;          // along axis a--b
-    var yswap = (pterm + dterm) * udy; //*100;//*(target+Math.abs(dif))/target;
+var dvmx = b.v.x * (b.locked?0:b.mass) - a.v.x * (a.locked?0:a.mass);
+var dvmy = b.v.y * (b.locked?0:b.mass) - a.v.y * (a.locked?0:a.mass);
+var vcomp = componentAlong({
+    x: dvx,
+    y: dvy
+}, {
+    x: udx,
+    y: udy
+}); //dvx*udx + dvy*udy;
+*/
+var vacomp = componentAlong(a.v, {
+    x: udx,
+    y: udy
+}); //dvx*udx + dvy*udy;
+var vbcomp = componentAlong(b.v, {
+    x: udx,
+    y: udy
+}); //dvx*udx + dvy*udy;
+var vmcomp = (vbcomp * (b.locked?0:b.mass) - vacomp * (a.locked?0:a.mass))/magicMult;// / magicMult;
+//console.log(vmcomp);
+//var relativeMomentumBetween=(vbcomp * (b.locked?0:b.mass) - vacomp * (a.locked?0:a.mass));
+/*vmcomp = componentAlong({
+    x: dvmx,
+    y: dvmy
+}, {
+    x: udx,
+    y: udy
+})/ magicMult;*/
+//if(!for_sound){
+//D=Math.abs(vmcomp*magicMult);
+//}
+//var difPV = Math.sqrt(dpvx * dpvx + dpvy * dpvy) - target;
+      var pterm = (dif)*P;//*magicMult*P/magicMult;///TICK_PHYS*P;                // Proportional term for our springy bond
+    //  D=D;
 
-    // swap momenta
+      // original logic for posterity
+      // var dvx = b.v.x-a.v.x;
+      // var dvy = b.v.y-a.v.y;
+      // var vdif = Math.sqrt(dvx*dvx+dvy*dvy);  // relative velocity
+      // var vdot = 0;                           // if relative velocity==0, no Derivative term for our PiD
+      // if (vdif) {
+      // var uvx = dvx / vdif;                 // velocity unit vector (direction of rel vel)
+      // var uvy = dvy / vdif;
+      // vdot = uvx*udx + uvy*udy;             // dot product of positional direction vs rel vel - we only
+      // }                                       // want to adjust velocity along axis aligned with 2 particles,
+      // var dterm = vdif * vdot * D;        // Derivative term
+
+      // equivalent yet optimized:
+
+      //pterm = (dif )*target;//(Math.abs(vmcomp)+1+target);
+      // D = 1/target;//(Math.abs(vmcomp)+1+target);
+      //pterm=dif*(target+Math.abs(dif+vacomp-vbcomp))/target
+      var dterm = vmcomp * D; // Derivative term
+      //pterm+=dif*(Math.abs(vmcomp));
+      /*
+      if (a.locked) {
+          //dterm = 0;
+      }
+      if (b.locked) {
+          //dterm = 0;
+      }
+
+      var xswap = (pterm + dterm) * udx; //*100;//*(target+Math.abs(dif))/target;          // along axis a--b
+      var yswap = (pterm + dterm) * udy; //*100;//*(target+Math.abs(dif))/target;
+      if(for_sound){
+        var r = a.radius;
+      var R = b.radius;
+      var d = difPV;
+      if(R < r){
+      // swap
+      r = b.radius;
+      R = a.radius;
+      }
+      var part1 = r*r*Math.acos((d*d + r*r - R*R)/(2*d*r));
+      var part2 = R*R*Math.acos((d*d + R*R - r*r)/(2*d*R));
+      var part3 = 0.5*Math.sqrt((-d+r+R)*(d+r-R)*(d-r+R)*(d+r+R));
+
+      var intersectionArea = part1 + part2 - part3;
+      //xswap = intersectionArea *(a.mass+b.mass) * udx; //*100;//*(target+Math.abs(dif))/target;          // along axis a--b
+      //yswap = intersectionArea *(a.mass+b.mass) * udy; //*100;//*(target+Math.abs(dif))/target;
+      }
+      // swap momenta
+
+*/
+
+      if (a.locked) {
+          //b.f.x -= xswap;
+          //b.f.y -= yswap;
+          //console.log(b,dterm);
+          b.f.x -= 2*(pterm/2+dterm)*udx* magicMult / b.mass;//(pterm + vmcomp *D) * udx * magicMult / b.mass;
+          b.f.y -= 2*(pterm/2+dterm)*udy* magicMult / b.mass;//(pterm + vmcomp*D ) * udy * magicMult / b.mass;
+        //  b.f.x -= xswap;
+        //  b.f.y -= yswap;
+          if (for_sound) { //}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
+
+          //    nextVol = Math.min(Math.max(nextVol, Math.sqrt((Math.abs(difPV) * 100 + 10) * (b.mass * 2)) / 5000 - 0.1), 1); //(vmcomp+Math.abs(dif))/10);
+              //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
+          }
+      }
+      if (b.locked) {
+        a.f.x +=2*(pterm/2+dterm)*udx* magicMult / a.mass;//(pterm + vmcomp*D ) * udx * magicMult / a.mass;
+        a.f.y +=2*(pterm/2+dterm)*udy* magicMult / a.mass;// (pterm + vmcomp *D) * udy * magicMult / a.mass;
+          //a.f.x += xswap;
+          //a.f.y += yswap;
+          if (for_sound) { //}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
+
+          //    nextVol = Math.min(Math.max(nextVol, Math.sqrt((Math.abs(difPV) * 100 + 10) * (a.mass * 2)) / 5000 - 0.1), 1); //(vmcomp+Math.abs(dif))/10);
+              //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
+          }
+      }
+      if (!(b.locked || a.locked)) {
+          if (for_sound) { //}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
+
+            //  nextVol = Math.min(Math.max(nextVol, Math.sqrt((Math.abs(difPV) * 100 + 10) * (a.mass + b.mass)) / 5000 - 0.1), 1); //(vmcomp+Math.abs(dif))/10);
+              //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
+          }
+          if(true){
+            b.f.x -= 2*(pterm/2 + dterm) * udx * magicMult / b.mass;
+            b.f.y -= 2*(pterm/2 +dterm) * udy * magicMult / b.mass;
+            a.f.x += 2*(pterm/2 + dterm) * udx * magicMult / a.mass;
+            a.f.y += 2*(pterm/2 + dterm) * udy * magicMult / a.mass;
+
+          /*  b.nf.x -= 2*(pterm) * udx * magicMult / b.mass;
+            b.nf.y -= 2*(pterm) * udy * magicMult / b.mass;
+            a.nf.x += 2*(pterm ) * udx * magicMult / a.mass;
+            a.nf.y += 2*(pterm ) * udy * magicMult / a.mass;*/
+          }else{
+            b.f.x -= (pterm + dterm/magicMult) * udx * magicMult / b.mass;
+            b.f.y -= (pterm +dterm/magicMult) * udy * magicMult / b.mass;
+            a.f.x += (pterm + dterm/magicMult) * udx * magicMult / a.mass;
+            a.f.y += (pterm + dterm/magicMult) * udy * magicMult / a.mass;
+          }
+
+      }
+      if(Number.isNaN(a.f.x)){
+        a.f.x=0;
+      }
+      if(Number.isNaN(a.f.y)){
+        a.f.y=0;
+      }
+
+      if(Number.isNaN(b.f.x)){
+        b.f.x=0;
+      }
+      if(Number.isNaN(b.f.y)){
+        b.f.y=0;
+      }
 
 
-
-    if (a.locked) {
-        b.f.x -= xswap;
-        b.f.y -= yswap;
-        b.f.x -= xswap;
-        b.f.y -= yswap;
-        if (for_sound) { //}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
-
-            nextVol = Math.min(Math.max(nextVol, Math.sqrt((Math.abs(difPV) * 100 + 10) * (b.mass * 2)) / 5000 - 0.1), 1); //(vmcomp+Math.abs(dif))/10);
-            //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
-        }
-    }
-    if (b.locked) {
-        a.f.x += xswap;
-        a.f.y += yswap;
-        a.f.x += xswap;
-        a.f.y += yswap;
-        if (for_sound) { //}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
-
-            nextVol = Math.min(Math.max(nextVol, Math.sqrt((Math.abs(difPV) * 100 + 10) * (a.mass * 2)) / 5000 - 0.1), 1); //(vmcomp+Math.abs(dif))/10);
-            //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
-        }
-    }
-    if (!(b.locked || a.locked)) {
-        if (for_sound) { //}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
-
-            nextVol = Math.min(Math.max(nextVol, Math.sqrt((Math.abs(difPV) * 100 + 10) * (a.mass + b.mass)) / 5000 - 0.1), 1); //(vmcomp+Math.abs(dif))/10);
-            //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
-        }
-        b.f.x -= (pterm + vmcomp * D) * udx * (a.mass + b.mass) / 2 / b.mass;
-        b.f.y -= (pterm + vmcomp * D) * udy * (a.mass + b.mass) / 2 / b.mass;
-        a.f.x += (pterm + vmcomp * D) * udx * (a.mass + b.mass) / 2 / a.mass;
-        a.f.y += (pterm + vmcomp * D) * udy * (a.mass + b.mass) / 2 / a.mass;
-    }
 }
 
 bonds_update = function() {
@@ -586,7 +715,7 @@ bonds_update = function() {
         var a = BONDS[i].a;
         var b = BONDS[i].b;
         var target = BONDS[i].d;
-        momentum_swap(a, b, target, 0.5, target);
+        momentum_swap(a, b,1/TICK_PHYS,1, target);
     }
 }
 
@@ -595,7 +724,7 @@ contacts_update = function() {
         var a = CONTACTS[i][0];
         var b = CONTACTS[i][1];
         var target = a.radius + b.radius;
-        momentum_swap(a, b, (1) / TICK_PHYS, .5, target, true);
+        momentum_swap(a, b, 1/TICK_PHYS, 1,target, true);
     }
 }
 

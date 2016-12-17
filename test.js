@@ -169,7 +169,7 @@ var testCircle2;
 var specialAtom;
 var newtonsCradle=[];
 first_run = function() {
-  DAMP = 1//-TICK_PHYS/10
+  DAMP = 1;//0.999//-TICK_PHYS/10
   BOND_P = 33
   BOND_D = 0.5
   TICK_MAX = 1000000;
@@ -224,11 +224,14 @@ for (i=0; i<36; i++) {
   LAYER_FILTERS.push(["FLOOR","DEFAULT"]);
   LAYER_FILTERS.push(["CURTAIN","DEFAULT"]);
 
-  //var testSquare = new square("square", 400, 500, 0, 0, 3);
-   testCircle = new circle("circle", 1020, 750, 0, 0, 30,false);
+  var testSquare = new square("square", 320, 450, 0, 0, 40);
+   var testCircle = new circle("circle", 1020, 750, 0, 0, 30,false,true);
+   testCircle.atoms[0].locked=true;
+
 
 
    //testCircle2 = new circle("circle2", 1020, 680, 0, 0, 30,false);
+   //var testBall = new circle("ball", 500, 750, 0, 0, 30,false);
 
   //bond_all(testCircle.atoms,true);
   //bond_triangulate(testCircle.atoms, true);
@@ -331,12 +334,12 @@ if(true){
 
   bond_nearest([at,at2,at3],2,true);*/
 
-  var ball1 = new thing("ball1", 330, 500, 0, -1800, ball16);
+  var ball1 = new thing("ball1", 350, 500, 0, 0, ball16);
   bond_triangulate(ball1.atoms, true);
   var ball2 = new thing("ball2", 600, 250, 0, 0, ball16);
   bond_triangulate(ball2.atoms, true);
   for(var i=0;i<ball2.atoms.length;i++){
-      ball2.atoms[i].mass=10;
+      ball2.atoms[i].mass=1;
   }
   var ball3 = new thing("ball3", 800, 250, 0, 0, ball16);
   bond_triangulate(ball3.atoms, true);
@@ -350,6 +353,7 @@ if(true){
   atoms_draw();
   console.log("START");
   T = (new Date).getTime();
+  update_all(TICK_SHOW/TICK_PHYS);
 //window.setTimeout(function(){for(var i=1;i<testCircle.atoms.length;i++){testCircle.atoms[i].locked=false}},1000)
   display_iterate( function(){
     // console.log("draw", ii);
