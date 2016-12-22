@@ -26,7 +26,7 @@ LAYER_FILTERS = [
 ]
 var nextVol = 0;
 var vol = 0;
-STEP_RES = 20 // DONOT CHANGE TO VERY LOW (Higher Is More Real And More Stable)
+STEP_RES = 11 // DONOT CHANGE TO VERY LOW (Higher Is More Real And More Stable)
 function componentAlong(a, b) {
     return (a.x * b.x + a.y * b.y) / Math.sqrt(b.y * b.y + b.x * b.x);
 }
@@ -67,7 +67,18 @@ atom = function(x, y, vx, vy, radius, locked, layer) {
         x: 0,
         y: 0
     };
-    this.applyForce = function() {
+    
+    
+}
+atom.prototype.draw = function() {
+        // console.log("draw at", this.p.x, this.p.y)
+
+        var speed = Math.sqrt(this.v.y * this.v.y + this.v.x * this.v.x);
+        this.color = Math.atan2(this.v.y + Math.sin(this.color) * 26, this.v.x + Math.cos(this.color) * 26);
+        display_circle(this.p.x, this.p.y, this.radius, "hsl(" + (speed > 0 ? (this.color / Math.PI * 180) : 0) + "," + (Math.min(speed, 50) + 30) + "%,50%)"); //ATOM_COLOR2);
+        //display_circle(this.p.x, this.p.y, RADIUS_SHOW+1, ATOM_COLOR);
+    };
+atom.prototype.applyForce = function() {
       var vDist=Math.sqrt(Math.pow(this.v.x,2)+Math.pow(this.v.y,2));
       if(vDist>MAX_SPEED){
       this.v.y=this.v.y/vDist*MAX_SPEED;
@@ -99,7 +110,7 @@ atom = function(x, y, vx, vy, radius, locked, layer) {
         this.nf.x = 0;
         this.nf.y = 0;
     };
-    this.update = function() {
+atom.prototype.update = function() {
         if (!this.locked) {
             //this.v.x += this.f.x;
             //this.f.x = 0;
@@ -154,16 +165,6 @@ atom = function(x, y, vx, vy, radius, locked, layer) {
 
       }
     };
-
-    this.draw = function() {
-        // console.log("draw at", this.p.x, this.p.y)
-
-        var speed = Math.sqrt(this.v.y * this.v.y + this.v.x * this.v.x);
-        this.color = Math.atan2(this.v.y + Math.sin(this.color) * 26, this.v.x + Math.cos(this.color) * 26);
-        display_circle(this.p.x, this.p.y, this.radius, "hsl(" + (speed > 0 ? (this.color / Math.PI * 180) : 0) + "," + (Math.min(speed, 50) + 30) + "%,50%)"); //ATOM_COLOR2);
-        //display_circle(this.p.x, this.p.y, RADIUS_SHOW+1, ATOM_COLOR);
-    };
-}
 
 bond = function(atom1, atom2, dist) {
     if (dist == undefined) dist = RADIUS * 2;
@@ -530,7 +531,7 @@ refresh_contacts = function() {
 }
 
 var momentum_swap = function(a, b, P, D,RESTITUTION, target, for_sound) {
-  if(Number.isNaN(a.p.x)){
+  /*if(Number.isNaN(a.p.x)){
     a.p.x=0;
   }
   if(Number.isNaN(a.p.y)){
@@ -554,7 +555,7 @@ var momentum_swap = function(a, b, P, D,RESTITUTION, target, for_sound) {
   }
   if(Number.isNaN(b.v.y)){
     b.v.y=0;
-  }
+  }*/
     var dx = b.p.x - a.p.x;
     var dy = b.p.y - a.p.y;
     var dpvx = b.p.x - a.p.x + b.v.x - a.v.x;
@@ -678,7 +679,7 @@ var vmcomp = (vbcomp +0* (b.locked?0:b.mass) - vacomp +0* (a.locked?0:a.mass))*(
 
 */
 
-      if (a.locked) {
+      if (!b.locked) {
           //b.f.x -= xswap;
           //b.f.y -= yswap;
           //console.log(b,dterm);
@@ -692,7 +693,7 @@ var vmcomp = (vbcomp +0* (b.locked?0:b.mass) - vacomp +0* (a.locked?0:a.mass))*(
               //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
           }
       }
-      if (b.locked) {
+      if (!a.locked) {
         a.f.x +=(pterm+dterm)*udx* magicMult / a.mass;//(pterm + vmcomp*D ) * udx * magicMult / a.mass;
         a.f.y +=(pterm+dterm)*udy* magicMult / a.mass;// (pterm + vmcomp *D) * udy * magicMult / a.mass;
           //a.f.x += xswap;
@@ -709,25 +710,10 @@ var vmcomp = (vbcomp +0* (b.locked?0:b.mass) - vacomp +0* (a.locked?0:a.mass))*(
             //  nextVol = Math.min(Math.max(nextVol, Math.sqrt((Math.abs(difPV) * 100 + 10) * (a.mass + b.mass)) / 5000 - 0.1), 1); //(vmcomp+Math.abs(dif))/10);
               //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
           }
-          if(true){
-            b.f.x -= (pterm + dterm) * udx * magicMult / b.mass;
-            b.f.y -= (pterm +dterm) * udy * magicMult / b.mass;
-            a.f.x += (pterm + dterm) * udx * magicMult / a.mass;
-            a.f.y += (pterm + dterm) * udy * magicMult / a.mass;
-
-          /*  b.nf.x -= 2*(pterm) * udx * magicMult / b.mass;
-            b.nf.y -= 2*(pterm) * udy * magicMult / b.mass;
-            a.nf.x += 2*(pterm ) * udx * magicMult / a.mass;
-            a.nf.y += 2*(pterm ) * udy * magicMult / a.mass;*/
-          }else{
-            b.f.x -= (pterm + dterm/magicMult) * udx * magicMult / b.mass;
-            b.f.y -= (pterm +dterm/magicMult) * udy * magicMult / b.mass;
-            a.f.x += (pterm + dterm/magicMult) * udx * magicMult / a.mass;
-            a.f.y += (pterm + dterm/magicMult) * udy * magicMult / a.mass;
-          }
+          
 
       }
-      if(Number.isNaN(a.f.x)){
+      /*if(Number.isNaN(a.f.x)){
         a.f.x=0;
       }
       if(Number.isNaN(a.f.y)){
@@ -739,7 +725,7 @@ var vmcomp = (vbcomp +0* (b.locked?0:b.mass) - vacomp +0* (a.locked?0:a.mass))*(
       }
       if(Number.isNaN(b.f.y)){
         b.f.y=0;
-      }
+      }*/
 
 
 }

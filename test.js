@@ -224,9 +224,9 @@ for (i=0; i<36; i++) {
   LAYER_FILTERS.push(["FLOOR","DEFAULT"]);
   LAYER_FILTERS.push(["CURTAIN","DEFAULT"]);
 
-  var testSquare = new square("square", 300, 450, 0, 0, 40,10);
-  var testSquare2 = new square("square2", 100, 450, 0, 0, 100,10);
-  var testSquare3 = new square("square3", 250, 450, 0, 0, 40,10);
+  var testSquare = new square("square", 300, 450, 0, 0, 50,10);
+  var testSquare2 = new square("square2", 100, 450, 0, 0, 100,50);
+  var testSquare3 = new square("square3", 250, 450, 0, 0, 50,10);
   //  var testTri = new triangle("triangle", 600, 450, 0, 0, 40,2,true);
    var testCircle = new circle("circle", 1020, 750, 0, 0, 30,false,true);
    testCircle.atoms[0].locked=true;
