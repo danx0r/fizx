@@ -28,7 +28,7 @@ var nextVol = 0;
 var vol = 0;
 STEP_RES = 10 // DONOT CHANGE TO VERY LOW (Higher Is More Real And More Stable)
 function componentAlong(a, b) {
-    return (a.x * b.x + a.y * b.y) / Math.sqrt(a.x * a.x + b.x * b.x);
+    return (a.x * b.x + a.y * b.y) / Math.sqrt(b.y * b.y + b.x * b.x);
 }
 atom = function(x, y, vx, vy, radius, locked, layer) {
     this.color = 0;
