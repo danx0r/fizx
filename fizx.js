@@ -27,9 +27,9 @@ LAYER_FILTERS = [
 var nextVol = 0;
 var vol = 0;
 STEP_RES = 10 // DONOT CHANGE TO VERY LOW (Higher Is More Real And More Stable)
-function componentAlong(a, b) {
-    return 0//(a.x * b.x + a.y * b.y) / Math.sqrt(b.y * b.y + b.x * b.x);
-}
+// function componentAlong(a, b) {
+    // return 0//(a.x * b.x + a.y * b.y) / Math.sqrt(b.y * b.y + b.x * b.x);
+// }
 atom = function(x, y, vx, vy, radius, locked, layer) {
     this.color = 0;
     this.beingDragged=false;
@@ -477,14 +477,14 @@ var momentum_swap = function(a, b, P, D, target, for_sound) {
     var udx = dx / dist; // unit vector pointing from a to b
     var udy = dy / dist;
     var dif = dist - target; // difference we want to restore to zero
-    var vacomp1 = componentAlong(a.v, {
-        x: udx,
-        y: udy
-    }); //dvx*udx + dvy*udy;
-    var vbcomp1 = componentAlong(b.v, {
-        x: udx,
-        y: udy
-    }); //dvx*udx + dvy*udy;
+    // var vacomp1 = componentAlong(a.v, {
+        // x: udx,
+        // y: udy
+    // }); //dvx*udx + dvy*udy;
+    // var vbcomp1 = componentAlong(b.v, {
+        // x: udx,
+        // y: udy
+    // }); //dvx*udx + dvy*udy;
     var pterm = (dif) * P; //*P;                // Proportional term for our springy bond
     var difPV = Math.sqrt(dpvx * dpvx + dpvy * dpvy) - target;
     // original logic for posterity
@@ -505,29 +505,10 @@ var momentum_swap = function(a, b, P, D, target, for_sound) {
 
     var dvmx = b.v.x * b.mass - a.v.x * a.mass;
     var dvmy = b.v.y * b.mass - a.v.y * a.mass;
-    var vcomp = componentAlong({
-        x: dvx,
-        y: dvy
-    }, {
-        x: udx,
-        y: udy
-    }); //dvx*udx + dvy*udy;
-    var vacomp = componentAlong(a.v, {
-        x: udx,
-        y: udy
-    }); //dvx*udx + dvy*udy;
-    var vbcomp = componentAlong(b.v, {
-        x: udx,
-        y: udy
-    }); //dvx*udx + dvy*udy;
-    var vmcomp = (vbcomp * b.mass - vacomp * a.mass) / (a.mass + b.mass) * 2;
-    vmcomp = componentAlong({
-        x: dvmx,
-        y: dvmy
-    }, {
-        x: udx,
-        y: udy
-    }) / (a.mass + b.mass) * 2;
+    var vcomp = 0; //dvx*udx + dvy*udy;
+    var vacomp = 0; //dvx*udx + dvy*udy;
+    var vbcomp = 0; //dvx*udx + dvy*udy;
+    var vmcomp = 0;
     //pterm = (dif )*target;//(Math.abs(vmcomp)+1+target);
     // D = 1/target;//(Math.abs(vmcomp)+1+target);
     //pterm=dif*(target+Math.abs(dif+vacomp-vbcomp))/target
@@ -595,7 +576,7 @@ contacts_update = function() {
         var a = CONTACTS[i][0];
         var b = CONTACTS[i][1];
         var target = a.radius + b.radius;
-        momentum_swap(a, b, (1) / TICK_PHYS, .5, target, true);
+        momentum_swap(a, b, (1) / TICK_PHYS, .5, target);
     }
 }
 
