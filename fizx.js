@@ -499,8 +499,8 @@ first_run = function() {
     floor.add(at);
     ATOMS.push(at);
   }
-  for (i=0; i<20; i++) {
-    var at = new atom(50-i, 250+i*20, 0, 0, 5, true);
+  for (i=0; i<8; i++) {
+    var at = new atom(50-i, 247+i*20, 0, 0, 5, true);
     floor.add(at);
     ATOMS.push(at);
   }
@@ -514,6 +514,7 @@ first_run = function() {
   ATOMS.push(at);
   asx("./ball23.json?x="+randy(), function() {
     var ball2 = new thing("ball2", 130, 900, 0, 0, JSON.parse(this.responseText));
+//    var ball2 = new thing("ball2", 130, 14000, 0, 0, JSON.parse(this.responseText)); #ball gets stuck
     bond_triangulate(ball2.atoms, true);
     COLLIDES.push([ball2, floor]);
     console.log(BONDS.length, "bonds")
