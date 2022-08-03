@@ -184,7 +184,7 @@ test4 = function() {
 -  var DAMP = 0.975
  */
 first_run = function() {
-  var TIME_MAX = 15;
+  var TIME_MAX = 45;
   params = {};
   params.DAMP = 1
   params.BOND_P = 33
