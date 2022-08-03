@@ -317,7 +317,7 @@ randy = function() {
 
 test = function() {
   display_init();
-  rand32(123563);
+  rand32(new Date().getTime());
   for (var i=0; i<36; i++) {
     // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
     ATOMS.push(new atom(randy() * WIDTH, randy() * HEIGHT));
@@ -486,6 +486,7 @@ first_run = function() {
   DAMP = 1
   BOND_P = 33
   BOND_D = .5
+  rand32(new Date().getTime());
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();
   var floor = new thing("floor");
@@ -513,7 +514,7 @@ first_run = function() {
   floor.add(at);
   ATOMS.push(at);
   asx("./ball23.json?x="+randy(), function() {
-    var ball2 = new thing("ball2", 130, 900, 0, 0, JSON.parse(this.responseText));
+    var ball2 = new thing("ball2", 130, 900+randy()*100, 0, 0, JSON.parse(this.responseText));
 //    var ball2 = new thing("ball2", 130, 14000, 0, 0, JSON.parse(this.responseText)); #ball gets stuck
     bond_triangulate(ball2.atoms, true);
     COLLIDES.push([ball2, floor]);
