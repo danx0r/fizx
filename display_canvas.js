@@ -50,9 +50,9 @@ display_line = function(x, y, x2, y2, color,w) {
 }
 
 display_clear = function() {
-    g_context.beginPath();
-    g_context.fillStyle="rgba(247,247,247,"+1+")";
-    g_context.fillRect(0, 0, WIDTH, HEIGHT);
+  g_context.beginPath();
+  g_context.fillStyle="rgba(247,247,247,"+1+")";
+  g_context.fillRect(0, 0, WIDTH, HEIGHT);
 
   //g_context.clearRect(0, 0, WIDTH, HEIGHT);
 }
