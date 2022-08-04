@@ -1,7 +1,7 @@
 fizx = new fizxlib();
 
 test = function() {
-  TIME_MAX = 300;
+  TIME_MAX = 11;
   params = {};
   params.DAMP = 1
   params.BOND_P = 33
@@ -14,8 +14,16 @@ test = function() {
   params.GRAVITY = 0;
   fizx.set_params(params);
   display_init();
-  fizx.ATOMS.push(new fizx.atom(500, 600, 0, 0));
-  fizx.ATOMS.push(new fizx.atom(700, 600, 0, 0));
+  var a = new fizx.thing("a");
+  var aa = new fizx.atom(500, 600, 100, 0)
+  a.add(aa);
+  fizx.ATOMS.push(aa);
+
+  var b = new fizx.thing("b");
+  var bb = new fizx.atom(700, 600, -100, 0)
+  b.add(bb);
+  fizx.ATOMS.push(bb);
+
   console.log("atoms:", fizx.ATOMS.length)
   console.log("bonds:", fizx.BONDS.length)
   display_clear();
