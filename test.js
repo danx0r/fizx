@@ -1,7 +1,7 @@
 fizx = new fizxlib();
 
 test = function() {
-  TIME_MAX = 11;
+  TIME_MAX = 111;
   params = {};
   params.DAMP = 1
   params.BOND_P = 33
@@ -15,28 +15,50 @@ test = function() {
   fizx.set_params(params);
   display_init();
 
+  var bs = [];
+  for (var i=0; i<5; i++) {
+    var a = new fizx.thing("a");
+    var aa = new fizx.atom(500 + i * 50, 800, 0, 0, 10, true)
+    a.add(aa);
+    fizx.ATOMS.push(aa);
+    var b = new fizx.thing("b");
+    bs.push(b);
+    var e = 500 + i * 50;
+    var f = 600;
+    if (i == 0) {
+      e = 300;
+      f = 800;
+    }
+    var bb = new fizx.atom(e, f, 0, 0)
+    b.add(bb);
+    fizx.ATOMS.push(bb);
+    fizx.BONDS.push(new fizx.bond(aa, bb, 200))
+  }
+  fizx.collide_all(bs);
+//
+//  var a = new fizx.thing("a");
+//  var aa = new fizx.atom(300, 800, 0, 0)
+//  a.add(aa);
+//  fizx.ATOMS.push(aa);
+//
 //  var b = new fizx.thing("b");
-//  var bb = new fizx.atom(700, 600, 0, 0)
+//  var bb = new fizx.atom(550, 600, 0, 0)
 //  b.add(bb);
 //  fizx.ATOMS.push(bb);
+//
 //  fizx.collide_all([a,b]);
-
-  var a = new fizx.thing("a");
-  var aa = new fizx.atom(300, 800, 0, 0)
-  a.add(aa);
-  fizx.ATOMS.push(aa);
-
-  var b = new fizx.thing("b");
-  var bb = new fizx.atom(700, 600, 0, 0)
-  b.add(bb);
-  fizx.ATOMS.push(bb);
-  fizx.collide_all([a,b]);
-
-  var x = new fizx.thing("x");
-  var xx = new fizx.atom(500, 800, 0, 0, 10, true)
-  x.add(xx);
-  fizx.ATOMS.push(xx);
-  fizx.BONDS.push(new fizx.bond(xx, aa, 200))
+//
+//  var x = new fizx.thing("x");
+//  var xx = new fizx.atom(500, 800, 0, 0, 10, true)
+//  x.add(xx);
+//  fizx.ATOMS.push(xx);
+//  fizx.BONDS.push(new fizx.bond(xx, aa, 200))
+//
+//  var y = new fizx.thing("y");
+//  var yy = new fizx.atom(550, 800, 0, 0, 10, true)
+//  y.add(yy);
+//  fizx.ATOMS.push(yy);
+//  fizx.BONDS.push(new fizx.bond(yy, bb, 200))
 
   console.log("atoms:", fizx.ATOMS.length)
   console.log("bonds:", fizx.BONDS.length)
