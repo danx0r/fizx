@@ -17,7 +17,8 @@ fizxlib = function() {
   var COLLIDES = []
   
   var set_params = function(kwargs) {
-    if (kwargs.GRAVITY) GRAVITY = kwargs.GRAVITY;
+    if (kwargs.GRAVITY != null) GRAVITY = kwargs.GRAVITY;
+    console.log("GRAVITY:", GRAVITY);
     if (kwargs.RADIUS) RADIUS = kwargs.RADIUS;
     if (kwargs.RADIUS_SHOW) RADIUS_SHOW = kwargs.RADIUS_SHOW;
     TICK_PHYS = kwargs.TICK_PHYS;
