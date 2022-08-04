@@ -6,25 +6,37 @@ test = function() {
   params.DAMP = 1
   params.BOND_P = 33
   params.BOND_D = 0.25
-  params.CONTACT_P = 200
-  params.CONTACT_D = 0.3
+  params.CONTACT_P = 1000
+  params.CONTACT_D = 0
   params.TICK_PHYS = 0.001;
   params.TICK_SHOW = 0.01;
   params.REALTIME = 1;
-  params.GRAVITY = 0;
+//  params.GRAVITY = 0;
   fizx.set_params(params);
   display_init();
 
+//  var b = new fizx.thing("b");
+//  var bb = new fizx.atom(700, 600, 0, 0)
+//  b.add(bb);
+//  fizx.ATOMS.push(bb);
+//  fizx.collide_all([a,b]);
+
   var a = new fizx.thing("a");
-  var aa = new fizx.atom(500, 600, 100, 0)
+  var aa = new fizx.atom(300, 800, 0, 0)
   a.add(aa);
   fizx.ATOMS.push(aa);
 
   var b = new fizx.thing("b");
-  var bb = new fizx.atom(700, 600, -100, 0)
+  var bb = new fizx.atom(700, 600, 0, 0)
   b.add(bb);
   fizx.ATOMS.push(bb);
   fizx.collide_all([a,b]);
+
+  var x = new fizx.thing("x");
+  var xx = new fizx.atom(500, 800, 0, 0, 10, true)
+  x.add(xx);
+  fizx.ATOMS.push(xx);
+  fizx.BONDS.push(new fizx.bond(xx, aa, 200))
 
   console.log("atoms:", fizx.ATOMS.length)
   console.log("bonds:", fizx.BONDS.length)

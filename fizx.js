@@ -336,6 +336,7 @@ fizxlib = function() {
    * exports
    */
   this.atom = atom;
+  this.bond = bond;
   this.thing = thing;
   this.ATOMS = ATOMS;
   this.COLLIDES = COLLIDES;
