@@ -105,7 +105,7 @@ fizxlib = function() {
     for (var i=0; i<COLLIDES.length; i++) {
       var ta = COLLIDES[i][0];
       var tb = COLLIDES[i][1];
-      console.log("TA TB:", ta, tb)
+//      console.log("TA TB:", ta, tb)
       for (var j=0; j<ta.atoms.length; j++) {
         var a = ta.atoms[j];
         for (var k=0; k<tb.atoms.length; k++) {

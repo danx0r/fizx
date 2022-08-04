@@ -21,7 +21,7 @@ test = function() {
   fizx.ATOMS.push(aa);
 
   var b = new fizx.thing("b");
-  var bb = new fizx.atom(700, 600, -100, 0)
+  var bb = new fizx.atom(700, 630, -100, 0)
   b.add(bb);
   fizx.ATOMS.push(bb);
   fizx.collide_all([a,b]);
