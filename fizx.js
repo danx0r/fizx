@@ -24,8 +24,8 @@ TICK_MAX = 1000000;
 
 BOND_P = 200
 BOND_D = 0.5
-CONTACT_P = 200
-CONTACT_D = .5
+CONTACT_P = 1000
+CONTACT_D = 0
 DAMP = 0.95
 MAX_SPEED = 100000
 ATOMS = []
@@ -799,7 +799,7 @@ contacts_update = function() {
     var a = CONTACTS[i][0];
     var b = CONTACTS[i][1];
     var target = a.radius + b.radius;
-    momentum_swap(a, b, 1 / TICK_PHYS, 1, 1, target, true);
+    momentum_swap(a, b, 2000, 0, 1, target, true);
   }
 }
 
