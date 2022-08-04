@@ -1,45 +1,41 @@
 fizx = new fizxlib();
+
 test = function() {
+  TIME_MAX = 300;
+  params = {};
+  params.DAMP = 1
+  params.BOND_P = 33
+  params.BOND_D = 0.25
+  params.CONTACT_P = 200
+  params.CONTACT_D = 0.3
+  params.TICK_PHYS = 0.001;
+  params.TICK_SHOW = 0.01;
+  params.REALTIME = 1;
+  params.GRAVITY = 0;
+  fizx.set_params(params);
   display_init();
-  rand32(123563);
-  for (var i=0; i<36; i++) {
-    // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
-    ATOMS.push(new atom(randy() * WIDTH, randy() * HEIGHT));
-  }
-  // ATOMS.push(new atom(200, 200));
-  // ATOMS.push(new atom(200, 300));
-  // ATOMS.push(new atom(300, 300));
-  bond_all(ATOMS);
+  fizx.ATOMS.push(new fizx.atom(500, 600, 0, 0));
+  fizx.ATOMS.push(new fizx.atom(700, 600, 0, 0));
+  console.log("atoms:", fizx.ATOMS.length)
+  console.log("bonds:", fizx.BONDS.length)
   display_clear();
-  bonds_draw();
-  atoms_draw();
-  var ii=0;
-  var intv = setInterval( function(){
+  fizx.bonds_draw();
+  fizx.atoms_draw();
+  console.log("START");
+  T = (new Date).getTime();
+
+  display_iterate( function(){
     display_clear();
-    bonds_draw();
-    atoms_draw();
-    update_all(TICK_SHOW/TICK_PHYS);
-    ii++;
-    if (ii==150) {
-      console.log("HIT ME")
-      DAMP = 1//0.998
-      BOND_P = 200;
-      BOND_D = .21;
-      // ATOMS[0].v.x = -2000;
-      BONDS = [];
-      bond_triangulate(ATOMS, true)
-      // bond_nearest(ATOMS, 5, true)
-      console.log("stable tri:", ATOMS[0].p, ATOMS[1].p, ATOMS[2].p )
-     }
-    if (ii==200) {
-      console.log("HIT ME AGIN bonds:", BONDS.length);
-      ATOMS[0].v.x = -21500;
-      ATOMS[11].v.x = 9500;
-    }
-    if (ii >= TICK_MAX) {
-      clearInterval(intv)
-    }
-  }, TICK_SHOW/REALTIME * 1000);
+    fizx.contacts_draw();
+    fizx.bonds_draw();
+    fizx.atoms_draw();
+    fizx.update_all(params.TICK_SHOW/params.TICK_PHYS);
+  },
+  function() {
+    console.log("DONE -- ms timing:", (new Date).getTime()-T);
+    console.log(fizx.profile_counts);
+  },
+  params.TICK_SHOW/params.REALTIME * 1000, TIME_MAX/params.TICK_SHOW);
 }
 
 test2 = function() {
