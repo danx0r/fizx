@@ -14,6 +14,7 @@ test = function() {
   params.GRAVITY = 0;
   fizx.set_params(params);
   display_init();
+
   var a = new fizx.thing("a");
   var aa = new fizx.atom(500, 600, 100, 0)
   a.add(aa);
@@ -23,6 +24,7 @@ test = function() {
   var bb = new fizx.atom(700, 600, -100, 0)
   b.add(bb);
   fizx.ATOMS.push(bb);
+  fizx.collide_all([a,b]);
 
   console.log("atoms:", fizx.ATOMS.length)
   console.log("bonds:", fizx.BONDS.length)
