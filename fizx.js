@@ -184,7 +184,7 @@ bond = function(atom1, atom2, dist) {
   this.d = dist;
 }
 
-thing = function(name, x, y, vx, vy, obj, locked, layer) {
+thing = function(name, x, y, vx, vy, obj, locked, layer, color) {
   this.name = name;
   this.atoms = [];
   this.soft = false;
@@ -192,8 +192,10 @@ thing = function(name, x, y, vx, vy, obj, locked, layer) {
     layer = "DEFAULT";
   }
   this.layer = layer;
+  this.color = color;
   this.add = function(atom) {
     atom.layer = this.layer;
+    atom.color = this.color;
     this.atoms.push(atom);
 
   }

@@ -194,7 +194,7 @@ first_run = function() {
     ATOMS.push(at);
 }*/
   for (i = -160; i < 0; i += Math.PI / 1) {
-    var at = new atom(200 + Math.cos(i / 100 * Math.PI) * 200, 400 + Math.sin(i / 100 * Math.PI) * 200, 0, 0, 9, true, null, "cyan");
+    var at = new atom(200 + Math.cos(i / 100 * Math.PI) * 200, 400 + Math.sin(i / 100 * Math.PI) * 200, 0, 0, 9, true, null, "blue");
     floor.add(at);
     ATOMS.push(at);
   }
@@ -217,7 +217,7 @@ first_run = function() {
   //floor.add(at);
   //ATOMS.push(at);
 
-  var curtain = new thing("curtain");
+  var curtain = new thing("curtain", null, null, null, null, null, null, null, "red");
   curtain.setLayer("CURTAIN");
   LAYER_FILTERS.push(["CURTAIN", "CURTAIN"]);
   LAYER_FILTERS.push(["FLOOR", "CURTAIN"]);
