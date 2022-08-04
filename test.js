@@ -198,36 +198,15 @@ first_run = function() {
   var atws = new atom(1100, 588, 0, 0, 40, true);
   atws.mass=100;
   ATOMS.push(atws);*/
-  for (var i = 0; i < 5; i++) {
-    var atp = new atom(500 + i * 40, 800, 0, 0, 10, true);
 
-    ATOMS.push(atp);
-
-    var atb = new atom(500 + i * 40, 700, 0, 0, 20, false, null, "cyan");
-    atb.mass = 100;
-    if (i < 0) {
-      atb = new atom(500 - 100 / 5 * 5 + i * 40 - 2, 800 - 100 / 5 * 0, 0, 0, 20, false);
-      atb.mass = 100;
-    }
-    newtonsCradle[i] = atb;
-    /*if(i===1){
-        atb = new atom(560+i*40+100/5*5, 800-100/5*0, 0, -100, 20, false);
-        atb.mass=1;
-    }*/
-
-    ATOMS.push(atb);
-    BONDS.push(new bond(atp, atb, 100));
-
-  }
   if (true) {
     var extraRatio = 1;
-    var atp = new atom(500 - 20 * (1 + extraRatio), 800, 0, 0, 10, true);
+    var atp = new atom(400, 860, 0, 0, 10, true);
 
     ATOMS.push(atp);
 
 
-
-    var atb = new atom(500 - 100 / 5 * 5 - 20 * (1 + extraRatio), 800 - 100 / 5 * 0, 0, 0, 20 * (extraRatio), false);
+    var atb = new atom(300, 660, 0, 0, 20, false);
     atb.mass = 100 * extraRatio * (extraRatio);
 
     newtonsCradle[newtonsCradle.length] = atb;
@@ -237,7 +216,7 @@ first_run = function() {
     }*/
 
     ATOMS.push(atb);
-    BONDS.push(new bond(atp, atb, 100));
+    BONDS.push(new bond(atp, atb, 200));
   }
 
 
