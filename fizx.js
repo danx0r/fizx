@@ -42,8 +42,8 @@ STEP_RES = 11 // DONOT CHANGE TO VERY LOW (Higher Is More Real And More Stable)
 function componentAlong(a, b) {
   return (a.x * b.x + a.y * b.y) / Math.sqrt(b.y * b.y + b.x * b.x);
 }
-atom = function(x, y, vx, vy, radius, locked, layer) {
-  this.color = 0;
+atom = function(x, y, vx, vy, radius, locked, layer, color) {
+  this.color = color;
   this.beingDragged = false;
   this.lockedBeforeDrag = locked;
   if (vx == null) vx = vy = 0;
@@ -83,11 +83,7 @@ atom = function(x, y, vx, vy, radius, locked, layer) {
 
 }
 atom.prototype.draw = function() {
-  // console.log("draw at", this.p.x, this.p.y)
-
-  var speed = Math.sqrt(this.v.y * this.v.y + this.v.x * this.v.x);
-  this.color = Math.atan2(this.v.y + Math.sin(this.color) * 26, this.v.x + Math.cos(this.color) * 26);
-  display_circle(this.p.x, this.p.y, this.radius, "hsl(" + (speed > 0 ? (this.color / Math.PI * 180) : 0) + "," + (Math.min(speed, 50) + 30) + "%,50%)"); //ATOM_COLOR2);
+  display_circle(this.p.x, this.p.y, this.radius, this.color); //ATOM_COLOR2);
   //display_circle(this.p.x, this.p.y, RADIUS_SHOW+1, ATOM_COLOR);
 };
 atom.prototype.applyForce = function() {
