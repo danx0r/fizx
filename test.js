@@ -1,14 +1,13 @@
 test = function() {
+  DAMP = 1; //0.999//-TICK_PHYS/10
+  BOND_P = 33
+  BOND_D = 0.5
+  TICK_MAX = 1000000;
+  GRAVITY = 0;
   display_init();
-  rand32(123563);
-  for (var i = 0; i < 36; i++) {
-    // new atom(Math.random() * WIDTH, Math.random() * HEIGHT);
-    ATOMS.push(new atom(randy() * WIDTH, randy() * HEIGHT));
-  }
-  // ATOMS.push(new atom(200, 200));
-  // ATOMS.push(new atom(200, 300));
-  // ATOMS.push(new atom(300, 300));
-  bond_all(ATOMS);
+  ATOMS.push(new atom(500, 600, 100, 0));
+  ATOMS.push(new atom(700, 600, -100, 0));
+//  bond_all(ATOMS);
   display_clear();
   bonds_draw();
   atoms_draw();
@@ -19,22 +18,6 @@ test = function() {
     atoms_draw();
     update_all(TICK_SHOW / TICK_PHYS);
     ii++;
-    if (ii == 150) {
-      console.log("HIT ME")
-      DAMP = 1 //0.998
-      BOND_P = 200;
-      BOND_D = .21;
-      // ATOMS[0].v.x = -2000;
-      BONDS = [];
-      bond_triangulate(ATOMS, true)
-      // bond_nearest(ATOMS, 5, true)
-      console.log("stable tri:", ATOMS[0].p, ATOMS[1].p, ATOMS[2].p)
-    }
-    if (ii == 200) {
-      console.log("HIT ME AGIN bonds:", BONDS.length);
-      ATOMS[0].v.x = -21500;
-      ATOMS[11].v.x = 9500;
-    }
     if (ii >= TICK_MAX) {
       clearInterval(intv)
     }
