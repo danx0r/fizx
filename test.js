@@ -81,89 +81,6 @@ function asx(url, cb) {
   // console.log("asx:", xr.readyState)
 }
 
-test3 = function() {
-  DAMP = 1
-  BOND_P = 33
-  BOND_D = .5
-  // REALTIME = .1; TICK_SHOW=TICK_PHYS
-  display_init();
-  var floor = new thing("floor");
-  for (i = 0; i < 60; i++) {
-    var at = new atom(100 + i * 20, 120 + i * 3, 0, 0, 10, true);
-    floor.add(at);
-    ATOMS.push(at);
-  }
-  for (i = 0; i < 60; i++) {
-    var at = new atom(10 + i * 20, 90 + (60 - i) * 5, 0, 0, 10, true);
-    floor.add(at);
-    ATOMS.push(at);
-  }
-  asx("./ball60.json?x=" + randy(), function() {
-    var ball1 = new thing("ball1", 1194, 600, -300, 0, JSON.parse(this.responseText));
-    bond_triangulate(ball1.atoms, true);
-    asx("./ball23.json?x=" + randy(), function() {
-      var ball2 = new thing("ball2", 130, 600, 0, 0, JSON.parse(this.responseText));
-      bond_triangulate(ball2.atoms, true);
-      COLLIDES.push([ball1, ball2], [ball1, floor], [ball2, floor]);
-      console.log(BONDS.length, "bonds")
-      display_clear();
-      bonds_draw();
-      atoms_draw();
-      var ii = 0;
-      var intv = setInterval(function() {
-        display_clear();
-        contacts_draw();
-        bonds_draw();
-        atoms_draw();
-        update_all(TICK_SHOW / TICK_PHYS);
-        ii++;
-        if (ii >= TICK_MAX) {
-          clearInterval(intv)
-        }
-      }, TICK_SHOW / REALTIME * 1000);
-    });
-  });
-}
-
-test4 = function() {
-  DAMP = 1
-  BOND_P = 33
-  BOND_D = .5
-  // REALTIME = .1; TICK_SHOW=TICK_PHYS
-  display_init();
-  var floor = new thing("floor");
-  for (i = 0; i < 60; i++) {
-    var at = new atom(100 + i * 20, 120 + i * 3, 0, 0, 10, true);
-    floor.add(at);
-    ATOMS.push(at);
-  }
-  for (i = 0; i < 60; i++) {
-    var at = new atom(100 + i * 20, 70 + (60 - i) * 3, 0, 0, 10, true);
-    floor.add(at);
-    ATOMS.push(at);
-  }
-  asx("./ball60.json?x=" + randy(), function() {
-    var ball2 = new thing("ball2", 1100, 630, 0, 0, JSON.parse(this.responseText));
-    bond_triangulate(ball2.atoms, true);
-    COLLIDES.push([floor, ball2]);
-    console.log(BONDS.length, "bonds")
-    display_clear();
-    bonds_draw();
-    atoms_draw();
-    var ii = 0;
-    var intv = setInterval(function() {
-      display_clear();
-      contacts_draw();
-      bonds_draw();
-      atoms_draw();
-      update_all(TICK_SHOW / TICK_PHYS);
-      ii++;
-      if (ii >= TICK_MAX) {
-        clearInterval(intv)
-      }
-    }, TICK_SHOW / REALTIME * 1000);
-  });
-}
 var testCircle;
 var testCircle2;
 var specialAtom;
@@ -217,14 +134,14 @@ first_run = function() {
   //floor.add(at);
   //ATOMS.push(at);
 
-  var curtain = new thing("curtain", null, null, null, null, null, null, null, "red");
+  var curtain = new thing("curtain");
   curtain.setLayer("CURTAIN");
   LAYER_FILTERS.push(["CURTAIN", "CURTAIN"]);
   LAYER_FILTERS.push(["FLOOR", "CURTAIN"]);
   LAYER_FILTERS.push(["FLOOR", "DEFAULT"]);
   LAYER_FILTERS.push(["CURTAIN", "DEFAULT"]);
 
-  var testSquare = new square("square", 760, 450, 0, 0, 40, 10);
+  var testSquare = new square("square", 760, 450, 0, 0, 40, 10, null, null, "pink");
   //  var testSquare2 = new square("square2", 100, 450, 0, 0, 100,50);
   //  var testSquare3 = new square("square3", 250, 450, 0, 0, 50,10);
   //  var testTri = new triangle("triangle", 600, 450, 0, 0, 40,2,true);
@@ -251,7 +168,7 @@ first_run = function() {
   var prevCon;
   for (i = 0; i < 200; i += 4) {
     //var at = new atom(420+i*16, 400+i*12, 0, 0, 8, i==0||i==19);
-    var at = new atom(1020 + Math.cos(i / 100 * Math.PI) * 100, 730 + Math.sin(i / 100 * Math.PI) * 100, 0, 0, 2, false);
+    var at = new atom(1020 + Math.cos(i / 100 * Math.PI) * 100, 730 + Math.sin(i / 100 * Math.PI) * 100, 0, 0, 2, false, null, "red");
     if (i === 0) {
       firstCon = at;
     }
@@ -286,7 +203,7 @@ first_run = function() {
 
     ATOMS.push(atp);
 
-    var atb = new atom(500 + i * 40, 700, 0, 0, 20, false);
+    var atb = new atom(500 + i * 40, 700, 0, 0, 20, false, null, "cyan");
     atb.mass = 100;
     if (i < 0) {
       atb = new atom(500 - 100 / 5 * 5 + i * 40 - 2, 800 - 100 / 5 * 0, 0, 0, 20, false);
@@ -325,26 +242,26 @@ first_run = function() {
 
 
   var small = new thing("x");
-  var at = new atom(560, 350, 0, 0, 10);
+  var at = new atom(560, 350, 0, 0, 10, null, null, "green");
   small.add(at);
   ATOMS.push(at);
-  var at2 = new atom(500, 350, 0, 0, 10);
+  var at2 = new atom(500, 350, 0, 0, 10, null, null, "green");
   small.add(at2);
   ATOMS.push(at2);
-  var at3 = new atom(520, 390, -100, 0, 10);
+  var at3 = new atom(520, 390, -100, 0, 10, null, null, "green");
   small.add(at3);
   ATOMS.push(at3);
 
   bond_nearest([at, at2, at3], 2, true);
 
-  var ball1 = new thing("ball1", 350, 500, 0, 0, ball16);
+  var ball1 = new thing("ball1", 350, 500, 0, 0, ball16, null, null, "orange");
   bond_triangulate(ball1.atoms, true);
-  var ball2 = new thing("ball2", 600, 250, 0, 0, ball16);
+  var ball2 = new thing("ball2", 600, 250, 0, 0, ball16, null, null, "indigo");
   bond_triangulate(ball2.atoms, true);
   for (var i = 0; i < ball2.atoms.length; i++) {
     ball2.atoms[i].mass = 1;
   }
-  var ball3 = new thing("ball3", 800, 250, 0, 0, ball16);
+  var ball3 = new thing("ball3", 800, 250, 0, 0, ball16, null, null, "purple");
   bond_triangulate(ball3.atoms, true);
   for (var i = 0; i < ball3.atoms.length; i++) {
     ball3.atoms[i].mass = 1;

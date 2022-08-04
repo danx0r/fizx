@@ -185,6 +185,7 @@ bond = function(atom1, atom2, dist) {
 }
 
 thing = function(name, x, y, vx, vy, obj, locked, layer, color) {
+  console.log("creating thing", name, color);
   this.name = name;
   this.atoms = [];
   this.soft = false;
@@ -192,17 +193,19 @@ thing = function(name, x, y, vx, vy, obj, locked, layer, color) {
     layer = "DEFAULT";
   }
   this.layer = layer;
-  this.color = color;
   this.add = function(atom) {
     atom.layer = this.layer;
-    atom.color = this.color;
+    if (color != null) {
+      atom.color = color;
+      console.log("coloring thing", name, atom.color);
+    }
     this.atoms.push(atom);
 
   }
   if (obj != undefined) {
     for (var i = 0; i < obj.length; i++) {
       var o = obj[i];
-      var a = new atom(o.p.x + x, o.p.y + y, o.v.x + vx, o.v.y + vy, o.radius, locked, this.layer);
+      var a = new atom(o.p.x + x, o.p.y + y, o.v.x + vx, o.v.y + vy, o.radius, locked, this.layer, color);
       this.atoms.push(a);
       ATOMS.push(a);
     }
@@ -351,7 +354,7 @@ thing = function(name, x, y, vx, vy, obj, locked, layer, color) {
   }
   THINGS.push(this);
 }
-square = function(name, x, y, vx, vy, r, res, locked, layer) {
+square = function(name, x, y, vx, vy, r, res, locked, layer, color) {
   var temp = new thing(name, x, y, vx, vy, [], locked, layer);
   for (var p in temp) {
     this[p] = temp[p];
@@ -365,7 +368,7 @@ square = function(name, x, y, vx, vy, r, res, locked, layer) {
       //if(i===0||j===0||i==r-1||j==r-1){
 
 
-      var a = new atom(x + (i - r / 2) * scale, y + (j - r / 2) * scale, vx, vy, scale / 2, locked);
+      var a = new atom(x + (i - r / 2) * scale, y + (j - r / 2) * scale, vx, vy, scale / 2, locked, null, color);
       a.mass = 1 / 25 * scale * scale;
       atomArray[i][j] = a;
       this.atoms.push(a);
