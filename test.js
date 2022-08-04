@@ -203,7 +203,7 @@ first_run = function() {
 
     ATOMS.push(atp);
 
-    var atb = new atom(500 + i * 40, 700, 0, 0, 20, false, null, "cyan");
+    var atb = new atom(500 + i * 40, 700, 0, 0, 21, false, null, "cyan");
     atb.mass = 100;
     if (i < 0) {
       atb = new atom(500 - 100 / 5 * 5 + i * 40 - 2, 800 - 100 / 5 * 0, 0, 0, 20, false);
