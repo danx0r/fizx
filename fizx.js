@@ -609,16 +609,16 @@ var momentum_swap = function(a, b, P, D, RESTITUTION, target, for_sound) {
     x: udx,
     y: udy
   }); //dvx*udx + dvy*udy;
-  var vmcomp = (vbcomp + 0 * (b.locked ? 0 : b.mass) - vacomp + 0 * (a.locked ? 0 : a.mass)) * (1 + RESTITUTION); ///magicMult;// / magicMult;
-  var pterm = (dif) * P; //*magicMult*P/magicMult;///TICK_PHYS*P;                // Proportional term for our springy bond
-  var dterm = vmcomp * D; // Derivative term
+  var vmcomp = (vbcomp + 0 * (b.locked ? 0 : b.mass) - vacomp + 0 * (a.locked ? 0 : a.mass)) * (1 + RESTITUTION);
+  var pterm = (dif) * P;
+  var dterm = vmcomp * D;
   if (!a.locked) {
-    a.f.x += (pterm + dterm) * udx * magicMult / a.mass; //(pterm + vmcomp*D ) * udx * magicMult / a.mass;
-    a.f.y += (pterm + dterm) * udy * magicMult / a.mass; // (pterm + vmcomp *D) * udy * magicMult / a.mass;
+    a.f.x += (pterm + dterm) * udx * magicMult / a.mass;
+    a.f.y += (pterm + dterm) * udy * magicMult / a.mass;
   }
   if (!b.locked) {
-    b.f.x -= (pterm + dterm) * udx * magicMult / b.mass; //(pterm + vmcomp *D) * udx * magicMult / b.mass;
-    b.f.y -= (pterm + dterm) * udy * magicMult / b.mass; //(pterm + vmcomp*D ) * udy * magicMult / b.mass;
+    b.f.x -= (pterm + dterm) * udx * magicMult / b.mass;
+    b.f.y -= (pterm + dterm) * udy * magicMult / b.mass;
   }
 }
 
@@ -636,7 +636,7 @@ contacts_update = function() {
     var a = CONTACTS[i][0];
     var b = CONTACTS[i][1];
     var target = a.radius + b.radius;
-    momentum_swap(a, b, 2000, 0, 1, target, true);
+    momentum_swap(a, b, 2100, 0, 1, target, true);
   }
 }
 
