@@ -198,7 +198,7 @@ first_run = function() {
   var atws = new atom(1100, 588, 0, 0, 40, true);
   atws.mass=100;
   ATOMS.push(atws);*/
-  for (var i = 0; i < 5; i++) {
+  for (var i = 0; i < 1; i++) {
     var atp = new atom(500 + i * 40, 800, 0, 0, 10, true);
 
     ATOMS.push(atp);
