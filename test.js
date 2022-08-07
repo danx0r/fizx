@@ -197,7 +197,10 @@ first_run = function() {
 
   var atws = new atom(1100, 588, 0, 0, 40, true);
   atws.mass=100;
-  ATOMS.push(atws);*/
+  ATOM.push(atws);*/
+
+  ATOMS.push(new atom(600, 100, -100, 0));
+  ATOMS.push(new atom(400, 100, 200, 0, null, null, null, null, 2));
   for (var i = 0; i < 1; i++) {
     var atp = new atom(500 + i * 40, 800, 0, 0, 10, true);
 
@@ -205,10 +208,6 @@ first_run = function() {
 
     var atb = new atom(500 + i * 40, 700, 0, 0, 20, false, null, "cyan");
     atb.mass = 100;
-    if (i < 0) {
-      atb = new atom(500 - 100 / 5 * 5 + i * 40 - 2, 800 - 100 / 5 * 0, 0, 0, 20, false);
-      atb.mass = 100;
-    }
     newtonsCradle[i] = atb;
     /*if(i===1){
         atb = new atom(560+i*40+100/5*5, 800-100/5*0, 0, -100, 20, false);
@@ -216,7 +215,6 @@ first_run = function() {
     }*/
 
     ATOMS.push(atb);
-    BONDS.push(new bond(atp, atb, 100));
 
   }
   if (true) {
@@ -359,7 +357,6 @@ test_profile = function() {
   DAMP = 1
   BOND_P = 33
   BOND_D = .5
-  GRAVITY = 0
   TICK_MAX = 100;
   // REALTIME = .1; TICK_SHOW=TICK_PHYS
   display_init();

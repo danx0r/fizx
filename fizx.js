@@ -1,4 +1,4 @@
-var GRAVITY = -1000
+var GRAVITY = 0
 var RADIUS = 25;
 var RADIUS_SHOW = 1;
 var TICK_PHYS = 0.001;
@@ -42,7 +42,7 @@ STEP_RES = 11 // DONOT CHANGE TO VERY LOW (Higher Is More Real And More Stable)
 function componentAlong(a, b) {
   return (a.x * b.x + a.y * b.y) / Math.sqrt(b.y * b.y + b.x * b.x);
 }
-atom = function(x, y, vx, vy, radius, locked, layer, color) {
+atom = function(x, y, vx, vy, radius, locked, layer, color, mass) {
   this.color = color;
   this.beingDragged = false;
   this.lockedBeforeDrag = locked;
@@ -61,7 +61,13 @@ atom = function(x, y, vx, vy, radius, locked, layer, color) {
     y: vy
   };
   this.radius = radius;
-  this.mass = 1;
+  if (mass) {
+    this.mass = mass;
+    console.log("MASS:", this.mass);
+  }
+  else {
+    this.mass = 1;
+  }
   if (layer == null || layer == undefined || layer == "") {
     layer = "DEFAULT";
   }
