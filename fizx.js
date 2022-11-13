@@ -666,7 +666,7 @@ var vcomp = componentAlong({
     x: udx,
     y: udy
   }); //dvx*udx + dvy*udy;
-  var vmcomp = (vbcomp + 0 * (b.locked ? 0 : b.mass) - vacomp + 0 * (a.locked ? 0 : a.mass)) * (1 + RESTITUTION); ///magicMult;// / magicMult;
+  var vmcomp = (vbcomp * (b.locked ? 0 : b.mass) - vacomp * (a.locked ? 0 : a.mass)) * (1 + RESTITUTION)/magicMult;// / magicMult;
   //console.log(vmcomp);
   //var relativeMomentumBetween=(vbcomp * (b.locked?0:b.mass) - vacomp * (a.locked?0:a.mass));
   /*vmcomp = componentAlong({
@@ -741,10 +741,10 @@ var vcomp = componentAlong({
     b.f.y -= (pterm + dterm) * udy * magicMult / b.mass; //(pterm + vmcomp*D ) * udy * magicMult / b.mass;
     //  b.f.x -= xswap;
     //  b.f.y -= yswap;
-    if (for_sound) { //}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
+    if (for_sound&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
 
       //    nextVol = Math.min(Math.max(nextVol, Math.sqrt((Math.abs(difPV) * 100 + 10) * (b.mass * 2)) / 5000 - 0.1), 1); //(vmcomp+Math.abs(dif))/10);
-      //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
+           nextVol=Math.min(Math.max(nextVol,(Math.max(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif)*0,1)-1)/100),1);//(vmcomp+Math.abs(dif))/10);
     }
   }
   if (!a.locked) {
@@ -752,17 +752,17 @@ var vcomp = componentAlong({
     a.f.y += (pterm + dterm) * udy * magicMult / a.mass; // (pterm + vmcomp *D) * udy * magicMult / a.mass;
     //a.f.x += xswap;
     //a.f.y += yswap;
-    if (for_sound) { //}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
+    if (for_sound&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
 
-      //    nextVol = Math.min(Math.max(nextVol, Math.sqrt((Math.abs(difPV) * 100 + 10) * (a.mass * 2)) / 5000 - 0.1), 1); //(vmcomp+Math.abs(dif))/10);
-      //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
+        //  nextVol = Math.min(Math.max(nextVol, Math.sqrt((Math.abs(difPV) * 100 + 10) * (a.mass * 2)) / 5000 - 0.1), 1); //(vmcomp+Math.abs(dif))/10);
+           nextVol=Math.min(Math.max(nextVol,(Math.max(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif)*0,1)-1)/100),1);//(vmcomp+Math.abs(dif))/10);
     }
   }
   if (!(b.locked || a.locked)) {
     if (for_sound) { //}&& (newtonsCradle.indexOf(a)+newtonsCradle.indexOf(b)>-2)){
 
       //  nextVol = Math.min(Math.max(nextVol, Math.sqrt((Math.abs(difPV) * 100 + 10) * (a.mass + b.mass)) / 5000 - 0.1), 1); //(vmcomp+Math.abs(dif))/10);
-      //      nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
+          //  nextVol=Math.min(Math.max(nextVol,(Math.abs(vbcomp*b.mass-vacomp*a.mass )+Math.abs(dif))/100),1);//(vmcomp+Math.abs(dif))/10);
     }
 
 
@@ -789,7 +789,7 @@ bonds_update = function() {
     var a = BONDS[i].a;
     var b = BONDS[i].b;
     var target = BONDS[i].d;
-    momentum_swap(a, b, 1 / TICK_PHYS, 1, 1, target);
+    momentum_swap(a, b, 1 / TICK_PHYS*2, 1, 1, target,false);
   }
 }
 
@@ -798,7 +798,14 @@ contacts_update = function() {
     var a = CONTACTS[i][0];
     var b = CONTACTS[i][1];
     var target = a.radius + b.radius;
-    momentum_swap(a, b, 1 / TICK_PHYS, 1, 1, target, true);
+    var dx = b.p.x - a.p.x;
+  var dy = b.p.y - a.p.y;
+  var dist = Math.sqrt(dx * dx + dy * dy); // distance between atoms
+  if(target>dist){
+    momentum_swap(a, b, 1 / TICK_PHYS*2, 0, 1, target, true);
+  }else{
+    console.log("YO")
+  }
   }
 }
 

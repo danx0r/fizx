@@ -1,8 +1,14 @@
-var context = new AudioContext();
-var node = context.createScriptProcessor(1024, 1, 1);
+
 var vol=0;
 var oldV=0;
 n = 0
+let sssDsadf=false;
+window.addEventListener("click",()=>{
+  if(!sssDsadf){
+
+  sssDsadf=true;
+  var context = new AudioContext();
+var node = context.createScriptProcessor(1024, 1, 1);
 node.onaudioprocess = function (e) {
   var output = e.outputBuffer.getChannelData(0);
   for (var i = 0; i < output.length; i++) {
@@ -12,3 +18,7 @@ node.onaudioprocess = function (e) {
   }
 };
 node.connect(context.destination);
+  // context.resume();
+}
+}
+)
