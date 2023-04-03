@@ -1,8 +1,8 @@
-import SimpleHTTPServer
-import SocketServer
+import http.server
+import socketserver
 PORT = 8002
-Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
-SocketServer.TCPServer.allow_reuse_address = True
-httpd = SocketServer.TCPServer(("", PORT), Handler)
-print "serving at port", PORT
+Handler = http.server.SimpleHTTPRequestHandler
+socketserver.TCPServer.allow_reuse_address = True
+httpd = socketserver.TCPServer(("", PORT), Handler)
+print("serving at port", PORT)
 httpd.serve_forever()
